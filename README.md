@@ -59,7 +59,7 @@ push from prisma to postgres
 pnpm prisma migrate dev --name <any_name>
 ```
 
-push from prisma to postgres with migration.sql
+push from prisma to postgres with migration.sql (optional)
 ```bash
 pnpm prisma migrate resolve --applied 0_init
 ```
