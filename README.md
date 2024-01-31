@@ -54,9 +54,14 @@ login pgadmin
 - username: postgres
 - password: postgres
 
-push from prisma to postgres (docker)
+push from prisma to postgres
 ```bash
 pnpm prisma migrate dev --name <any_name>
+```
+
+push from prisma to postgres with migration.sql
+```bash
+pnpm prisma migrate resolve --applied 0_init
 ```
 
 pull table from postgres to prisma (local file)
