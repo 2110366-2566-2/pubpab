@@ -16,9 +16,12 @@
     ]
   },
   "dependencies": {
+    "@prisma/client": "5.3.1",
     "next": "14.1.0",
+    "prisma": "5.3.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "3.22.2"
   },
   "devDependencies": {
     "@types/node": "^20",

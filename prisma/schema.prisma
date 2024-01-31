@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accommodation {
+  accommodation_id     String     @id @db.VarChar(10)
+  host_id              String     @db.VarChar(36)
+  qr_code              String
+  name_a               String     @db.VarChar(64)
+  description_a        String
+  price                Int
+  banner               String?
+  address_a            String
+  city                 String     @db.VarChar(64)
+  province             String     @db.VarChar(64)
+  distinct_a           String     @db.VarChar(64)
+  postal_code          String     @db.Char(5)
+  ggmap_link           String
+  rating               Float
+  accommodation_status a_status
+  host                 host       @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
+  feedback             feedback[]
+  reserve              reserve[]
+  room                 room[]
+}
+
+model admin {
+  admin_id   String     @id @db.VarChar(36)
+  admin_type admintypes
+  host       host[]
+}
+
+model attachment {
+  message_id  String   @db.VarChar(36)
+  chatroom_id String   @db.VarChar(36)
+  picture     Bytes
+  messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
+
+  @@id([message_id, chatroom_id])
+}
+
+model chat {
+  host_id     String   @db.VarChar(36)
+  traveler_id String   @db.VarChar(36)
+  chatroom_id String   @db.VarChar(36)
+  chatroom    chatroom @relation(fields: [chatroom_id], references: [chatroom_id], onDelete: Cascade)
+  host        host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
+  traveler    traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+
+  @@id([host_id, traveler_id, chatroom_id])
+}
+
+model chatroom {
+  chatroom_id String @id @db.VarChar(36)
+  chat        chat[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model feedback {
+  feedback_id      String        @id @db.VarChar(36)
+  traveler_id      String        @db.VarChar(36)
+  accommodation_id String        @db.VarChar(10)
+  picture          String
+  timestamp        DateTime      @default(now()) @db.Timestamp(6)
+  text             String
+  score            Float
+  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
+  traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+}
+
+model host {
+  host_id       String          @id @db.VarChar(36)
+  admin_id      String?         @db.VarChar(36)
+  bank_account  String?         @db.VarChar(255)
+  accommodation accommodation[]
+  chat          chat[]
+  admin         admin?          @relation(fields: [admin_id], references: [admin_id], onDelete: NoAction, onUpdate: NoAction)
+  users         users           @relation(fields: [host_id], references: [user_id], onDelete: Cascade)
+}
+
+model messages {
+  message_id  String      @db.VarChar(36)
+  chatroom_id String      @db.VarChar(36)
+  sender_id   String      @db.VarChar(36)
+  timestamp   DateTime    @default(now()) @db.Timestamp(6)
+  attachment  attachment?
+  users       users       @relation(fields: [sender_id], references: [user_id], onDelete: Cascade)
+  text        text?
+
+  @@id([message_id, chatroom_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payment {
+  payment_id            String    @id @db.VarChar(36)
+  timestamp             DateTime  @default(now()) @db.Timestamp(6)
+  amount                Float?
+  host_bank_account     String    @db.VarChar(36)
+  traveler_bank_account String    @db.VarChar(36)
+  payment_status        pm_status
+  qrcode_payment        String
+}
+
+model problem {
+  problem_id     String        @id @db.VarChar(36)
+  user_id        String        @db.VarChar(36)
+  text           String
+  topic          String
+  timestamp      DateTime      @default(now()) @db.Timestamp(6)
+  problem_status problemstatus
+  users          users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+}
+
+model reserve {
+  reservation_id   String        @db.VarChar(36)
+  accommodation_id String        @db.VarChar(10)
+  traveler_id      String        @db.VarChar(36)
+  payment_id       String        @db.VarChar(36)
+  timestamp        DateTime      @default(now()) @db.Timestamp(6)
+  start_date       DateTime      @db.Date
+  end_date         DateTime      @db.Date
+  check_in_status  Boolean
+  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
+  traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+
+  @@id([reservation_id, accommodation_id, traveler_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model room {
+  room_id          String         @id @db.VarChar(36)
+  accommodation_id String?        @db.VarChar(10)
+  price            Int
+  floor            Int
+  is_reserve       Boolean
+  room_no          String
+  smoking          Boolean
+  noise            Boolean
+  pet              Boolean
+  washing_machine  Boolean
+  bed_type         b_type
+  restroom         Boolean
+  wifi_available   Boolean
+  max_resident_no  Int
+  accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
+}
+
+model text {
+  message_id  String   @db.VarChar(36)
+  chatroom_id String   @db.VarChar(36)
+  text        String
+  messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
+
+  @@id([message_id, chatroom_id])
+}
+
+model traveler {
+  traveler_id String     @id @db.VarChar(36)
+  chat        chat[]
+  feedback    feedback[]
+  reserve     reserve[]
+  users       users      @relation(fields: [traveler_id], references: [user_id], onDelete: Cascade)
+}
+
+model users {
+  user_id       String     @id @db.VarChar(36)
+  citizen_id    String     @unique @db.Char(13)
+  first_name    String     @db.VarChar(64)
+  last_name     String     @db.VarChar(64)
+  email         String     @unique
+  password_hash String     @db.VarChar(255)
+  salt          String     @unique @db.Char(32)
+  birth_date    DateTime   @db.Date
+  age           Int
+  phone_no      String     @db.Char(10)
+  gender        genders
+  banner        String?
+  host          host?
+  messages      messages[]
+  problem       problem[]
+  traveler      traveler?
+}
+
+enum a_status {
+  OPEN
+  CLOSE
+}
+
+enum admintypes {
+  Verified_Admin @map("Verified Admin")
+  Support_Admin  @map("Support Admin")
+}
+
+enum b_type {
+  KING
+  QUEEN
+}
+
+enum genders {
+  M
+  F
+}
+
+enum pm_status {
+  Waiting
+  Ongoing
+  Success
+  Fail
+}
+
+enum problemstatus {
+  Pending
+  Solved
+}

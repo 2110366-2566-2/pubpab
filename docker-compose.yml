@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:14.8
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "mydb"
+    ports:
+      - "5432:5432"
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - net
+    container_name: postgres-com
+    expose:
+      - "5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "puta@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "puta"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    container_name: pgadmin-com
+    volumes:
+      - ../pgadmin:/var/lib/pgadmin
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
