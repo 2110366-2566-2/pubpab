@@ -1,6 +1,6 @@
 // pages/extra/extra.tsx
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/option";
+import { authOptions } from "@/app/lib/auth";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

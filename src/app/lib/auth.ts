@@ -38,11 +38,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         // check to see if password matches
-        const passwordMatch = await bcrypt.compare(
-          credentials.password,
-          user.password_hash,
-        );
+        // const passwordMatch = await bcrypt.compare(
+        //   credentials.password,
+        //   user.password_hash,
+        // );
 
+        const passwordMatch = credentials.password == user.password_hash;
         // if password does not match
         if (!passwordMatch) {
           throw new Error("Incorrect password");
