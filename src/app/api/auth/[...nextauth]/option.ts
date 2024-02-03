@@ -5,11 +5,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 
-declare module "next-auth" {
-  interface users {
-    id: number; // <- here it is
-  }
-}
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -53,7 +48,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Incorrect password");
         }
 
-        return user;
+        return {
+          id: user.user_id,
+          email: user.email,
+        };
       },
     }),
   ],
