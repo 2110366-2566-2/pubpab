@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     const user_newIssue = await prisma.users.update({
-        where: { user_id: body.user_id },
+        where: { user_id: body.host_id },
         data: userUpdateData,
     });
 
