@@ -34,3 +34,38 @@ export async function GET(request: NextRequest) {
     // Return the combined information
     return NextResponse.json(getHostWithUser, { status: 200 });
 }
+
+export async function POST(request: NextRequest) {
+    const body = await request.json();
+
+    const hostUpdateData = {
+        bank_account: body.bank_account ?? undefined,
+    };
+
+    const userUpdateData = {
+        first_name: body.first_name ?? undefined,
+        last_name: body.last_name ?? undefined,
+        phone_no: body.phone_no ?? undefined,
+        banner: body.banner ?? undefined,
+    };
+
+    const host_newIssue = await prisma.host.update({
+        where: { host_id: body.host_id },
+        data: hostUpdateData,
+    });
+
+    if (!host_newIssue) {
+        return NextResponse.json({ error: "Host not found" }, { status: 404 });
+    }
+
+    const user_newIssue = await prisma.users.update({
+        where: { user_id: body.user_id },
+        data: userUpdateData,
+    });
+
+    if (!user_newIssue) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({host_newIssue, user_newIssue}, { status: 201 });
+  }
