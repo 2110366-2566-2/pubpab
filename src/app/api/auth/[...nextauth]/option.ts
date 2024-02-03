@@ -1,50 +1,67 @@
-import { Console } from "console";
-import type { NextAuthOptions } from "next-auth";
+import prisma from "../../../../../prisma/client";
+import NextAuth from "next-auth/next";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
-export const options: NextAuthOptions = {
+import bcrypt from "bcrypt";
+import { NextAuthOptions } from "next-auth";
+
+declare module "next-auth" {
+  interface users {
+    id: number; // <- here it is
+  }
+}
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
-      name: "Credentials",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
+      name: "credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "Mr. P" },
-        password: {
-          label: "Password",
-          type: "password",
-          placeholder: "N word",
+        email: { label: "Email", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" },
+        username: {
+          label: "Username",
+          type: "text",
+          placeholder: "John Smith",
         },
       },
-      async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        const res = await fetch(`/api/login?user=${credentials?.username}`, {
-          method: "GET",
-          // body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        if (!res.ok) {
-          throw new Error("Failed to fetch user data");
+      async authorize(credentials) {
+        // check to see if email and password are provided
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Please enter an email and password");
         }
-        const user = await res.json();
-        // do this method
-        if (credentials?.password === user.password) {
-          console.log("CORRECT");
 
-          return user;
-        } else {
-          console.log("INCORRECT PASSWORD");
-          return null;
+        // check to see if user exists
+        const user = await prisma.users.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        // if no user was found
+        if (!user || !user?.password_hash) {
+          throw new Error("No user found");
         }
-        return null;
+
+        // check to see if password matches
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password_hash,
+        );
+
+        // if password does not match
+        if (!passwordMatch) {
+          throw new Error("Incorrect password");
+        }
+
+        return user;
       },
     }),
   ],
+  secret: process.env.SECRET || undefined, // Set it to undefined if not provided
+  session: {
+    strategy: "jwt", // Update this based on your desired session strategy
+  },
+  debug: process.env.NODE_ENV === "development",
 };
+
+export default NextAuth(authOptions);
