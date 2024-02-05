@@ -2,6 +2,7 @@
 import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+
 const SigninButton = () => {
   const { data: session } = useSession();
 
@@ -12,18 +13,24 @@ const SigninButton = () => {
         <Image
           src={session.user.image ?? ""}
           alt={session.user.name ?? ""}
-          className=" rounded-full"
+          className="rounded-full"
           width={32}
           height={32}
         />
-        <button onClick={() => signOut()} className="text-red-600">
+        <button
+          onClick={() => signOut()}
+          className="text-black hover:text-red-600"
+        >
           Sign Out
         </button>
       </div>
     );
   }
   return (
-    <button onClick={() => signIn()} className="ml-auto text-green-600">
+    <button
+      onClick={() => signIn()}
+      className="ml-auto text-black hover:text-sky-400"
+    >
       Sign In
     </button>
   );

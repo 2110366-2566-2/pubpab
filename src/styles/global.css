@@ -18,5 +18,9 @@ nav a {
   padding: 10px;
 }
 nav a:hover {
-  color: aqua;
+  color: turquoise;
+}
+nav .logo {
+  margin-right: auto;
+  padding-left: 10px;
 }
