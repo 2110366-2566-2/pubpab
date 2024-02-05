@@ -1,0 +1,72 @@
+[33mcommit 0d3480301f16cb8a166a50b2986aece04ab9e246[m[33m ([m[1;36mHEAD -> [m[1;32mbackend[m[33m, [m[1;31morigin/backend[m[33m)[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Sat Feb 3 22:30:45 2024 +0700
+
+    fix auth
+
+[33mcommit 4265bc7b7067eb119d14238bc275f1c8fa828fe7[m
+Merge: 211e643 5fa6ff1
+Author: blackfenzer <6431346921@student.chula.ac.th>
+Date:   Sat Feb 3 20:47:47 2024 +0700
+
+    Merge branch 'backend' of https://github.com/2110366-2566-2/pubpab into backend
+
+[33mcommit 211e64393b79c2e542fd25f9b7618b256f569174[m
+Author: blackfenzer <6431346921@student.chula.ac.th>
+Date:   Sat Feb 3 20:47:18 2024 +0700
+
+    bug authorize
+
+[33mcommit 5fa6ff1ab842ef56399628dd40560a8a8702f42f[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Sat Feb 3 18:11:33 2024 +0700
+
+    edit POST host api
+
+[33mcommit ed8d0a87b4694770ac7347d7804a6e12d25e1fcb[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Sat Feb 3 18:06:48 2024 +0700
+
+    POST host_id
+
+[33mcommit 0ab2178c994a7f33e5bf18e61c7f53f80ad79556[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Sat Feb 3 17:59:43 2024 +0700
+
+    GET host_id api
+
+[33mcommit eb022f6bcce8fe408b99eb74041ae0fb62e6b36a[m
+Author: blackfenzer <6431346921@student.chula.ac.th>
+Date:   Sat Feb 3 00:53:02 2024 +0700
+
+    update auth
+
+[33mcommit dea62cb7035701481c7861522b697ec37d288328[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Wed Jan 31 22:52:30 2024 +0700
+
+    edit readme
+
+[33mcommit 8a267a8e46f223308d5b9574824f1153887d7ea2[m
+Author: Itar <natdanaitrintawat@gmail.com>
+Date:   Wed Jan 31 22:51:39 2024 +0700
+
+    migration sql prisma to postgres
+
+[33mcommit 308ec752ef91dcc79e4be40a9c83ed81cde88059[m
+Author: blackfenzer <6431346921@student.chula.ac.th>
+Date:   Wed Jan 31 16:28:07 2024 +0700
+
+    add read me on backend
+
+[33mcommit 73993501fb489018fab3502b16eb845a31875403[m
+Author: blackfenzer <6431346921@student.chula.ac.th>
+Date:   Wed Jan 31 16:06:55 2024 +0700
+
+    prisma connect db t api
+
+[33mcommit 7d13fee8db6388b97bf6f5f1ac7b2f7f0cd7e406[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: Mond45 <mondc45@gmail.com>
+Date:   Mon Jan 29 00:14:09 2024 +0700
+
+    initial commit

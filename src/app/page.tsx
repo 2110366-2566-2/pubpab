@@ -3,6 +3,7 @@ import hero from "/public/hero.jpg";
 import phuket from "/public/phuket.png";
 import ladprao from "/public/ladprao.png";
 import pattaya from "/public/pattaya.png";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -205,29 +206,32 @@ export default function Home() {
               stroke-linecap="round"
             />
           </svg>
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 50 50"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="24" cy="24" r="24" fill="#EBE3D0" />
-            <path
-              d="M11.1564 38.8822C11.6199 36.4988 13.1113 34.2434 15.485 32.577C17.8634 30.9073 20.9312 29.9739 24.1331 30.0006C27.335 30.0272 30.377 31.0114 32.711 32.7174C35.0398 34.4196 36.4743 36.6948 36.8801 39.0822"
-              stroke="#222222"
-              stroke-width="4"
-              stroke-linecap="round"
-            />
-            <circle
-              cx="24.5"
-              cy="18.5"
-              r="6.5"
-              stroke="#222222"
-              stroke-width="4"
-              stroke-linecap="round"
-            />
-          </svg>
+
+          <Link href="/api/auth/signin/credentials">
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 50 50"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="24" cy="24" r="24" fill="#EBE3D0" />
+              <path
+                d="M11.1564 38.8822C11.6199 36.4988 13.1113 34.2434 15.485 32.577C17.8634 30.9073 20.9312 29.9739 24.1331 30.0006C27.335 30.0272 30.377 31.0114 32.711 32.7174C35.0398 34.4196 36.4743 36.6948 36.8801 39.0822"
+                stroke="#222222"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="24.5"
+                cy="18.5"
+                r="6.5"
+                stroke="#222222"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
       <div className="mt-8 bg-[#EBE3D0] pt-16">
