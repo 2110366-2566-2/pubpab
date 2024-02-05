@@ -178,6 +178,7 @@ model users {
   salt          String     @unique @db.Char(32)
   birth_date    DateTime   @db.Date
   age           Int
+  is_traveler   Boolean
   phone_no      String     @db.Char(10)
   gender        genders
   banner        String?
