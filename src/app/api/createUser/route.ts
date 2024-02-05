@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
         age: body.age,
         phone_no: body.phone_no,
         gender: body.gender,
+        is_traveler: body.is_traveler,
       },
     });
 
@@ -48,5 +49,6 @@ export async function POST(request: NextRequest) {
 //     "birth_date": "1990-01-01",
 //     "age": 34,
 //     "phone_no": "1234567890",
-//     "gender": "Male"
+//     "gender": "M",
+//     "is_traveler": true,
 //   }
