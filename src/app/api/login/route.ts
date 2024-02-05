@@ -1,6 +1,6 @@
 // Import necessary modules
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../prisma/client";
+import prisma from "../../../lib/client";
 import bcrypt from "bcrypt";
 
 // POST method for user login

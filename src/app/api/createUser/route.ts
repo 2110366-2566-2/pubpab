@@ -1,6 +1,6 @@
 // Import necessary modules
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../prisma/client";
+import prisma from "../../../lib/client";
 
 // POST method for creating a new user
 export async function POST(request: NextRequest) {

@@ -1,16 +1,21 @@
 // pages/extra/extra.tsx
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/lib/auth";
-
-export default async function Home() {
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import React from "react";
+const Extra = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <section>
-      <h1>Home</h1>
-      <h1>Server Side Rendered</h1>
-      <pre>{JSON.stringify(session)}</pre>
-      <h1>Client Side Rendered</h1>
-    </section>
+    <div className="flex items-center justify-center">
+      <div className="mt-9 grid grid-cols-2 rounded bg-sky-700 p-2 text-slate-100 shadow">
+        <p>Name:</p>
+        <p>{session?.user?.name}</p>
+        <p>Email:</p>
+        <p>{session?.user?.email}</p>
+        {/* <p>Role:</p>
+        <p>{session?.user.role}</p> */}
+      </div>
+    </div>
   );
-}
+};
+export default Extra;
