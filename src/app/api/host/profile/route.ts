@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import prisma from "../../../lib/client";
+import prisma from "../../../../lib/client";
 
 export async function GET(request: NextRequest) {
-  const id = request.nextUrl.searchParams.get("traveler_id");
+  const id = request.nextUrl.searchParams.get("host_id");
 
-  const gettravelerWithUser = await prisma.traveler.findMany({
+  const getHostWithUser = await prisma.host.findMany({
     where: id
       ? {
-          traveler_id: id,
+          host_id: id,
         }
       : undefined, // Conditionally add where clause for findUnique
     select: {
+      bank_account: true,
       users: {
         select: {
           first_name: true,
@@ -23,21 +24,23 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  // Check if the traveler is not found
-  if (!gettravelerWithUser) {
-    return NextResponse.json({ error: "traveler not found" }, { status: 404 });
+  // Check if the host is not found
+  if (!getHostWithUser) {
+    return NextResponse.json({ error: "Host not found" }, { status: 404 });
   }
 
-  // const { users, ...travelerWithoutUser } = gettravelerWithUser;
+  // const { users, ...hostWithoutUser } = getHostWithUser;
 
   // Return the combined information
-  return NextResponse.json(gettravelerWithUser, { status: 200 });
+  return NextResponse.json(getHostWithUser, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const travelerUpdateData = {};
+  const hostUpdateData = {
+    bank_account: body.bank_account ?? undefined,
+  };
 
   const userUpdateData = {
     first_name: body.first_name ?? undefined,
@@ -46,17 +49,17 @@ export async function POST(request: NextRequest) {
     banner: body.banner ?? undefined,
   };
 
-  const traveler_newIssue = await prisma.traveler.update({
-    where: { traveler_id: body.traveler_id },
-    data: travelerUpdateData,
+  const host_newIssue = await prisma.host.update({
+    where: { host_id: body.host_id },
+    data: hostUpdateData,
   });
 
-  if (!traveler_newIssue) {
-    return NextResponse.json({ error: "traveler not found" }, { status: 404 });
+  if (!host_newIssue) {
+    return NextResponse.json({ error: "Host not found" }, { status: 404 });
   }
 
   const user_newIssue = await prisma.users.update({
-    where: { user_id: body.traveler_id },
+    where: { user_id: body.host_id },
     data: userUpdateData,
   });
 
@@ -64,8 +67,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  return NextResponse.json(
-    { traveler_newIssue, user_newIssue },
-    { status: 201 },
-  );
+  return NextResponse.json({ host_newIssue, user_newIssue }, { status: 201 });
 }
