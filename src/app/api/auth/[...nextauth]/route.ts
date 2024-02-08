@@ -2,6 +2,7 @@ import prisma from "../../../../lib/client";
 import NextAuth from "next-auth/next";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { compare, hash } from "bcrypt";
 // import bcrypt from "bcrypt";
 // import { NextAuthOptions } from "next-auth";
 import { AuthOptions } from "next-auth";
@@ -17,11 +18,11 @@ export const authOptions: AuthOptions = {
       credentials: {
         email: { label: "Email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
-        username: {
-          label: "Username",
-          type: "text",
-          placeholder: "John Smith",
-        },
+        // username: {
+        //   label: "Username",
+        //   type: "text",
+        //   placeholder: "John Smith",
+        // },
       },
       async authorize(credentials) {
         // check to see if email and password are provided
@@ -46,8 +47,13 @@ export const authOptions: AuthOptions = {
         //   credentials.password,
         //   user.password_hash,
         // );
+        const passwordMatch = await compare(
+          credentials.password,
+          user.password_hash,
+        );
+        // no bcrypt
+        // const passwordMatch = credentials.password == user.password_hash;
 
-        const passwordMatch = credentials.password == user.password_hash;
         // if password does not match
         if (!passwordMatch) {
           throw new Error("Incorrect password");
@@ -56,6 +62,7 @@ export const authOptions: AuthOptions = {
         return {
           id: user.user_id,
           email: user.email,
+          name: user.first_name,
         };
       },
     }),
