@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "../../../../lib/client";
+import { hash } from "bcrypt";
 
+// Get traveler profile
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("traveler_id");
 
@@ -34,16 +36,31 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(gettravelerWithUser, { status: 200 });
 }
 
-export async function POST(request: NextRequest) {
+// result GET
+// [
+//   {
+//       "users": {
+//           "first_name": "John",
+//           "last_name": "Doe",
+//           "phone_no": "1234567890",
+//           "banner": "https://example.com/banner.jpg"
+//       }
+//   }
+// ]
+
+// Edit traveler profile
+export async function PUT(request: NextRequest) {
   const body = await request.json();
 
   const travelerUpdateData = {};
 
   const userUpdateData = {
-    first_name: body.first_name ?? undefined,
-    last_name: body.last_name ?? undefined,
-    phone_no: body.phone_no ?? undefined,
-    banner: body.banner ?? undefined,
+    first_name: body.first_name ? body.first_name : undefined,
+    last_name: body.last_name ? body.last_name : undefined,
+    phone_no: body.phone_no ? body.phone_no : undefined,
+    banner: body.banner ? body.banner : undefined,
+    email: body.email ? body.email : undefined,
+    password_hash: body.password ? await hash(body.password, 12) : undefined,
   };
 
   const traveler_newIssue = await prisma.traveler.update({
@@ -69,3 +86,5 @@ export async function POST(request: NextRequest) {
     { status: 201 },
   );
 }
+
+// result PUT

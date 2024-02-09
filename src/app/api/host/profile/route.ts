@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "../../../../lib/client";
+import { hash } from "bcrypt";
 
+// Get host profile
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("host_id");
 
@@ -21,6 +23,13 @@ export async function GET(request: NextRequest) {
           banner: true,
         },
       },
+      accommodation: {
+        select: {
+          accommodation_id: true,
+          banner: true,
+          accommodation_status: true,
+        },
+      },
     },
   });
 
@@ -35,18 +44,21 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(getHostWithUser, { status: 200 });
 }
 
-export async function POST(request: NextRequest) {
+// Edit host profile
+export async function PUT(request: NextRequest) {
   const body = await request.json();
 
   const hostUpdateData = {
-    bank_account: body.bank_account ?? undefined,
+    bank_account: body.bank_account ? body.bank_account : undefined,
   };
 
   const userUpdateData = {
-    first_name: body.first_name ?? undefined,
-    last_name: body.last_name ?? undefined,
-    phone_no: body.phone_no ?? undefined,
-    banner: body.banner ?? undefined,
+    first_name: body.first_name ? body.first_name : undefined,
+    last_name: body.last_name ? body.last_name : undefined,
+    phone_no: body.phone_no ? body.phone_no : undefined,
+    banner: body.banner ? body.banner : undefined,
+    email: body.email ? body.email : undefined,
+    password_hash: body.password ? await hash(body.password, 12) : undefined,
   };
 
   const host_newIssue = await prisma.host.update({
