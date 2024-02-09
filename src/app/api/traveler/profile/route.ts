@@ -88,3 +88,23 @@ export async function PUT(request: NextRequest) {
 }
 
 // result PUT
+// {
+//   "traveler_newIssue": {
+//       "traveler_id": "User-12345678"
+//   },
+//   "user_newIssue": {
+//       "user_id": "User-12345678",
+//       "citizen_id": "1234567890124",
+//       "first_name": "John",
+//       "last_name": "Dode",
+//       "email": "jodfhn.doe@example.com",
+//       "password_hash": "hdfashed_password",
+//       "salt": "sadflt123                       ",
+//       "birth_date": "1990-01-01T00:00:00.000Z",
+//       "age": 32,
+//       "is_traveler": true,
+//       "phone_no": "1234567890",
+//       "gender": "M",
+//       "banner": "https://example.com/banner.jpg"
+//   }
+// }
