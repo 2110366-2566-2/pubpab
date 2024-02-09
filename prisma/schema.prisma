@@ -9,7 +9,7 @@ datasource db {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model accommodation {
-  accommodation_id     String     @id @db.VarChar(10)
+  accommodation_id     String     @id @default(uuid()) @db.VarChar(36)
   host_id              String     @db.VarChar(36)
   qr_code              String
   name_a               String     @db.VarChar(64)
@@ -31,7 +31,7 @@ model accommodation {
 }
 
 model admin {
-  admin_id   String     @id @db.VarChar(36)
+  admin_id   String     @id @default(uuid()) @db.VarChar(36)
   admin_type admintypes
   host       host[]
 }
@@ -57,15 +57,15 @@ model chat {
 }
 
 model chatroom {
-  chatroom_id String @id @db.VarChar(36)
+  chatroom_id String @id @default(uuid()) @db.VarChar(36)
   chat        chat[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model feedback {
-  feedback_id      String        @id @db.VarChar(36)
+  feedback_id      String        @id @default(uuid()) @db.VarChar(36)
   traveler_id      String        @db.VarChar(36)
-  accommodation_id String        @db.VarChar(10)
+  accommodation_id String        @db.VarChar(36)
   picture          String
   timestamp        DateTime      @default(now()) @db.Timestamp(6)
   text             String
@@ -75,7 +75,7 @@ model feedback {
 }
 
 model host {
-  host_id       String          @id @db.VarChar(36)
+  host_id       String          @id @db.VarChar(36) 
   admin_id      String?         @db.VarChar(36)
   bank_account  String?         @db.VarChar(255)
   accommodation accommodation[]
@@ -85,7 +85,7 @@ model host {
 }
 
 model messages {
-  message_id  String      @db.VarChar(36)
+  message_id  String      @default(uuid()) @db.VarChar(36)
   chatroom_id String      @db.VarChar(36)
   sender_id   String      @db.VarChar(36)
   timestamp   DateTime    @default(now()) @db.Timestamp(6)
@@ -108,7 +108,7 @@ model payment {
 }
 
 model problem {
-  problem_id     String        @id @db.VarChar(36)
+  problem_id     String        @id @default(uuid()) @db.VarChar(36)
   user_id        String        @db.VarChar(36)
   text           String
   topic          String
@@ -118,8 +118,8 @@ model problem {
 }
 
 model reserve {
-  reservation_id   String        @db.VarChar(36)
-  accommodation_id String        @db.VarChar(10)
+  reservation_id   String        @default(uuid()) @db.VarChar(36)
+  accommodation_id String        @db.VarChar(36)
   traveler_id      String        @db.VarChar(36)
   payment_id       String        @db.VarChar(36)
   timestamp        DateTime      @default(now()) @db.Timestamp(6)
@@ -134,8 +134,9 @@ model reserve {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String         @id @db.VarChar(36)
-  accommodation_id String?        @db.VarChar(10)
+  room_id          String         @id @default(uuid()) @db.VarChar(36)
+  accommodation_id String        @db.VarChar(36)
+  room_name        String         @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -148,6 +149,7 @@ model room {
   restroom         Boolean
   wifi_available   Boolean
   max_resident_no  Int
+  banner           String?
   accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
 }
 
@@ -169,13 +171,12 @@ model traveler {
 }
 
 model users {
-  user_id       String     @id @db.VarChar(36)
+  user_id       String     @id @default(uuid()) @db.VarChar(36)
   citizen_id    String     @unique @db.Char(13)
   first_name    String     @db.VarChar(64)
   last_name     String     @db.VarChar(64)
   email         String     @unique
   password_hash String     @db.VarChar(255)
-  salt          String     @unique @db.Char(32)
   birth_date    DateTime   @db.Date
   age           Int
   is_traveler   Boolean

@@ -12,13 +12,12 @@ export async function POST(request: NextRequest) {
     // Create a new user in the database
     const newUser = await prisma.users.create({
       data: {
-        user_id: body.user_id,
+        // user_id: body.user_id,
         citizen_id: body.citizen_id,
         first_name: body.first_name,
         last_name: body.last_name,
         email: body.email,
         password_hash: await hash(body.password, 12),
-        salt: body.salt, // You may want to generate a random salt here
         birth_date: new Date(body.birth_date),
         age: body.age,
         phone_no: body.phone_no,

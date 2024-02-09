@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
         select: {
           room_id: true,
           is_reserve: true,
-          // banner: true,
-          // room_name: true,
+          room_name: true,
+          banner: true,
         },
       },
     },
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     const AccommodationData = {
-      accommodation_id: body.accommodation_id,
+      // accommodation_id: body.accommodation_id,
       host_id: body.host_id,
       qr_code: body.qr_code,
       name_a: body.name_a,

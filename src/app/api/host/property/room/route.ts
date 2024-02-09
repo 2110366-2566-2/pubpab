@@ -19,8 +19,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "room not found" }, { status: 404 });
   }
 
-  // const { users, ...hostWithoutUser } = getHostWithUser;
-
   // Return the combined information
   return NextResponse.json(getRoom, { status: 200 });
 }
@@ -30,8 +28,9 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const RoomData = {
-    room_id: body.room_id,
+    // room_id: body.room_id,
     accommodation_id: body.accommodation_id,
+    room_name: body.room_name,
     price: body.price,
     floor: body.floor,
     is_reserve: body.is_reserve,
@@ -66,6 +65,7 @@ export async function PUT(request: NextRequest) {
   const body = await request.json();
 
   const RoomUpdateData = {
+    room_name: body.room_name ? body.room_name : undefined,
     price: body.price ? body.price : undefined,
     floor: body.floor ? body.floor : undefined,
     is_reserve: body.is_reserve ? body.is_reserve : undefined,

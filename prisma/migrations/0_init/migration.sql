@@ -10,7 +10,7 @@ CREATE TYPE "b_type" AS ENUM ('KING', 'QUEEN');
 -- CreateEnum
 CREATE TYPE "genders" AS ENUM ('M', 'F');
 
--- eateEnum
+-- CreateEnum
 CREATE TYPE "pm_status" AS ENUM ('Waiting', 'Ongoing', 'Success', 'Fail');
 
 -- CreateEnum
@@ -18,7 +18,7 @@ CREATE TYPE "problemstatus" AS ENUM ('Pending', 'Solved');
 
 -- CreateTable
 CREATE TABLE "accommodation" (
-    "accommodation_id" VARCHAR(10) NOT NULL,
+    "accommodation_id" VARCHAR(36) NOT NULL,
     "host_id" VARCHAR(36) NOT NULL,
     "qr_code" TEXT NOT NULL,
     "name_a" VARCHAR(64) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE "chatroom" (
 CREATE TABLE "feedback" (
     "feedback_id" VARCHAR(36) NOT NULL,
     "traveler_id" VARCHAR(36) NOT NULL,
-    "accommodation_id" VARCHAR(10) NOT NULL,
+    "accommodation_id" VARCHAR(36) NOT NULL,
     "picture" TEXT NOT NULL,
     "timestamp" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "text" TEXT NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE "problem" (
 -- CreateTable
 CREATE TABLE "reserve" (
     "reservation_id" VARCHAR(36) NOT NULL,
-    "accommodation_id" VARCHAR(10) NOT NULL,
+    "accommodation_id" VARCHAR(36) NOT NULL,
     "traveler_id" VARCHAR(36) NOT NULL,
     "payment_id" VARCHAR(36) NOT NULL,
     "timestamp" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -144,7 +144,8 @@ CREATE TABLE "reserve" (
 -- CreateTable
 CREATE TABLE "room" (
     "room_id" VARCHAR(36) NOT NULL,
-    "accommodation_id" VARCHAR(10),
+    "accommodation_id" VARCHAR(36) NOT NULL,
+    "room_name" VARCHAR(64) NOT NULL,
     "price" INTEGER NOT NULL,
     "floor" INTEGER NOT NULL,
     "is_reserve" BOOLEAN NOT NULL,
@@ -157,6 +158,7 @@ CREATE TABLE "room" (
     "restroom" BOOLEAN NOT NULL,
     "wifi_available" BOOLEAN NOT NULL,
     "max_resident_no" INTEGER NOT NULL,
+    "banner" TEXT,
 
     CONSTRAINT "room_pkey" PRIMARY KEY ("room_id")
 );
@@ -185,7 +187,6 @@ CREATE TABLE "users" (
     "last_name" VARCHAR(64) NOT NULL,
     "email" TEXT NOT NULL,
     "password_hash" VARCHAR(255) NOT NULL,
-    "salt" CHAR(32) NOT NULL,
     "birth_date" DATE NOT NULL,
     "age" INTEGER NOT NULL,
     "is_traveler" BOOLEAN NOT NULL,
@@ -201,9 +202,6 @@ CREATE UNIQUE INDEX "users_citizen_id_key" ON "users"("citizen_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_salt_key" ON "users"("salt");
 
 -- AddForeignKey
 ALTER TABLE "accommodation" ADD CONSTRAINT "accommodation_host_id_fkey" FOREIGN KEY ("host_id") REFERENCES "host"("host_id") ON DELETE CASCADE ON UPDATE CASCADE;
