@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
           accommodation_id: true,
           banner: true,
           accommodation_status: true,
+          name_a: true,
         },
       },
     },

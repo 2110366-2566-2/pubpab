@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import prisma from "../../../../lib/client";
+import prisma from "../../../../../lib/client";
 
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("accommodation_id");
@@ -13,12 +13,22 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const getHostProperties = await prisma.accommodation.findMany({
+  const getAccomodation = await prisma.accommodation.findMany({
     where: { accommodation_id: id },
+    select: {
+      room: {
+        select: {
+          room_id: true,
+          is_reserve: true,
+          // banner: true,
+          // room_name: true,
+        },
+      },
+    },
   });
 
   // Check if the host is not found
-  if (!getHostProperties) {
+  if (!getAccomodation) {
     return NextResponse.json(
       { error: "Accommodation not found" },
       { status: 404 },
@@ -28,10 +38,10 @@ export async function GET(request: NextRequest) {
   // const { users, ...hostWithoutUser } = getHostWithUser;
 
   // Return the combined information
-  return NextResponse.json(getHostProperties, { status: 200 });
+  return NextResponse.json(getAccomodation, { status: 200 });
 }
 
-// Create property profile
+// Create accomodation profile
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -61,13 +71,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error during user creation:", error);
     return NextResponse.json(
-      { success: false, msg: "Error during property creation" },
+      { success: false, msg: "Error during accomodation creation" },
       { status: 500 },
     );
   }
 }
 
-// Edit property profile
+// Edit accomodation profile
 export async function PUT(request: NextRequest) {
   const body = await request.json();
 
@@ -99,7 +109,7 @@ export async function PUT(request: NextRequest) {
   return NextResponse.json(acom_newIssue, { status: 201 });
 }
 
-// Delete property profile
+// Delete accomodation profile
 export async function DELETE(request: NextRequest) {
   const body = await request.json();
 
