@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         first_name: body.first_name,
         last_name: body.last_name,
         email: body.email,
-        password_hash: await hash(body.password_hash, 12),
+        password_hash: await hash(body.password, 12),
         salt: body.salt, // You may want to generate a random salt here
         birth_date: new Date(body.birth_date),
         age: body.age,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 //     "first_name": "Puta",
 //     "last_name": "Realman",
 //     "email": "puta@gmail.com",
-//     "password_hash": "puta",
+//     "password": "puta",
 //     "salt": "1",
 //     "birth_date": "1990-01-01",
 //     "age": 34,

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../lib/client";
 import bcrypt from "bcrypt";
 
-// POST method for user login
+// GET method for user login
 export async function GET(request: NextRequest) {
   const mail = request.nextUrl.searchParams.get("user") as string;
   // Query the user from the database based on the provided email
