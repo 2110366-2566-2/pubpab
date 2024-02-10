@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import prisma from "../../../lib/client";
+import prisma from "../../../../lib/client";
+import { hash } from "bcrypt";
 
+// Get host profile
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("host_id");
 
@@ -19,6 +21,16 @@ export async function GET(request: NextRequest) {
           last_name: true,
           phone_no: true,
           banner: true,
+          birth_date: true,
+          citizen_id: true,
+        },
+      },
+      accommodation: {
+        select: {
+          accommodation_id: true,
+          banner: true,
+          // accommodation_status: true,
+          name_a: true,
         },
       },
     },
@@ -29,24 +41,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Host not found" }, { status: 404 });
   }
 
-  // const { users, ...hostWithoutUser } = getHostWithUser;
-
   // Return the combined information
   return NextResponse.json(getHostWithUser, { status: 200 });
 }
 
-export async function POST(request: NextRequest) {
+// Verify host profile
+export async function PUT(request: NextRequest) {
   const body = await request.json();
 
   const hostUpdateData = {
-    bank_account: body.bank_account ?? undefined,
-  };
-
-  const userUpdateData = {
-    first_name: body.first_name ?? undefined,
-    last_name: body.last_name ?? undefined,
-    phone_no: body.phone_no ?? undefined,
-    banner: body.banner ?? undefined,
+    admin_id: body.admin_id ? body.admin_id : undefined,
   };
 
   const host_newIssue = await prisma.host.update({
@@ -57,15 +61,5 @@ export async function POST(request: NextRequest) {
   if (!host_newIssue) {
     return NextResponse.json({ error: "Host not found" }, { status: 404 });
   }
-
-  const user_newIssue = await prisma.users.update({
-    where: { user_id: body.host_id },
-    data: userUpdateData,
-  });
-
-  if (!user_newIssue) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
-
-  return NextResponse.json({ host_newIssue, user_newIssue }, { status: 201 });
+  return NextResponse.json(host_newIssue, { status: 201 });
 }

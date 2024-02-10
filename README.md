@@ -35,18 +35,22 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-
 ## Prisma database
+
 start
+
 ```bash
 pnpm i
 ```
 
 docker compose
+
 ```bash
 docker-compose up -d
 ```
+
 login pgadmin
+
 - email: puta@gmail.com
 - password: puta
 
@@ -55,16 +59,19 @@ login pgadmin
 - password: postgres
 
 push from prisma to postgres
+
 ```bash
 pnpm prisma migrate dev --name <any_name>
 ```
 
 push from prisma to postgres with migration.sql (optional)
+
 ```bash
-pnpm prisma migrate resolve --applied 0_init
+pnpm prisma db push
 ```
 
 pull table from postgres to prisma (local file)
+
 ```bash
 pnpm prisma db pull
 ```
