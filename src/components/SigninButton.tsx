@@ -2,9 +2,10 @@
 import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-const SigninButton = () => {
+import { useRouter } from "next/navigation";
+export default function SigninButton() {
   const { data: session } = useSession();
-
+  const router = useRouter();
   if (session && session.user) {
     return (
       <div className="ml-auto flex items-center gap-4">
@@ -16,7 +17,12 @@ const SigninButton = () => {
           width={32}
           height={32}
         />
-        <button onClick={() => signOut()} className="text-red-600">
+        <button
+          onClick={() => {
+            signOut(), router.push("/");
+          }}
+          className="text-red-600"
+        >
           Sign Out
         </button>
       </div>
@@ -27,6 +33,6 @@ const SigninButton = () => {
       Sign In
     </button>
   );
-};
+}
 
-export default SigninButton;
+// export default SigninButton;
