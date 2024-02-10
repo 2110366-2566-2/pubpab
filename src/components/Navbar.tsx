@@ -12,7 +12,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             {" "}
             {/* <Image src="/logo.jpeg" width={200} height={60} alt="logo" /> */}
-            <img src="/Logo.svg" width={200} height={60} alt="logo" />
+            <Image src="/Logo.svg" width={200} height={60} alt="logo" />
           </div>
         </Link>
         <Link
@@ -36,7 +36,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center">
         <div className="mr-4">
-          <img src="/user.svg" width={40} height={40} alt="user" />
+          <Image src="/user.svg" width={40} height={40} alt="user" />
         </div>
         <SigninButton />
       </div>
