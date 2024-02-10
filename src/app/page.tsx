@@ -4,7 +4,7 @@ import phuket from "/public/phuket.png";
 import ladprao from "/public/ladprao.png";
 import pattaya from "/public/pattaya.png";
 import Link from "next/link";
-////xxxx
+
 export default function Home() {
   return (
     <main className="min-h-screent mt-8">
