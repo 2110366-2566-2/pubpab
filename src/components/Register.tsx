@@ -23,15 +23,15 @@ import { users_type } from "@prisma/client";
 import { format } from "date-fns";
 export default function Register() {
   const [formData, setFormData] = useState({
-    citizenId: "",
-    firstName: "",
-    lastName: "",
+    citizen_id: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     birth_date: "",
     age: "",
     user_type: "Hosts",
-    phoneNo: "",
+    phone_no: "",
     gender: "M",
     banner: "",
   });
@@ -41,8 +41,6 @@ export default function Register() {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
     const parsedValue = name === "age" ? parseInt(value) : value;
     setFormData({
       ...formData,
@@ -60,7 +58,6 @@ export default function Register() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -242,12 +239,12 @@ export default function Register() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="firstName"
-                  id="firstName"
+                  name="first_name"
+                  id="first_name"
                   autoComplete="given-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="John"
-                  value={formData.firstName}
+                  value={formData.first_name}
                   onChange={handleChange}
                 />
               </div>
@@ -263,12 +260,12 @@ export default function Register() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="lastName"
-                  id="lastName"
+                  name="last_name"
+                  id="last_name"
                   autoComplete="family-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="Doe"
-                  value={formData.lastName}
+                  value={formData.last_name}
                   onChange={handleChange}
                 />
               </div>
@@ -283,13 +280,13 @@ export default function Register() {
               </label>
               <div className="mt-2">
                 <input
-                  id="citizenId"
-                  name="citizenId"
-                  type="citizenId"
-                  autoComplete="citizenId"
+                  id="citizen_id"
+                  name="citizen_id"
+                  type="citizen_id"
+                  autoComplete="citizen_id"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder="1111111111111"
-                  value={formData.citizenId}
+                  value={formData.citizen_id}
                   onChange={handleChange}
                 />
               </div>
@@ -366,12 +363,12 @@ export default function Register() {
               </label>
               <div className="mt-2">
                 <input
-                  type="phoneNo"
-                  name="phoneNo"
-                  id="phoneNo"
+                  type="phone_no"
+                  name="phone_no"
+                  id="phone_no"
                   autoComplete="phone"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={formData.phoneNo}
+                  value={formData.phone_no}
                   onChange={handleChange}
                 />
               </div>
@@ -386,16 +383,16 @@ export default function Register() {
               </label>
               <div className="mt-2">
                 <select
-                  id="isTraveler"
-                  name="isTraveler"
-                  autoComplete="isTraveler"
+                  id="user_type"
+                  name="user_type"
+                  autoComplete="user_type"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   value={formData.user_type}
                   onChange={handleChange}
                 >
-                  <option value="Hosts">Hosts</option>
-                  <option value="Travelers">Travelers</option>
-                  <option value="Admins">Admins</option>
+                  <option>Hosts</option>
+                  <option>Travelers</option>
+                  <option>Admins</option>
                 </select>
               </div>
             </div>
