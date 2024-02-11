@@ -18,15 +18,92 @@ import ReactDOM from "react-dom";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { date } from "zod";
+import { users_type } from "@prisma/client";
+import { format } from "date-fns";
 export default function Register() {
+  const [formData, setFormData] = useState({
+    citizenId: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    birth_date: "",
+    age: "",
+    user_type: "Hosts",
+    phoneNo: "",
+    gender: "M",
+    banner: "",
+  });
+
   const [startDate, setStartDate] = useState(new Date());
   const today = new Date();
 
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    console.log(name);
+    console.log(value);
+    const parsedValue = name === "age" ? parseInt(value) : value;
+    setFormData({
+      ...formData,
+      [name]: parsedValue,
+    });
+  };
+
   const selectDateHandler = (d: any) => {
     setStartDate(d);
+    setFormData({
+      ...formData,
+      birth_date: format(d, "yyyy-MM-dd"),
+    });
   };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        window.location.reload();
+        return { status: 201, data: responseData };
+      } else {
+        const errorData = await response.json();
+        return { status: 400, data: errorData };
+      }
+    } catch (error) {
+      return { status: 400, error: "Error registering user" };
+    }
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/user");
+      if (response.ok) {
+        const userData = await response.json();
+        setFormData(userData); // Update form data state with fetched data
+        return { status: 201, data: userData };
+      } else {
+        const errorData = await response.json();
+        return { status: 400, data: errorData };
+      }
+    } catch (error) {
+      return { status: 400, error: "Error registering user" };
+    }
+  };
+
+  const handleCancel = () => {
+    fetchUserData(); // Fetch user data to reset form fields
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -53,6 +130,8 @@ export default function Register() {
                     autoComplete="email"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="P@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -74,6 +153,8 @@ export default function Register() {
                     autoComplete="password"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="Family"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -125,6 +206,9 @@ export default function Register() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
+                        placeholder=""
+                        value={formData.banner}
+                        onChange={handleChange}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
@@ -158,10 +242,13 @@ export default function Register() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="first-name"
-                  id="first-name"
+                  name="firstName"
+                  id="firstName"
                   autoComplete="given-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -176,10 +263,13 @@ export default function Register() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="last-name"
-                  id="last-name"
+                  name="lastName"
+                  id="lastName"
                   autoComplete="family-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -189,15 +279,18 @@ export default function Register() {
                 htmlFor="citizen_id"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Citizen_id
+                Citizen id
               </label>
               <div className="mt-2">
                 <input
-                  id="citizen_id"
-                  name="citizen_id"
-                  type="citizen_id"
-                  autoComplete="citizen_id"
+                  id="citizenId"
+                  name="citizenId"
+                  type="citizenId"
+                  autoComplete="citizenId"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="1111111111111"
+                  value={formData.citizenId}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -215,6 +308,8 @@ export default function Register() {
                   name="gender"
                   autoComplete="gender"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                  value={formData.gender}
+                  onChange={handleChange}
                 >
                   <option>M</option>
                   <option>F</option>
@@ -231,13 +326,14 @@ export default function Register() {
               </label>
               <DatePicker
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                id="birth_date"
+                id="birthDate"
                 dateFormat="yyyy/MM/dd"
                 selected={startDate}
                 onChange={selectDateHandler}
                 //   minDate={}
                 maxDate={today}
                 todayButton={"Today"}
+                value={formData.birth_date}
               />
             </div>
 
@@ -255,6 +351,8 @@ export default function Register() {
                   id="age"
                   autoComplete="address-level2"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  value={formData.age}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -268,11 +366,13 @@ export default function Register() {
               </label>
               <div className="mt-2">
                 <input
-                  type="phone"
-                  name="phone"
-                  id="phone"
+                  type="phoneNo"
+                  name="phoneNo"
+                  id="phoneNo"
                   autoComplete="phone"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  value={formData.phoneNo}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -286,13 +386,16 @@ export default function Register() {
               </label>
               <div className="mt-2">
                 <select
-                  id="gender"
-                  name="gender"
-                  autoComplete="gender"
+                  id="isTraveler"
+                  name="isTraveler"
+                  autoComplete="isTraveler"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                  value={formData.user_type}
+                  onChange={handleChange}
                 >
-                  <option>Host</option>
-                  <option>Traveler</option>
+                  <option value="Hosts">Hosts</option>
+                  <option value="Travelers">Travelers</option>
+                  <option value="Admins">Admins</option>
                 </select>
               </div>
             </div>
@@ -439,6 +542,7 @@ export default function Register() {
         <button
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
+          onClick={handleCancel}
         >
           Cancel
         </button>
