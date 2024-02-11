@@ -4,12 +4,10 @@ import phuket from "/public/phuket.png";
 import ladprao from "/public/ladprao.png";
 import pattaya from "/public/pattaya.png";
 import Link from "next/link";
-import HelloWorld from "@/components/HelloWorld";
 
 export default function Home() {
   return (
     <main className="min-h-screent mt-8">
-      <HelloWorld></HelloWorld>
       <div className="flex items-center px-6 sm:hidden">
         <svg
           width="201"
