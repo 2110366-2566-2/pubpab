@@ -31,9 +31,10 @@ model accommodation {
 }
 
 model admin {
-  admin_id   String     @id @default(uuid()) @db.VarChar(36)
+  admin_id   String     @id @db.VarChar(36)
   admin_type admintypes
   host       host[]
+  users      users   @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
 }
 
 model attachment {
@@ -172,18 +173,19 @@ model traveler {
 
 model users {
   user_id       String     @id @default(uuid()) @db.VarChar(36)
-  citizen_id    String     @unique @db.Char(13)
-  first_name    String     @db.VarChar(64)
-  last_name     String     @db.VarChar(64)
+  citizen_id    String?     @unique @db.Char(13)
+  first_name    String?     @db.VarChar(64)
+  last_name     String?     @db.VarChar(64)
   email         String     @unique
   password_hash String     @db.VarChar(255)
-  birth_date    DateTime   @db.Date
-  age           Int
-  is_traveler   Boolean
-  phone_no      String     @db.Char(10)
-  gender        genders
+  birth_date    DateTime?   @db.Date
+  age           Int?
+  user_type     users_type
+  phone_no      String?     @db.Char(10)
+  gender        genders?
   banner        String?
   host          host?
+  admin         admin?
   messages      messages[]
   problem       problem[]
   traveler      traveler?
@@ -219,4 +221,10 @@ enum pm_status {
 enum problemstatus {
   Pending
   Solved
+}
+
+enum users_type {
+  Admins
+  Travelers
+  Hosts
 }

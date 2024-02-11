@@ -19,6 +19,8 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { date } from "zod";
+import { users_type } from "@prisma/client";
+import { format } from "date-fns";
 export default function Register() {
   const [formData, setFormData] = useState({
     citizenId: "",
@@ -26,11 +28,11 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
-    birthDate: "",
+    birth_date: "",
     age: "",
-    isTraveler: false,
+    user_type: "Hosts",
     phoneNo: "",
-    gender: "",
+    gender: "M",
     banner: "",
   });
 
@@ -41,9 +43,10 @@ export default function Register() {
     const { name, value } = e.target;
     console.log(name);
     console.log(value);
+    const parsedValue = name === "age" ? parseInt(value) : value;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: parsedValue,
     });
   };
 
@@ -51,13 +54,13 @@ export default function Register() {
     setStartDate(d);
     setFormData({
       ...formData,
-      ["birthDate"]: d,
+      birth_date: format(d, "yyyy-MM-dd"),
     });
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    console.log(formData);
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -330,7 +333,7 @@ export default function Register() {
                 //   minDate={}
                 maxDate={today}
                 todayButton={"Today"}
-                value={formData.birthDate}
+                value={formData.birth_date}
               />
             </div>
 
@@ -387,11 +390,12 @@ export default function Register() {
                   name="isTraveler"
                   autoComplete="isTraveler"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  value={formData.isTraveler ? "true" : "false"}
+                  value={formData.user_type}
                   onChange={handleChange}
                 >
-                  <option value="false">Host</option>
-                  <option value="true">Traveler</option>
+                  <option value="Hosts">Hosts</option>
+                  <option value="Travelers">Travelers</option>
+                  <option value="Admins">Admins</option>
                 </select>
               </div>
             </div>
