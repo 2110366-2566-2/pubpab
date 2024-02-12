@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         host: body?.host,
         messages: body?.messages,
         problem: body?.problem,
-        is_traveler: body.is_traveler,
+        user_type: body.user_type,
       },
     });
 
