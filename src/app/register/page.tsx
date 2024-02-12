@@ -1,14 +1,17 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import Register from "@/components/Register";
-import React from "react";
-const Extra = async () => {
-  const session = await getServerSession(authOptions);
+import Link from "next/link";
 
+export default async function RegisterPage() {
   return (
-    <div className="my-12 flex justify-center">
-      <Register />
+    <div className="my-12 flex flex-col items-center gap-6">
+      <h1>Who are you?</h1>
+      <div className="flex gap-6">
+        <Link href="/register/host" className="hover:text-slate-600">
+          Host
+        </Link>
+        <Link href="/register/traveler" className="hover:text-slate-600">
+          Traveler
+        </Link>
+      </div>
     </div>
   );
-};
-export default Extra;
+}
