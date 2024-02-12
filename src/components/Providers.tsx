@@ -1,4 +1,5 @@
 "use client";
+import TRPCProvider from "@/lib/trpc/Provider";
 import { SessionProvider } from "next-auth/react";
 import React, { ReactNode } from "react";
 
@@ -7,7 +8,11 @@ interface Props {
 }
 
 const Providers = (props: Props) => {
-  return <SessionProvider>{props.children}</SessionProvider>;
+  return (
+    <TRPCProvider>
+      <SessionProvider>{props.children}</SessionProvider>
+    </TRPCProvider>
+  );
 };
 
 export default Providers;
