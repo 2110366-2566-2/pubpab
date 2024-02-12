@@ -4,6 +4,19 @@ import { TRPCError } from "@trpc/server";
 import { hash } from "bcrypt";
 import { z } from "zod";
 
+const calculateAge = (birthDate: Date) => {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+  return age;
+};
+
 export const userRouter = router({
   create: publicProcedure
     .input(
@@ -14,7 +27,6 @@ export const userRouter = router({
         email: z.string(),
         password: z.string(),
         birth_date: z.date(),
-        age: z.number(),
         phone_no: z.string(),
         gender: z.enum(["M", "F"]),
         banner: z.string().optional(),
@@ -31,7 +43,7 @@ export const userRouter = router({
             email: input.email,
             password_hash: await hash(input.password, 12),
             birth_date: input.birth_date,
-            age: input.age,
+            age: calculateAge(input.birth_date),
             phone_no: input.phone_no,
             gender: input.gender,
             banner: input.banner,
