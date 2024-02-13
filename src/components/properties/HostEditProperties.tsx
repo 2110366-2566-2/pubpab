@@ -77,7 +77,7 @@ export default function HostEditProperties() {
   }
   return (
     <div className="mx-auto">
-      <div className="mb-4 flex justify-between">
+      <div className="mb-4 flex justify-between px-4">
         <Button className="w-40">Back</Button>
         <Button
           type="submit"
@@ -86,7 +86,7 @@ export default function HostEditProperties() {
           Opened
         </Button>
       </div>
-      <img src="/sk.jpeg" alt="Example" className="mr-2" />
+      <img src="/sk.jpeg" alt="Example" className="mr-2 px-4" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
           <FormField
@@ -124,7 +124,7 @@ export default function HostEditProperties() {
             )}
           />
           <div>
-            <FormLabel className="text-xl">Location</FormLabel>
+            <label className="text-xl">Location</label>
           </div>
           <div className="w-full md:w-2/3">
             <FormField
@@ -227,32 +227,9 @@ export default function HostEditProperties() {
               />
             </div>
           </div>
-          <div>
-            <FormLabel className="text-2xl">Rooms</FormLabel>
-          </div>
-          <div className="flex">
-            <div className="relative">
-              <img src="/room1.jpeg" alt="Room 1" className="mr-2 h-60 w-80" />
-              <span className="absolute right-2 top-0 bg-green-500 p-1 text-xs text-white">
-                Available
-              </span>
-            </div>
-            <div className="relative">
-              <img src="/room2.jpeg" alt="Room 2" className="mr-2 h-60 w-80" />
-              <span className="absolute right-2 top-0 bg-red-500 p-1 text-xs text-white">
-                Unavailable
-              </span>
-            </div>
-            <div className="relative">
-              <img src="/room3.jpeg" alt="Room 3" className="mr-2 h-60 w-80" />
-              <span className="absolute right-2 top-0 bg-green-500 p-1 text-xs text-white">
-                Available
-              </span>
-            </div>
-          </div>
-          <Button type="submit" className="mt-10 w-40">
+          {/* <Button type="submit" className="mt-10 w-40">
             Save changes
-          </Button>
+          </Button> */}
         </form>
       </Form>
     </div>
