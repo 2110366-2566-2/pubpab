@@ -5,51 +5,40 @@ import SigninButton from "./SigninButton";
 
 const Navbar = () => {
   return (
-    <nav className="flex items-center justify-between bg-[#F4EDEA] p-0 shadow">
-      <div className="flex items-center gap-4">
+    <div className="bg-f4edea text-black">
+      <nav className="h-30 bg-f4edea fixed top-0 z-50 flex w-full items-center justify-between py-0">
         <Link href="/">
-          <div className="flex-shrink-0">
-            <Image src="/Logo.png" width={150} height={40} alt="logo" />
+          <div className="pl-4">
+            <div className="flex items-center space-x-4">
+              <Image src="/Logo.png" width={150} height={40} alt="logo" />
+              <Link
+                className="text-gray-800 transition-colors hover:text-sky-400"
+                href={"/"}
+              >
+                Home
+              </Link>
+              <Link
+                className="text-gray-800 transition-colors hover:text-sky-400"
+                href={"/extra"}
+              >
+                User Profile
+              </Link>
+              <Link
+                className="text-gray-800 transition-colors hover:text-sky-400"
+                href={"/admin"}
+              >
+                Admin Dashboard
+              </Link>
+            </div>
           </div>
         </Link>
-        <div className="flex items-center">
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/"}
-          >
-            Home
-          </Link>
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/extra"}
-          >
-            User Profile
-          </Link>
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/admin"}
-          >
-            Admin Dashboard
-          </Link>
+        <div className="mr-5 flex items-center space-x-4">
+          <Image src="/user.png" width={40} height={40} alt="user" />
+          <SigninButton />
         </div>
-      </div>
-      <div className="flex items-center">
-        <div className="mr-5 cursor-pointer">
-          <Image src="/Notification.svg" width={40} height={40} alt="notification" />
-        </div>
-        <div className="mr-0 cursor-pointer">
-          <Image src="/Order.svg" width={40} height={40} alt="order" />
-        </div>
-        <Link href="/api/auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fsignin">
-          <div className="mr-5 cursor-pointer">
-            <Image src="/user.svg" width={40} height={40} alt="user" />
-          </div>
-        </Link>
-        {/* <SigninButton /> */}
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
-
 
 export default Navbar;
