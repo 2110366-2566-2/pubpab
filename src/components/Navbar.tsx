@@ -11,34 +11,32 @@ import {
 
 const Navbar = () => {
   return (
-    <nav className="flex items-center justify-between bg-[#F4EDEA] p-0 shadow">
-      <div className="flex items-center gap-4">
-        <Link href="/">
-          <div className="flex-shrink-0">
+    <nav className="h-15 sticky top-0 z-50 mb-8 flex w-full items-center justify-between bg-[#f4edea] py-2">
+      <Link href="/">
+        <div className="pl-4">
+          <div className="flex items-center space-x-4">
             <Image src="/Logo.png" width={150} height={40} alt="logo" />
+            <Link
+              className="text-gray-800 transition-colors hover:text-sky-400"
+              href={"/"}
+            >
+              Home
+            </Link>
+            <Link
+              className="text-gray-800 transition-colors hover:text-sky-400"
+              href={"/extra"}
+            >
+              User Profile
+            </Link>
+            <Link
+              className="text-gray-800 transition-colors hover:text-sky-400"
+              href={"/admin"}
+            >
+              Admin Dashboard
+            </Link>
           </div>
-        </Link>
-        <div className="flex items-center">
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/"}
-          >
-            Home
-          </Link>
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/extra"}
-          >
-            User Profile
-          </Link>
-          <Link
-            className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/admin"}
-          >
-            Admin Dashboard
-          </Link>
         </div>
-      </div>
+      </Link>
       <div className="flex items-center">
         <div className="mr-5 cursor-pointer">
           <Image

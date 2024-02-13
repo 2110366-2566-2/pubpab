@@ -7,6 +7,11 @@ const handler = (req: Request) =>
     endpoint: "/api/trpc",
     req,
     router: appRouter,
+    onError: ({ path, error }) => {
+      console.error(
+        `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+      );
+    },
     createContext: () => ({}),
   });
 

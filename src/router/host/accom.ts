@@ -116,4 +116,17 @@ export const accomodationRouter = router({
       }
       return acom_newIssue;
     }),
+  delete: publicProcedure
+    .input(z.object({ accommodation_id: z.string() }))
+    .mutation(async ({ input }) => {
+      const room = await prisma.accommodation.delete({
+        where: { accommodation_id: input.accommodation_id },
+      });
+      if (!room) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "room not found",
+        });
+      }
+    }),
 });
