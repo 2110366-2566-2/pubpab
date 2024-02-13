@@ -28,31 +28,39 @@ import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
-  citizen_id: z
-    .string()
-    .length(13, "Invalid Citizen ID.")
-    .regex(/^\d+$/, "Invalid Citizen ID."),
-  first_name: z
-    .string()
-    .max(64, "Firstname must be less than 64 characters long."),
-  last_name: z
-    .string()
-    .max(64, "Lastname must be less than 64 characters long."),
-  email: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-      "Invalid email format.",
-    ),
-  password: z.string().min(12, "Password must be at least 12 characters long."),
-  birth_date: z.date(),
-  phone_no: z
-    .string()
-    .length(10, "Invalid phone number format.")
-    .regex(/^\d+$/, "Invalid phone number format."),
-  gender: z.enum(["M", "F"]),
-});
+const formSchema = z
+  .object({
+    citizen_id: z
+      .string()
+      .length(13, "Invalid Citizen ID.")
+      .regex(/^\d+$/, "Invalid Citizen ID."),
+    first_name: z
+      .string()
+      .max(64, "Firstname must be less than 64 characters long."),
+    last_name: z
+      .string()
+      .max(64, "Lastname must be less than 64 characters long."),
+    email: z
+      .string()
+      .regex(
+        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        "Invalid email format.",
+      ),
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters long."),
+    confirm_password: z.string(),
+    birth_date: z.date(),
+    phone_no: z
+      .string()
+      .length(10, "Invalid phone number format.")
+      .regex(/^\d+$/, "Invalid phone number format."),
+    gender: z.enum(["M", "F"]),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Password does not match",
+    path: ["confirm_password"],
+  });
 
 export default function TravelerRegisterForm() {
   const mutation = trpc.user.create.useMutation();
@@ -60,9 +68,9 @@ export default function TravelerRegisterForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onBlur",
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     mutation.mutate({ ...values, user_type: "Travelers" });
     router.push("/");
   }
@@ -130,6 +138,19 @@ export default function TravelerRegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input {...field} type="password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirm_password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input {...field} type="password" />
               </FormControl>
