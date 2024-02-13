@@ -3,7 +3,7 @@ import hero from "/public/hero.jpg";
 import phuket from "/public/phuket.png";
 import ladprao from "/public/ladprao.png";
 import pattaya from "/public/pattaya.png";
-import "@/styles/global.css";
+// import "@/styles/global.css";
 
 export default function Home() {
   return (

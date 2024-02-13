@@ -13,18 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import user from "/public/user.svg";
 
@@ -84,10 +72,29 @@ export default function TravelerEditForm() {
   }
   return (
     <main className="min-h-screent mt-8">
-      <div className="items-left mt-0 flex flex-col justify-center gap-0 lg:flex-row lg:gap-6">
-        <p className="text-sm text-slate-500 dark:text-slate-400">Profile</p>
-        <Image src={user} alt="" className="w-10 lg:w-8"></Image>
+      <div className="mx-auto max-w-2xl lg:mx-0">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Traveler Information Editing Form
+        </h2>
       </div>
+      {/* <p className="text-sm text-slate-500 dark:text-slate-400">Profile</p>
+      <div className="items-left mt-0 flex flex-col justify-center gap-0 lg:flex-row lg:gap-6">
+        <Image src={user} alt="" className="w-10 lg:w-8"></Image>
+      </div> */}
+
+      <div className="relative mt-8 flex items-center justify-center gap-x-4">
+        <Image src={user} alt="" className="w-20 lg:w-16"></Image>
+        <div className="text-sm leading-6">
+          <p className="font-semibold text-gray-900">
+            <a href="#">
+              <span className="absolute inset-0"></span>
+              Profile
+            </a>
+          </p>
+          <p className="text-gray-600">Edit Profile</p>
+        </div>
+      </div>
+
       <div className="mt-0 flex flex-col items-center justify-center gap-12 lg:flex-row lg:gap-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -174,7 +181,7 @@ export default function TravelerEditForm() {
             />
 
             <Button type="submit" className="mt-10">
-              Register
+              Save changes
             </Button>
           </form>
         </Form>
