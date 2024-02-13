@@ -2,6 +2,11 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image"; // Import Image component for the logo
 import SigninButton from "./SigninButton";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 
 const Navbar = () => {
   return (
@@ -35,21 +40,32 @@ const Navbar = () => {
       </div>
       <div className="flex items-center">
         <div className="mr-5 cursor-pointer">
-          <Image src="/Notification.svg" width={40} height={40} alt="notification" />
+          <Image
+            src="/Notification.svg"
+            width={40}
+            height={40}
+            alt="notification"
+          />
         </div>
-        <div className="mr-0 cursor-pointer">
+        <div className="mr-5 cursor-pointer">
           <Image src="/Order.svg" width={40} height={40} alt="order" />
         </div>
-        <Link href="/api/auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fsignin">
-          <div className="mr-5 cursor-pointer">
-            <Image src="/user.svg" width={40} height={40} alt="user" />
-          </div>
-        </Link>
+        <div className="mr-5 cursor-pointer">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="IconButton">
+                <Image src="/user.svg" width={40} height={40} alt="user" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-5">
+              <SigninButton />
+            </PopoverContent>
+          </Popover>
+        </div>
         {/* <SigninButton /> */}
       </div>
     </nav>
   );
 };
-
 
 export default Navbar;
