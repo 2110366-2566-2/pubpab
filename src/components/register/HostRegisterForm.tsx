@@ -57,7 +57,7 @@ const formSchema = z.object({
   accommodation_qr_code: z.string(),
   accommodation_name: z.string().max(64),
   accommodation_description: z.string(),
-  accommodation_price: z.number(),
+  accommodation_price: z.coerce.number(),
   accommodation_banner: z.string().optional(),
   accommodation_address: z.string(),
   accommodation_city: z.string().max(64),
@@ -72,16 +72,13 @@ const formSchema = z.object({
 });
 
 export default function HostRegisterForm() {
-  const mutation = trpc.user.create.useMutation();
-  const router = useRouter();
+  const createUser = trpc.user.create.useMutation({});
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    // mutation.mutate({ ...values, user_type: "Travelers" });
-    // router.push("/");
   }
   return (
     <Form {...form}>
