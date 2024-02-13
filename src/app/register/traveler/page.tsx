@@ -1,4 +1,4 @@
-import TravelerRegisterForm from "@/components/register/TravelerRegisterForm";
+import TravelerRegisterForm2 from "@/components/register/TravelerRegisterForm2";
 
 export default async function TravelerRegisterPage() {
   return (

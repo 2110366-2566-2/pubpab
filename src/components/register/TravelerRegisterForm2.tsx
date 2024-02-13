@@ -27,31 +27,49 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 
-const formSchema = z.object({
-  citizen_id: z
-    .string()
-    .length(13, "Invalid Citizen ID.")
-    .regex(/^\d+$/, "Invalid Citizen ID."),
-  first_name: z
-    .string()
-    .max(64, "Firstname must be less than 64 characters long."),
-  last_name: z
-    .string()
-    .max(64, "Lastname must be less than 64 characters long."),
-  email: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-      "Invalid email format.",
-    ),
-  password: z.string().min(12, "Password must be at least 12 characters long."),
-  birth_date: z.date(),
-  phone_no: z
-    .string()
-    .length(10, "Invalid phone number format.")
-    .regex(/^\d+$/, "Invalid phone number format."),
-  gender: z.enum(["M", "F"]),
-});
+const formSchema = z
+  .object({
+    citizen_id: z
+      .string()
+      .length(13, "Invalid Citizen ID.")
+      .regex(/^\d+$/, "Invalid Citizen ID."),
+    first_name: z
+      .string()
+      .max(64, "Firstname must be less than 64 characters long."),
+    last_name: z
+      .string()
+      .max(64, "Lastname must be less than 64 characters long."),
+    bank_account: z
+      .string()
+      .length(10, "Invalid Bank Account.")
+      .regex(/^\d+$/, "Invalid Bank Account."),
+    email: z
+      .string()
+      .regex(
+        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        "Invalid email format.",
+      ),
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters long."),
+    confirmed_password: z
+      .string()
+      .min(12, "Password must be at least 12 characters long."),
+    birth_date: z.date(),
+    phone_no: z
+      .string()
+      .length(10, "Invalid phone number format.")
+      .regex(/^\d+$/, "Invalid phone number format."),
+    gender: z.enum(["M", "F"]),
+  })
+  .superRefine(({ confirmed_password, password }, ctx) => {
+    if (confirmed_password !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match",
+      });
+    }
+  });
 
 export default function TravelerRegisterForm() {
   const mutation = trpc.user.create.useMutation();
@@ -66,19 +84,6 @@ export default function TravelerRegisterForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="citizen_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Citizen ID</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="first_name"
@@ -100,32 +105,6 @@ export default function TravelerRegisterForm() {
               <FormLabel>Lastname</FormLabel>
               <FormControl>
                 <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -161,6 +140,72 @@ export default function TravelerRegisterForm() {
                   <SelectItem value="F">Female</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bank_account"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bank Account</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="citizen_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Citizen ID</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input {...field} type="password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmed_password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirmed Password</FormLabel>
+              <FormControl>
+                <Input {...field} type="confirmed_password" />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
