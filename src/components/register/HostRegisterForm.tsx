@@ -72,13 +72,44 @@ const formSchema = z.object({
 });
 
 export default function HostRegisterForm() {
-  const createUser = trpc.user.create.useMutation({});
+  const router = useRouter();
+
+  const createHost = trpc.host.profile.create.useMutation();
+  const createAccom = trpc.host.accomodation.create.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const host = await createHost.mutateAsync({
+      citizen_id: values.citizen_id,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      email: values.email,
+      password: values.password,
+      phone_no: values.phone_no,
+      birth_date: values.birth_date,
+      gender: values.gender,
+      bank_account: values.bank_account,
+      user_type: "Hosts",
+    });
+    await createAccom.mutateAsync({
+      qr_code: values.accommodation_qr_code,
+      name_a: values.accommodation_name,
+      description_a: values.accommodation_description,
+      price: values.accommodation_price,
+      banner: values.accommodation_banner,
+      address_a: values.accommodation_address,
+      city: values.accommodation_city,
+      province: values.accommodation_province,
+      distinct_a: values.accommodation_distinct,
+      postal_code: values.accommodation_postal_code,
+      ggmap_link: values.accommodation_ggmap_link,
+      host_id: host.newUser.user_id,
+      accommodation_status: "OPEN",
+      rating: 0,
+    });
+    router.push("/");
   }
   return (
     <Form {...form}>
