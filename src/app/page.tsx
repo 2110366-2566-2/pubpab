@@ -3,12 +3,10 @@ import hero from "/public/hero.jpg";
 import phuket from "/public/phuket.png";
 import ladprao from "/public/ladprao.png";
 import pattaya from "/public/pattaya.png";
-//import "@/styles/global.css";
 
 export default function Home() {
   return (
     <main className="min-h-screent mt-8">
-      <div className="h-16 w-full bg-[#004B64]"></div>
       <Image
         src={hero}
         alt=""

@@ -95,7 +95,7 @@ export default function HostEditForm() {
     <main className="min-h-screent mt-8">
       <div className="mx-auto max-w-2xl lg:mx-0">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Host Editing Page
+          Admin Editing Page
         </h2>
       </div>
       <Tabs defaultValue="profile_edit_form" className="mt-4">
@@ -110,7 +110,7 @@ export default function HostEditForm() {
         <TabsContent value="profile_edit_form">
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
+              <CardTitle>Host Profile Information</CardTitle>
               <CardDescription>Make changes to profile here.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -173,27 +173,7 @@ export default function HostEditForm() {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="gender"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gender</FormLabel>
-                          <Select onValueChange={field.onChange}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Gender" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="M">Male</SelectItem>
-                              <SelectItem value="F">Female</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                     <FormField
                       control={form.control}
                       name="bank_account"
@@ -220,92 +200,8 @@ export default function HostEditForm() {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="password" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="confirmed_password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirmed Password</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="password" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="birth_date"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Date of Birth</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[240px] pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                >
-                                  {field.value ? (
-                                    format(field.value, "PPP")
-                                  ) : (
-                                    <span>Pick a date</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                  date > new Date() ||
-                                  date < new Date("1900-01-01")
-                                }
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     <Button type="submit" className="mt-10">
-                      Save changes
+                      Verify
                     </Button>
                   </form>
                 </Form>
