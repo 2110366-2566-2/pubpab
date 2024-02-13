@@ -6,6 +6,7 @@ import { compare, hash } from "bcrypt";
 // import bcrypt from "bcrypt";
 // import { NextAuthOptions } from "next-auth";
 import { AuthOptions } from "next-auth";
+
 export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt", // Update this based on your desired session strategy
@@ -31,14 +32,14 @@ export const authOptions: AuthOptions = {
         }
 
         // check to see if user exists
-        const user = await prisma.users.findUnique({
+        const tmpuser = await prisma.users.findUnique({
           where: {
             email: credentials.email,
           },
         });
 
         // if no user was found
-        if (!user || !user?.password_hash) {
+        if (!tmpuser || !tmpuser?.password_hash) {
           throw new Error("No user found");
         }
 
@@ -49,7 +50,7 @@ export const authOptions: AuthOptions = {
         // );
         const passwordMatch = await compare(
           credentials.password,
-          user.password_hash,
+          tmpuser.password_hash,
         );
         // no bcrypt
         // const passwordMatch = credentials.password == user.password_hash;
@@ -59,11 +60,13 @@ export const authOptions: AuthOptions = {
           throw new Error("Incorrect password");
         }
 
-        return {
-          id: user.user_id,
-          email: user.email,
-          name: user.first_name,
+        let user = {
+          id: tmpuser.user_id,
+          email: tmpuser.email,
+          role: tmpuser.user_type,
+          name: tmpuser.first_name,
         };
+        return user;
       },
     }),
   ],
@@ -71,11 +74,20 @@ export const authOptions: AuthOptions = {
 
   // debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async jwt({ token, user }) {
-      return { ...token, ...user };
+    async jwt({ token, user, account }) {
+      // If - if you have multiple providers, because they return different user objects
+      // and you need to check for undefined because sometimes jwt runs multiple times in a row, and in the second one the user data gets lost, or will overwrite what you have with undefined
+      if (account?.provider === "credentials" && user !== undefined) {
+        token.user = user;
+      }
+
+      return token;
     },
     async session({ session, token }) {
       // session.user.role = token.role;
+      if (token.user !== undefined) {
+        session.user = token.user;
+      }
       return session;
     },
   },
