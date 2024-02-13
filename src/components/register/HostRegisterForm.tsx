@@ -29,47 +29,55 @@ import { trpc } from "@/lib/trpc/client";
 import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
 
-const formSchema = z.object({
-  citizen_id: z
-    .string()
-    .length(13, "Invalid Citizen ID.")
-    .regex(/^\d+$/, "Invalid Citizen ID."),
-  first_name: z
-    .string()
-    .max(64, "Firstname must be less than 64 characters long."),
-  last_name: z
-    .string()
-    .max(64, "Lastname must be less than 64 characters long."),
-  email: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-      "Invalid email format.",
-    ),
-  password: z.string().min(12, "Password must be at least 12 characters long."),
-  birth_date: z.date(),
-  phone_no: z
-    .string()
-    .length(10, "Invalid phone number format.")
-    .regex(/^\d+$/, "Invalid phone number format."),
-  gender: z.enum(["M", "F"]),
-  bank_account: z.string(),
-  accommodation_qr_code: z.string(),
-  accommodation_name: z.string().max(64),
-  accommodation_description: z.string(),
-  accommodation_price: z.coerce.number(),
-  accommodation_banner: z.string().optional(),
-  accommodation_address: z.string(),
-  accommodation_city: z.string().max(64),
-  accommodation_province: z.string().max(64),
-  accommodation_distinct: z.string().max(64),
-  accommodation_postal_code: z.string().length(5).regex(/^\d+$/),
-  accommodation_ggmap_link: z
-    .string()
-    .regex(
-      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
-    ),
-});
+const formSchema = z
+  .object({
+    citizen_id: z
+      .string()
+      .length(13, "Invalid Citizen ID.")
+      .regex(/^\d+$/, "Invalid Citizen ID."),
+    first_name: z
+      .string()
+      .max(64, "Firstname must be less than 64 characters long."),
+    last_name: z
+      .string()
+      .max(64, "Lastname must be less than 64 characters long."),
+    email: z
+      .string()
+      .regex(
+        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        "Invalid email format.",
+      ),
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters long."),
+    confirm_password: z.string(),
+    birth_date: z.date(),
+    phone_no: z
+      .string()
+      .length(10, "Invalid phone number format.")
+      .regex(/^\d+$/, "Invalid phone number format."),
+    gender: z.enum(["M", "F"]),
+    bank_account: z.string(),
+    accommodation_qr_code: z.string(),
+    accommodation_name: z.string().max(64),
+    accommodation_description: z.string(),
+    accommodation_price: z.coerce.number(),
+    accommodation_banner: z.string().optional(),
+    accommodation_address: z.string(),
+    accommodation_city: z.string().max(64),
+    accommodation_province: z.string().max(64),
+    accommodation_distinct: z.string().max(64),
+    accommodation_postal_code: z.string().length(5).regex(/^\d+$/),
+    accommodation_ggmap_link: z
+      .string()
+      .regex(
+        /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
+      ),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match.",
+    path: ["confirm_password"],
+  });
 
 export default function HostRegisterForm() {
   const router = useRouter();
@@ -79,6 +87,7 @@ export default function HostRegisterForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onBlur",
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const host = await createHost.mutateAsync({
@@ -176,6 +185,19 @@ export default function HostRegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input {...field} type="password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirm_password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input {...field} type="password" />
               </FormControl>
