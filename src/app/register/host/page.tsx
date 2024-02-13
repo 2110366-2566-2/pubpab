@@ -1,4 +1,4 @@
-import HostRegisterForm from "@/components/edit/HostEditForm";
+import HostRegisterForm from "@/components/register/HostRegisterForm";
 
 export default async function HostRegisterPage() {
   return (
