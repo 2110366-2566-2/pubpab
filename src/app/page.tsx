@@ -8,7 +8,7 @@ import "@/styles/global.css";
 export default function Home() {
   return (
     <main className="min-h-screent mt-8">
-      <div className="bg-[#004B64] h-16 w-full"></div>
+      <div className="h-16 w-full bg-[#004B64]"></div>
       <Image
         src={hero}
         alt=""

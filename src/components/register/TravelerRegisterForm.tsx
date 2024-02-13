@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   citizen_id: z
@@ -55,6 +56,7 @@ const formSchema = z.object({
 
 export default function TravelerRegisterForm() {
   const mutation = trpc.user.create.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,10 +64,14 @@ export default function TravelerRegisterForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     mutation.mutate({ ...values, user_type: "Travelers" });
+    router.push("/");
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-full flex-col gap-1"
+      >
         <FormField
           control={form.control}
           name="citizen_id"
@@ -177,7 +183,7 @@ export default function TravelerRegisterForm() {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground",
                       )}
                     >
@@ -198,6 +204,7 @@ export default function TravelerRegisterForm() {
                     disabled={(date) =>
                       date > new Date() || date < new Date("1900-01-01")
                     }
+                    defaultMonth={field.value}
                     initialFocus
                   />
                 </PopoverContent>
@@ -206,7 +213,7 @@ export default function TravelerRegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-10">
+        <Button type="submit" className="mt-4">
           Register
         </Button>
       </form>
