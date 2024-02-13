@@ -22,8 +22,8 @@ model accommodation {
   distinct_a           String     @db.VarChar(64)
   postal_code          String     @db.Char(5)
   ggmap_link           String
-  rating               Float
-  accommodation_status a_status
+  rating               Float      @default(0)
+  accommodation_status a_status   @default(CLOSE)
   host                 host       @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
   feedback             feedback[]
   reserve              reserve[]

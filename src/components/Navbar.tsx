@@ -2,6 +2,12 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image"; // Import Image component for the logo
 import SigninButton from "./SigninButton";
+import ProfileButton from "./ProfileButton";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 
 const Navbar = () => {
   return (
@@ -31,9 +37,34 @@ const Navbar = () => {
           </div>
         </div>
       </Link>
-      <div className="mr-5 flex items-center space-x-4">
-        <Image src="/user.png" width={40} height={40} alt="user" />
-        <SigninButton />
+      <div className="flex items-center">
+        <div className="mr-5 cursor-pointer">
+          <Image
+            src="/Notification.svg"
+            width={40}
+            height={40}
+            alt="notification"
+          />
+        </div>
+        <div className="mr-5 cursor-pointer">
+          <Image src="/Order.svg" width={40} height={40} alt="order" />
+        </div>
+        <div className="mr-5 cursor-pointer">
+          <Popover>
+            <PopoverTrigger asChild className="">
+              <button className="IconButton">
+                <Image src="/user.svg" width={40} height={40} alt="user" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="z-[10000] w-auto p-0">
+              <div className="flex flex-col gap-0">
+                <ProfileButton />
+                <SigninButton />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+        {/* <SigninButton /> */}
       </div>
     </nav>
   );
