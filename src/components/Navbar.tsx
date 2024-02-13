@@ -57,7 +57,7 @@ const Navbar = () => {
                 <Image src="/user.svg" width={40} height={40} alt="user" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-5">
+            <PopoverContent className="w-auto p-0">
               <SigninButton />
             </PopoverContent>
           </Popover>
