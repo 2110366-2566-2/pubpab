@@ -72,7 +72,7 @@ const formSchema = z
     }
   });
 
-export default function TravelerRegisterForm() {
+export default function TravelerEditForm() {
   const mutation = trpc.user.create.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
