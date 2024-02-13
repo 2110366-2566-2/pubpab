@@ -174,7 +174,7 @@ export default function TravelerEditForm() {
             />
 
             <Button type="submit" className="mt-10">
-              Register
+              Edit
             </Button>
           </form>
         </Form>

@@ -253,7 +253,7 @@ export default function HostEditForm() {
           )}
         />
         <Button type="submit" className="mt-10">
-          Register
+          Edit
         </Button>
       </form>
     </Form>

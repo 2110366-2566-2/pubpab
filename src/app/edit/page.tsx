@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function RegisterPage() {
   return (
@@ -6,10 +7,10 @@ export default async function RegisterPage() {
       <h1>Who are you?</h1>
       <div className="flex gap-6">
         <Link href="/register/host" className="hover:text-slate-600">
-          Host
+          <Button type="submit">Host</Button>
         </Link>
         <Link href="/register/traveler" className="hover:text-slate-600">
-          Traveler
+          <Button type="submit">Traveller</Button>
         </Link>
       </div>
     </div>
