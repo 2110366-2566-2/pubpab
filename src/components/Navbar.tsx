@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image"; // Import Image component for the logo
 import SigninButton from "./SigninButton";
+import ProfileButton from "./ProfileButton";
 import {
   Popover,
   PopoverContent,
@@ -57,8 +58,11 @@ const Navbar = () => {
                 <Image src="/user.svg" width={40} height={40} alt="user" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <SigninButton />
+            <PopoverContent className="z-[10000] w-auto p-0">
+              <div className="flex flex-col gap-0">
+                <ProfileButton />
+                <SigninButton />
+              </div>
             </PopoverContent>
           </Popover>
         </div>
