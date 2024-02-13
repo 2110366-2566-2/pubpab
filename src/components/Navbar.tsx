@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
         <div className="mr-5 cursor-pointer">
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className="">
               <button className="IconButton">
                 <Image src="/user.svg" width={40} height={40} alt="user" />
               </button>
