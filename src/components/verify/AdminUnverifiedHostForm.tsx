@@ -90,7 +90,7 @@ export default function AdminUnverifiedHostForm({
     router.push("/");
   }
   return (
-    <main className="min-h-screent mt-8">
+    <main className="min-h-screent mt-8 px-4">
       <div className="mx-auto max-w-2xl lg:mx-0">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Admin Verifying Page
@@ -259,7 +259,21 @@ export default function AdminUnverifiedHostForm({
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <AdminVerifyProperties />
-                  <VerifyRoomCard />
+                  <VerifyRoomCard
+                    title="Studio Rooms"
+                    imageUrl="/room1.jpeg"
+                    status="Verified"
+                  />
+                  <VerifyRoomCard
+                    title="Deluxe Rooms"
+                    imageUrl="/room2.jpeg"
+                    status="Verified"
+                  />
+                  <VerifyRoomCard
+                    title="Suites Rooms"
+                    imageUrl="/room3.jpeg"
+                    status="Unverified"
+                  />
                 </CardContent>
               </Card>
             </div>

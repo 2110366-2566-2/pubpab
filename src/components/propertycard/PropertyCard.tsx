@@ -1,6 +1,5 @@
 import React from "react";
-
-const PropertyRoomCard = ({
+const PropertyCard = ({
   title,
   imageUrl,
   status,
@@ -16,14 +15,14 @@ const PropertyRoomCard = ({
         alt={title}
         className="h-40 w-full rounded-t-lg object-cover"
       />
-      {status === "Available" && (
+      {status === "Opened" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-green-500 px-2 py-1 text-white">
-          Available
+          Opened
         </span>
       )}
-      {status !== "Available" && (
+      {status !== "Opened" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-red-500 px-2 py-1 text-white">
-          Unavailable
+          Closed
         </span>
       )}
       <div className="p-4">
@@ -33,4 +32,4 @@ const PropertyRoomCard = ({
     </div>
   );
 };
-export default PropertyRoomCard;
+export default PropertyCard;
