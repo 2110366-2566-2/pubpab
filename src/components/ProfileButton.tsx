@@ -9,16 +9,39 @@ const ProfileButton = () => {
   const { data: session } = useSession();
 
   if (session && session.user) {
-    return (
-      <div className="flex flex-col items-center">
-        <p className="m-2 text-center text-lg font-bold">{session.user.name}</p>
-        <Link href="/register">
-          <Button variant={"ghost"} className="text-black hover:text-blue-600">
-            Profile
-          </Button>
-        </Link>
-      </div>
-    );
+    if (session.user.role == "Hosts") {
+      return (
+        <div className="flex flex-col items-center">
+          <p className="m-2 text-center text-lg font-bold">
+            {session.user.name}
+          </p>
+          <Link href="/edit/host">
+            <Button
+              variant={"ghost"}
+              className="text-black hover:text-blue-600"
+            >
+              Profile
+            </Button>
+          </Link>
+        </div>
+      );
+    } else if (session.user.role == "Travelers") {
+      return (
+        <div className="flex flex-col items-center">
+          <p className="m-2 text-center text-lg font-bold">
+            {session.user.name}
+          </p>
+          <Link href="/edit/traveler">
+            <Button
+              variant={"ghost"}
+              className="text-black hover:text-blue-600"
+            >
+              Profile
+            </Button>
+          </Link>
+        </div>
+      );
+    }
   }
   return (
     <Link href="/register">

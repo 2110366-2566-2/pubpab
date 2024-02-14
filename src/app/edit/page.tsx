@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default async function RegisterPage() {
+export default async function EditPage() {
   return (
     <div className="my-12 flex flex-col items-center gap-6">
       <div className="mx-auto max-w-2xl lg:mx-0">
