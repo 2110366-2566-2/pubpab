@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 import pic from "@/../public/taeyeonToX.jpg";
 import Image from "next/image";
@@ -34,17 +34,17 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 
-const allow = [
-  { id: "pet", label: "Pet" },
-  { id: "noise", label: "Noise" },
-  { id: "smoking", label: "Smoking" },
-] as const;
+// const allow = [
+//   { id: "pet", label: "Pet" },
+//   { id: "noise", label: "Noise" },
+//   { id: "smoking", label: "Smoking" },
+// ] as const;
 
-const facility = [
-  { id: "wifi", label: "Wifi" },
-  { id: "restroom", label: "Restroom" },
-  { id: "washingMachine", label: "Washing Machine" },
-] as const;
+// const facility = [
+//   { id: "wifi", label: "Wifi" },
+//   { id: "restroom", label: "Restroom" },
+//   { id: "washingMachine", label: "Washing Machine" },
+// ] as const;
 
 const formSchema = z.object({
   name: z.string().max(64, "Name must be less than 64 characters long."),
@@ -56,12 +56,12 @@ const formSchema = z.object({
   children: z
     .number()
     .min(0, "The number of children must not be less than 0."),
-  smoking: z.boolean(),
-  noise: z.boolean(),
-  pet: z.boolean(),
-  washing_machine: z.boolean(),
-  restroom: z.boolean(),
-  wifi_available: z.boolean(),
+  smoking: z.boolean().default(false).optional(),
+  noise: z.boolean().default(false).optional(),
+  pet: z.boolean().default(false).optional(),
+  washing_machine: z.boolean().default(false).optional(),
+  restroom: z.boolean().default(false).optional(),
+  wifi_available: z.boolean().default(false).optional(),
   // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
   //   message: "You have to select at least one item.",
   // }),
@@ -76,6 +76,14 @@ export default function HostEditRoomForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      smoking: false,
+      noise: false,
+      pet: false,
+      washing_machine: false,
+      restroom: false,
+      wifi_available: false,
+    },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -132,6 +140,7 @@ export default function HostEditRoomForm() {
               </FormItem>
             )}
           /> */}
+
           <FormField
             control={form.control}
             name="price"
@@ -183,96 +192,116 @@ export default function HostEditRoomForm() {
               />
             </div>
           </div>
-          <FormField
-            control={form.control}
-            name="allow"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel className="text-base">Allow</FormLabel>
-                </div>
-                {allow.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="allow"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id,
-                                      ),
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="facility"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel className="text-base">Facility</FormLabel>
-                </div>
-                {facility.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="facility"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id,
-                                      ),
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+          <div>
+            <div className="text-lg">Allow</div>
+            <FormField
+              control={form.control}
+              name="smoking"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Smoking</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="noise"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Noise</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pet"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Pet</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <div className="text-lg"> Facility </div>
+            <FormField
+              control={form.control}
+              name="washing_machine"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Washing Machine</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="restroom"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Restroom</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="wifi_available"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Wifi Available</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div>
             <Button type="submit" className="ml-0 mr-2 mt-4">
