@@ -27,6 +27,8 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import Image from "next/image";
+import PropertyRoomCard from "../propertycard/PropertyRoomCard";
+import PropertyCard from "../propertycard/PropertyCard";
 
 const formSchema = z.object({
   citizen_id: z
@@ -77,19 +79,7 @@ export default function HostEditProperties() {
   }
   return (
     <div className="mx-auto">
-      <div className="mb-4 flex justify-between px-4">
-        {/* <Button className="w-40">Back</Button> */}
-        <Button className="text-grey-800 ml-auto w-40 border border-black bg-green-500 hover:bg-red-500 hover:text-white">
-          Opened
-        </Button>
-      </div>
-      <Image
-        src="/sk.jpeg"
-        alt="Long Building"
-        className="mr-2 px-4"
-        width={1000}
-        height={300}
-      />
+      <PropertyCard imageUrl="/sk.jpeg" title="Long Building" status="Opened" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
           <div>

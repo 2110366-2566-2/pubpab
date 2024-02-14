@@ -336,7 +336,36 @@ export default function HostEditForm() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <HostEditProperties />
-                  <PropertyRoomCard />
+                  <label className="text-xl font-bold">Rooms</label>
+                  <PropertyRoomCard
+                    title="Studio Rooms"
+                    imageUrl="/room1.jpeg"
+                    status="Available"
+                  />
+                  <PropertyRoomCard
+                    title="Deluxe Rooms"
+                    imageUrl="/room2.jpeg"
+                    status="Unavailable"
+                  />
+                  <PropertyRoomCard
+                    title="Suites Rooms"
+                    imageUrl="/room3.jpeg"
+                    status="Available"
+                  />
+                  <div>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Save changes
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Delete Property
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>

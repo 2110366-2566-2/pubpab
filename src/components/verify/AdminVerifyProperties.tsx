@@ -27,6 +27,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import Image from "next/image";
+import VerifyPropertyCard from "./VerifyPropertyCard";
 
 const formSchema = z.object({
   citizen_id: z
@@ -77,23 +78,10 @@ export default function AdminVerifyProperties() {
   }
   return (
     <div className="mx-auto">
-      <div className="mb-4 flex justify-start px-4">
-        <Button className="text-grey-800 mr-11 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Profile
-        </Button>
-        <Button className="text-grey-800 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Property
-        </Button>
-        <Button className="text-grey-800 ml-auto w-40 border border-black bg-green-500 hover:bg-red-500 hover:text-white">
-          Opened
-        </Button>
-      </div>
-      <Image
-        src="/sk.jpeg"
-        alt="Long Building"
-        className="mr-2 px-4"
-        width={1000}
-        height={300}
+      <VerifyPropertyCard
+        imageUrl="/sk.jpeg"
+        title="Long Building"
+        status="Verified"
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
