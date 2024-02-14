@@ -403,6 +403,24 @@ export default function HostEditForm() {
             </div>
           </div>
         </TabsContent>
+        <TabsContent value="properties_edit_form">
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Property Information</CardTitle>
+                  <CardDescription>
+                    Make changes to property here.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <HostEditProperties />
+                  <PropertyRoomCard />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
     </main>
   );
