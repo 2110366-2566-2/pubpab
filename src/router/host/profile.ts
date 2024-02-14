@@ -21,14 +21,14 @@ export const hostProfileRouter = router({
   findMany: publicProcedure
     .input(
       z.object({
-        id: z.string().optional(),
+        host_id: z.string().optional(),
       }),
     )
     .query(async ({ input }) => {
       const getHostWithUser = await prisma.host.findMany({
-        where: input.id
+        where: input.host_id
           ? {
-              host_id: input.id,
+              host_id: input.host_id,
             }
           : undefined, // Conditionally add where clause for findUnique
         select: {
@@ -39,6 +39,7 @@ export const hostProfileRouter = router({
               last_name: true,
               phone_no: true,
               banner: true,
+              email: true,
             },
           },
           accommodation: {

@@ -33,6 +33,7 @@ export const travelerProfileRouter = router({
               first_name: true,
               last_name: true,
               phone_no: true,
+              email: true,
               banner: true,
             },
           },

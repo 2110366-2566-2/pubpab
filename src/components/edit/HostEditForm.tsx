@@ -36,13 +36,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
-    citizen_id: z
-      .string()
-      .length(13, "Invalid Citizen ID.")
-      .regex(/^\d+$/, "Invalid Citizen ID."),
     first_name: z
       .string()
       .max(64, "Firstname must be less than 64 characters long."),
@@ -65,12 +63,10 @@ const formSchema = z
     confirmed_password: z
       .string()
       .min(12, "Password must be at least 12 characters long."),
-    birth_date: z.date(),
     phone_no: z
       .string()
       .length(10, "Invalid phone number format.")
       .regex(/^\d+$/, "Invalid phone number format."),
-    gender: z.enum(["M", "F"]),
   })
   .superRefine(({ confirmed_password, password }, ctx) => {
     if (confirmed_password !== password) {
@@ -82,14 +78,20 @@ const formSchema = z
   });
 
 export default function HostEditForm() {
-  const mutation = trpc.user.create.useMutation();
+  const { data: session } = useSession();
+  const router = useRouter();
 
+  const mutation = trpc.host.profile.update.useMutation();
+  const getHost = trpc.host.profile.findMany.useQuery({
+    host_id: session?.user?.id || undefined,
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ ...values, user_type: "Travelers" });
+    mutation.mutate({ ...values, host_id: session?.user?.id });
+    router.push("/");
   }
   return (
     <main className="min-h-screent mt-8">
@@ -140,7 +142,13 @@ export default function HostEditForm() {
                           <FormItem>
                             <FormLabel>Firstname</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input
+                                defaultValue={
+                                  getHost?.data?.[0]?.users?.first_name ||
+                                  undefined
+                                }
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -153,7 +161,13 @@ export default function HostEditForm() {
                           <FormItem>
                             <FormLabel>Lastname</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input
+                                defaultValue={
+                                  getHost?.data?.[0]?.users?.last_name ||
+                                  undefined
+                                }
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -167,13 +181,18 @@ export default function HostEditForm() {
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              defaultValue={
+                                getHost?.data?.[0]?.users?.phone_no || undefined
+                              }
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="gender"
                       render={({ field }) => (
@@ -193,7 +212,7 @@ export default function HostEditForm() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
                     <FormField
                       control={form.control}
                       name="bank_account"
@@ -201,13 +220,18 @@ export default function HostEditForm() {
                         <FormItem>
                           <FormLabel>Bank Account</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              defaultValue={
+                                getHost?.data?.[0]?.bank_account || undefined
+                              }
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="citizen_id"
                       render={({ field }) => (
@@ -219,7 +243,7 @@ export default function HostEditForm() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
                     <FormField
                       control={form.control}
                       name="email"
@@ -227,7 +251,12 @@ export default function HostEditForm() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              defaultValue={
+                                getHost?.data?.[0]?.users?.email || undefined
+                              }
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -259,7 +288,7 @@ export default function HostEditForm() {
                         </FormItem>
                       )}
                     />
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="birth_date"
                       render={({ field }) => (
@@ -303,7 +332,7 @@ export default function HostEditForm() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
                     <Button type="submit" className="mt-10">
                       Save changes
                     </Button>

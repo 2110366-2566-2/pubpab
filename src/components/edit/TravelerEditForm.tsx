@@ -15,23 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
 import { trpc } from "@/lib/trpc/client";
 import user from "/public/user.svg";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
-    citizen_id: z
-      .string()
-      .length(13, "Invalid Citizen ID.")
-      .regex(/^\d+$/, "Invalid Citizen ID."),
     first_name: z
       .string()
       .max(64, "Firstname must be less than 64 characters long."),
     last_name: z
       .string()
       .max(64, "Lastname must be less than 64 characters long."),
-    bank_account: z
-      .string()
-      .length(10, "Invalid Bank Account.")
-      .regex(/^\d+$/, "Invalid Bank Account."),
     email: z
       .string()
       .regex(
@@ -44,12 +38,10 @@ const formSchema = z
     confirmed_password: z
       .string()
       .min(12, "Password must be at least 12 characters long."),
-    birth_date: z.date(),
     phone_no: z
       .string()
       .length(10, "Invalid phone number format.")
       .regex(/^\d+$/, "Invalid phone number format."),
-    gender: z.enum(["M", "F"]),
   })
   .superRefine(({ confirmed_password, password }, ctx) => {
     if (confirmed_password !== password) {
@@ -61,15 +53,26 @@ const formSchema = z
   });
 
 export default function TravelerEditForm() {
-  const mutation = trpc.user.create.useMutation();
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const updatemutation = trpc.traveler.profile.update.useMutation();
+  const getTraveler = trpc.traveler.profile.findMany.useQuery({
+    traveler_id: session?.user?.id || undefined,
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    updatemutation.mutate({ ...values, traveler_id: session?.user?.id });
+    router.push("/");
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // defaultValues: {
+    //   first_name: getTraveler?.data?.[0]?.users?.first_name || undefined,
+    // },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    mutation.mutate({ ...values, user_type: "Travelers" });
-  }
   return (
     <main className="min-h-screent mt-8">
       <div className="mx-auto max-w-2xl lg:mx-0">
@@ -106,7 +109,12 @@ export default function TravelerEditForm() {
                   <FormItem>
                     <FormLabel>Firstname</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={
+                          getTraveler?.data?.[0]?.users?.first_name || undefined
+                        }
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -119,7 +127,12 @@ export default function TravelerEditForm() {
                   <FormItem>
                     <FormLabel>Lastname</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input
+                        defaultValue={
+                          getTraveler?.data?.[0]?.users?.last_name || undefined
+                        }
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +146,12 @@ export default function TravelerEditForm() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      defaultValue={
+                        getTraveler?.data?.[0]?.users?.phone_no || undefined
+                      }
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +165,12 @@ export default function TravelerEditForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      defaultValue={
+                        getTraveler?.data?.[0]?.users?.email || undefined
+                      }
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
