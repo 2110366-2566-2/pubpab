@@ -126,7 +126,9 @@ export default function HostRegisterForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-full flex-col gap-1"
       >
-        <h1 className="mb-4 text-xl">Host Information</h1>
+        <div>
+          <label className="text-2xl font-bold">Host Information</label>
+        </div>
         <FormField
           control={form.control}
           name="citizen_id"

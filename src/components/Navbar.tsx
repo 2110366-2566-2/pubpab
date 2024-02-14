@@ -14,7 +14,9 @@ const Navbar = () => {
     <nav className="h-15 sticky top-0 z-50 mb-8 flex w-full items-center justify-between bg-[#f4edea] py-2">
       <div className="pl-4">
         <div className="flex items-center space-x-4">
-          <Image src="/Logo.png" width={150} height={40} alt="logo" />
+          <Link href={"/"}>
+            <Image src="/Logo.png" width={150} height={40} alt="logo" />
+          </Link>
           <Link
             className="text-gray-800 transition-colors hover:text-sky-400"
             href={"/"}
