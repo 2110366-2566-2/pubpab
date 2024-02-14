@@ -10,8 +10,8 @@ const SigninButton = () => {
   const router = useRouter();
 
   const handleSignOut = async () => {
-    router.push("/"); // Navigate to the homepage
-    await signOut();
+    const port = process.env.PORT || 3000; // Use port from environment variable or default to 3000
+    await signOut({ callbackUrl: `http://localhost:${port}/` });
   };
 
   if (session && session.user) {
