@@ -58,7 +58,7 @@ export const travelerProfileRouter = router({
         phone_no: z.string(),
         gender: z.enum(["M", "F"]),
         banner: z.string().optional(),
-        user_type: z.enum(["Hosts"]),
+        user_type: z.enum(["Travelers"]),
       }),
     )
     .mutation(async ({ input }) => {
