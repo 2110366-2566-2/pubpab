@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
+import Image from "next/image";
 
 const formSchema = z.object({
   name_a: z
@@ -59,15 +60,23 @@ export default function AdminVerifyProperties() {
   return (
     <div className="mx-auto">
       <div className="mb-4 flex justify-start px-4">
-        <Button className="mr-11 w-40">Profile</Button>
-        <Button className="w-40 border border-black bg-[#F4EDEA] text-black">
+        <Button className="text-grey-800 mr-11 w-40 border border-black bg-[#F4EDEA] hover:text-white">
+          Profile
+        </Button>
+        <Button className="text-grey-800 w-40 border border-black bg-[#F4EDEA] hover:text-white">
           Property
         </Button>
-        <Button className="ml-auto w-40 border border-black bg-[#F4EDEA] text-black">
+        <Button className="text-grey-800 ml-auto w-40 border border-black bg-green-500 hover:bg-red-500 hover:text-white">
           Opened
         </Button>
       </div>
-      <img src="/sk.jpeg" alt="Example" className="mr-2 px-4" />
+      <Image
+        src="/sk.jpeg"
+        alt="Long Building"
+        className="mr-2 px-4"
+        width={1000}
+        height={300}
+      />
       <Form {...form}>
         <form className="space-y-4 px-4">
           <FormField
@@ -78,7 +87,7 @@ export default function AdminVerifyProperties() {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Properties Name"
+                    placeholder="Property Name"
                     className="border border-black"
                     readOnly
                     {...field}
@@ -96,7 +105,7 @@ export default function AdminVerifyProperties() {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Properties Description"
+                    placeholder="Property Description"
                     className="border border-black"
                     readOnly
                     {...field}

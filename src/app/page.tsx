@@ -6,7 +6,7 @@ import pattaya from "/public/pattaya.png";
 
 export default function Home() {
   return (
-    <main className="min-h-screent mt-8">
+    <main className="mt-8 min-h-screen px-4">
       <Image
         src={hero}
         alt=""

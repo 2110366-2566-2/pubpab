@@ -14,7 +14,7 @@ export default async function EditPage() {
           <Button type="submit">Host</Button>
         </Link>
         <Link href="/edit/traveler" className="hover:text-slate-600">
-          <Button type="submit">Traveller</Button>
+          <Button type="submit">Traveler</Button>
         </Link>
       </div>
     </div>
