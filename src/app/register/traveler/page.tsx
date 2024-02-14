@@ -8,7 +8,7 @@ export default async function TravelerRegisterPage() {
       <Link href="/register/" className="pr-10">
         <Button
           type="submit"
-          className="text-grey-800 bg-[#F4EDEA] hover:text-white"
+          className="text-grey-800 border border-black bg-[#F4EDEA] hover:text-white"
         >
           Back
         </Button>

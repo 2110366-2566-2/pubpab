@@ -11,10 +11,20 @@ export default async function EditPage() {
       </div>
       <div className="flex gap-6">
         <Link href="/edit/host" className="hover:text-slate-600">
-          <Button type="submit">Host</Button>
+          <Button
+            type="submit"
+            className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          >
+            Host
+          </Button>
         </Link>
         <Link href="/edit/traveler" className="hover:text-slate-600">
-          <Button type="submit">Traveler</Button>
+          <Button
+            type="submit"
+            className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          >
+            Traveler
+          </Button>
         </Link>
       </div>
     </div>

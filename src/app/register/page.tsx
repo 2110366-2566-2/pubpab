@@ -13,7 +13,7 @@ export default async function RegisterPage() {
         <Link href="/register/host">
           <Button
             type="submit"
-            className="text-grey-800 bg-[#F4EDEA] hover:text-white"
+            className="text-grey-800 border border-black bg-[#F4EDEA] hover:text-white"
           >
             Host
           </Button>
@@ -21,7 +21,7 @@ export default async function RegisterPage() {
         <Link href="/register/traveler">
           <Button
             type="submit"
-            className="text-grey-800 bg-[#F4EDEA] hover:text-white"
+            className="text-grey-800 border border-black bg-[#F4EDEA] hover:text-white"
           >
             Traveler
           </Button>

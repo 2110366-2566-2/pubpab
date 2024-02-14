@@ -1,48 +1,35 @@
+import { Verify } from "crypto";
 import React from "react";
-import Image from "next/image";
-const VerifyRoomCard = () => {
+
+const VerifyRoomCard = ({
+  title,
+  imageUrl,
+  status,
+}: {
+  title: string;
+  imageUrl: string;
+  status: string;
+}) => {
   return (
-    <div className="px-4 pb-4">
-      <div>
-        <label className="text-2xl">Rooms</label>
-      </div>
-      <div className="flex">
-        <div className="relative">
-          <Image
-            src="/room1.jpeg"
-            alt="Room 1"
-            width={240}
-            height={180}
-            className="mr-2"
-          />
-          <span className="absolute right-2 top-0 bg-green-500 p-1 text-xs text-white">
-            Verify
-          </span>
-        </div>
-        <div className="relative">
-          <Image
-            src="/room2.jpeg"
-            alt="Room 2"
-            width={240}
-            height={180}
-            className="mr-2"
-          />
-          <span className="absolute right-2 top-0 bg-red-500 p-1 text-xs text-white">
-            Not Verify
-          </span>
-        </div>
-        <div className="relative">
-          <Image
-            src="/room3.jpeg"
-            alt="Room 3"
-            width={240}
-            height={80}
-            className="mr-2"
-          />
-          <span className="absolute right-2 top-0 bg-green-500 p-1 text-xs text-white">
-            Verify
-          </span>
-        </div>
+    <div className="relative rounded-lg bg-white shadow-md">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="h-40 w-full rounded-t-lg object-cover"
+      />
+      {status === "Verified" && (
+        <span className="absolute right-0 top-0 rounded-tr-lg bg-green-500 px-2 py-1 text-white">
+          Verified
+        </span>
+      )}
+      {status !== "Verified" && (
+        <span className="absolute right-0 top-0 rounded-tr-lg bg-red-500 px-2 py-1 text-white">
+          Unverified
+        </span>
+      )}
+      <div className="p-4">
+        <h2 className="mb-2 text-xl font-semibold">{title}</h2>
+        <p className="text-gray-600">Status: {status}</p>
       </div>
     </div>
   );
