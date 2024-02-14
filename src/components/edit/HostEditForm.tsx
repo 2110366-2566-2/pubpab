@@ -49,10 +49,12 @@ const formSchema = z
       ),
     password: z
       .string()
-      .min(12, "Password must be at least 12 characters long."),
+      .min(12, "Password must be at least 12 characters long.")
+      .optional(),
     confirmed_password: z
       .string()
-      .min(12, "Password must be at least 12 characters long."),
+      .min(12, "Password must be at least 12 characters long.")
+      .optional(),
     phone_no: z
       .string()
       .length(10, "Invalid phone number format.")
