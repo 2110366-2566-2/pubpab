@@ -13,26 +13,13 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
-import user from "/public/user.svg";
+import user from "/public/User.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -40,6 +27,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import HostEditProperties from "../properties/HostEditProperties";
 import PropertyRoomCard from "../propertycard/PropertyRoomCard";
+import { HostData } from "@/app/edit/host/page";
 
 const formSchema = z
   .object({
@@ -79,16 +67,20 @@ const formSchema = z
     }
   });
 
-export default function HostEditForm() {
+export default function HostEditForm({ hostData }: { hostData: HostData }) {
   const { data: session } = useSession();
   const router = useRouter();
 
   const mutation = trpc.host.profile.update.useMutation();
-  const getHost = trpc.host.profile.findMany.useQuery({
-    host_id: session?.user?.id || undefined,
-  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      first_name: hostData.first_name,
+      last_name: hostData.last_name,
+      bank_account: hostData.bank_account,
+      email: hostData.email,
+      phone_no: hostData.phone_no,
+    },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -148,13 +140,7 @@ export default function HostEditForm() {
                               <FormItem>
                                 <FormLabel>Firstname</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    defaultValue={
-                                      getHost?.data?.[0]?.users?.first_name ||
-                                      undefined
-                                    }
-                                    {...field}
-                                  />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -167,13 +153,7 @@ export default function HostEditForm() {
                               <FormItem>
                                 <FormLabel>Lastname</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    defaultValue={
-                                      getHost?.data?.[0]?.users?.last_name ||
-                                      undefined
-                                    }
-                                    {...field}
-                                  />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -187,13 +167,7 @@ export default function HostEditForm() {
                             <FormItem>
                               <FormLabel>Phone Number</FormLabel>
                               <FormControl>
-                                <Input
-                                  defaultValue={
-                                    getHost?.data?.[0]?.users?.phone_no ||
-                                    undefined
-                                  }
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -227,13 +201,7 @@ export default function HostEditForm() {
                             <FormItem>
                               <FormLabel>Bank Account</FormLabel>
                               <FormControl>
-                                <Input
-                                  defaultValue={
-                                    getHost?.data?.[0]?.bank_account ||
-                                    undefined
-                                  }
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -259,13 +227,7 @@ export default function HostEditForm() {
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input
-                                  defaultValue={
-                                    getHost?.data?.[0]?.users?.email ||
-                                    undefined
-                                  }
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

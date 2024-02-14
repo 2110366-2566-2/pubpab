@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
 import { trpc } from "@/lib/trpc/client";
-import user from "/public/user.svg";
+import user from "/public/User.svg";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -57,9 +57,6 @@ export default function TravelerEditForm() {
   const router = useRouter();
 
   const updatemutation = trpc.traveler.profile.update.useMutation();
-  const getTraveler = trpc.traveler.profile.findMany.useQuery({
-    traveler_id: session?.user?.id || undefined,
-  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -109,12 +106,7 @@ export default function TravelerEditForm() {
                   <FormItem>
                     <FormLabel>Firstname</FormLabel>
                     <FormControl>
-                      <Input
-                        defaultValue={
-                          getTraveler?.data?.[0]?.users?.first_name || undefined
-                        }
-                        {...field}
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -127,12 +119,7 @@ export default function TravelerEditForm() {
                   <FormItem>
                     <FormLabel>Lastname</FormLabel>
                     <FormControl>
-                      <Input
-                        defaultValue={
-                          getTraveler?.data?.[0]?.users?.last_name || undefined
-                        }
-                        {...field}
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,12 +133,7 @@ export default function TravelerEditForm() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input
-                      defaultValue={
-                        getTraveler?.data?.[0]?.users?.phone_no || undefined
-                      }
-                      {...field}
-                    />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -165,12 +147,7 @@ export default function TravelerEditForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      defaultValue={
-                        getTraveler?.data?.[0]?.users?.email || undefined
-                      }
-                      {...field}
-                    />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -194,7 +171,7 @@ export default function TravelerEditForm() {
               name="confirmed_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirmed Password</FormLabel>
+                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input {...field} type="password" />
                   </FormControl>
