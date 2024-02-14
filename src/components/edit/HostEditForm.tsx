@@ -27,7 +27,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import HostEditProperties from "../properties/HostEditProperties";
 import PropertyRoomCard from "../propertycard/PropertyRoomCard";
-import { HostData } from "@/app/edit/host/page";
 
 const formSchema = z
   .object({
@@ -69,24 +68,31 @@ const formSchema = z
     }
   });
 
-export default function HostEditForm({ hostData }: { hostData: HostData }) {
+type HostData = {
+  first_name?: string;
+  last_name?: string;
+  bank_account?: string;
+  email?: string;
+  phone_no?: string;
+};
+
+function HostProfileForm({ hostData }: { hostData: HostData }) {
   const { data: session } = useSession();
   const router = useRouter();
-
   const mutation = trpc.host.profile.update.useMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: hostData.first_name,
-      last_name: hostData.last_name,
       bank_account: hostData.bank_account,
       email: hostData.email,
+      first_name: hostData.first_name,
+      last_name: hostData.last_name,
       phone_no: hostData.phone_no,
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ ...values, host_id: session?.user?.id });
+    mutation.mutate({ ...values, host_id: session?.user.id });
     router.push("/");
   }
   return (
@@ -416,5 +422,26 @@ export default function HostEditForm({ hostData }: { hostData: HostData }) {
         </TabsContent>
       </Tabs>
     </main>
+  );
+}
+
+export default function HostEditForm() {
+  const { data: session } = useSession();
+  const hostDataQuery = trpc.host.profile.find.useQuery({
+    host_id: session?.user?.id,
+  });
+  if (hostDataQuery.status === "loading") {
+    return <div>Loading...</div>;
+  }
+  return (
+    <HostProfileForm
+      hostData={{
+        bank_account: hostDataQuery.data?.bank_account ?? "",
+        email: hostDataQuery.data?.users?.email,
+        first_name: hostDataQuery.data?.users?.first_name ?? "",
+        last_name: hostDataQuery.data?.users?.last_name ?? "",
+        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+      }}
+    />
   );
 }
