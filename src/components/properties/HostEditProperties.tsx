@@ -77,51 +77,56 @@ export default function HostEditProperties() {
   return (
     <div className="mx-auto">
       <div className="mb-4 flex justify-between px-4">
-        <Button className="w-40">Back</Button>
-        <Button
-          type="submit"
-          className="w-40 border border-black bg-[#F4EDEA] text-black"
-        >
+        {/* <Button className="w-40">Back</Button> */}
+        <Button className="text-grey-800 ml-auto w-40 border border-black bg-green-500 hover:bg-red-500 hover:text-white">
           Opened
         </Button>
       </div>
-      <img src="/sk.jpeg" alt="Example" className="mr-2 px-4" />
+      <img
+        src="/sk.jpeg"
+        alt="Example"
+        className="mr-2 px-4"
+        width={1000}
+        height={300}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
-          <FormField
-            control={form.control}
-            name="first_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Properties Name"
-                    className="border border-black"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="last_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Properties Description"
-                    className="border border-black"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <FormField
+              control={form.control}
+              name="first_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Property Name"
+                      className="border border-black"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Property Description"
+                      className="border border-black"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div>
             <label className="text-xl">Location</label>
           </div>

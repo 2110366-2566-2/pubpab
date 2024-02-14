@@ -36,6 +36,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import AdminVerifyProperties from "./AdminVerifyProperties";
+import VerifyRoomCard from "./VerifyRoomCard";
 
 const formSchema = z
   .object({
@@ -95,7 +97,7 @@ export default function AdminUnverifiedHostForm() {
     <main className="min-h-screent mt-8">
       <div className="mx-auto max-w-2xl lg:mx-0">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Admin Editing Page
+          Admin Verifying Page
         </h2>
       </div>
       <Tabs defaultValue="profile_edit_form" className="mt-4">
@@ -140,7 +142,12 @@ export default function AdminUnverifiedHostForm() {
                           <FormItem>
                             <FormLabel>Firstname</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input
+                                placeholder="Firstname"
+                                className="border border-black"
+                                readOnly
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -153,7 +160,12 @@ export default function AdminUnverifiedHostForm() {
                           <FormItem>
                             <FormLabel>Lastname</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input
+                                placeholder="Lastname"
+                                className="border border-black"
+                                readOnly
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -167,7 +179,12 @@ export default function AdminUnverifiedHostForm() {
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              placeholder="Phone Number"
+                              className="border border-black"
+                              readOnly
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -181,7 +198,12 @@ export default function AdminUnverifiedHostForm() {
                         <FormItem>
                           <FormLabel>Bank Account</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              placeholder="Bank Account"
+                              className="border border-black"
+                              readOnly
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -194,13 +216,21 @@ export default function AdminUnverifiedHostForm() {
                         <FormItem>
                           <FormLabel>Citizen ID</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              placeholder="Citizen ID"
+                              className="border border-black"
+                              readOnly
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="mt-10">
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-10 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
                       Verify
                     </Button>
                   </form>
@@ -208,6 +238,24 @@ export default function AdminUnverifiedHostForm() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="properties_edit_form">
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Property Information</CardTitle>
+                  <CardDescription>
+                    Make changes to property here.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <AdminVerifyProperties />
+                  <VerifyRoomCard />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </main>

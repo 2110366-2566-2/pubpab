@@ -77,11 +77,13 @@ export default function AdminVerifyProperties() {
   return (
     <div className="mx-auto">
       <div className="mb-4 flex justify-start px-4">
-        <Button className="mr-11 w-40">Profile</Button>
-        <Button className="w-40 border border-black bg-[#F4EDEA] text-black">
+        <Button className="text-grey-800 mr-11 w-40 border border-black bg-[#F4EDEA] hover:text-white">
+          Profile
+        </Button>
+        <Button className="text-grey-800 w-40 border border-black bg-[#F4EDEA] hover:text-white">
           Property
         </Button>
-        <Button className="ml-auto w-40 border border-black bg-[#F4EDEA] text-black">
+        <Button className="text-grey-800 ml-auto w-40 border border-black bg-green-500 hover:bg-red-500 hover:text-white">
           Opened
         </Button>
       </div>
@@ -96,7 +98,7 @@ export default function AdminVerifyProperties() {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Properties Name"
+                    placeholder="Property Name"
                     className="border border-black"
                     readOnly
                     {...field}
@@ -114,7 +116,7 @@ export default function AdminVerifyProperties() {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Properties Description"
+                    placeholder="Property Description"
                     className="border border-black"
                     readOnly
                     {...field}
