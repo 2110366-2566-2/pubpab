@@ -80,6 +80,9 @@ export default function TravelerRegisterForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-full flex-col gap-1"
       >
+        <div>
+          <label className="text-2xl font-bold">Traveler Information</label>
+        </div>
         <FormField
           control={form.control}
           name="citizen_id"
