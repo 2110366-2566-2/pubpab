@@ -18,17 +18,55 @@ const calculateAge = (birthDate: Date) => {
 };
 
 export const hostProfileRouter = router({
+  find: publicProcedure
+    .input(
+      z.object({
+        host_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const host = await prisma.host.findUnique({
+        where: { host_id: input.host_id },
+        select: {
+          bank_account: true,
+          users: {
+            select: {
+              first_name: true,
+              last_name: true,
+              phone_no: true,
+              banner: true,
+              email: true,
+            },
+          },
+          accommodation: {
+            select: {
+              accommodation_id: true,
+              banner: true,
+              accommodation_status: true,
+              name_a: true,
+            },
+          },
+        },
+      });
+      if (!host) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Host not found",
+        });
+      }
+      return host;
+    }),
   findMany: publicProcedure
     .input(
       z.object({
-        id: z.string().optional(),
+        host_id: z.string().optional(),
       }),
     )
     .query(async ({ input }) => {
       const getHostWithUser = await prisma.host.findMany({
-        where: input.id
+        where: input.host_id
           ? {
-              host_id: input.id,
+              host_id: input.host_id,
             }
           : undefined, // Conditionally add where clause for findUnique
         select: {
@@ -39,6 +77,7 @@ export const hostProfileRouter = router({
               last_name: true,
               phone_no: true,
               banner: true,
+              email: true,
             },
           },
           accommodation: {

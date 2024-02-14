@@ -29,30 +29,11 @@ import { trpc } from "@/lib/trpc/client";
 import Image from "next/image";
 
 const formSchema = z.object({
-  citizen_id: z
+  name_a: z
     .string()
-    .length(13, "Invalid Citizen ID.")
-    .regex(/^\d+$/, "Invalid Citizen ID."),
-  first_name: z
-    .string()
-    .max(64, "Firstname must be less than 64 characters long."),
-  last_name: z
-    .string()
-    .max(64, "Lastname must be less than 64 characters long."),
-  email: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-      "Invalid email format.",
-    ),
-  password: z.string().min(12, "Password must be at least 12 characters long."),
-  birth_date: z.date(),
-  phone_no: z
-    .string()
-    .length(10, "Invalid phone number format.")
-    .regex(/^\d+$/, "Invalid phone number format."),
-  gender: z.enum(["M", "F"]),
-  address: z
+    .max(64, "Accomodation name must be less than 64 characters long."),
+  description_a: z.string(),
+  address_a: z
     .string()
     .max(255, "Address must be less than 255 characters long."),
   city: z.string().max(100, "City must be less than 100 characters long."),
@@ -63,18 +44,19 @@ const formSchema = z.object({
     .string()
     .max(100, "District must be less than 100 characters long."),
   postalcode: z.string().length(5, "Invalid postal code format."),
+  accommodation_status: z.enum(["OPEN", "CLOSE"]),
 });
 
 export default function AdminVerifyProperties() {
-  const mutation = trpc.user.create.useMutation();
+  const getAccom = trpc.host.accomodation.findMany.useQuery({ id: "" });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    mutation.mutate({ ...values, user_type: "Travelers" });
-  }
+  // function onSubmit(values: z.infer<typeof formSchema>) {
+  //   console.log(values);
+  //   mutation.mutate({ ...values, user_type: "Travelers" });
+  // }
   return (
     <div className="mx-auto">
       <div className="mb-4 flex justify-start px-4">
@@ -96,10 +78,10 @@ export default function AdminVerifyProperties() {
         height={300}
       />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
+        <form className="space-y-4 px-4">
           <FormField
             control={form.control}
-            name="first_name"
+            name="name_a"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
@@ -117,7 +99,7 @@ export default function AdminVerifyProperties() {
           />
           <FormField
             control={form.control}
-            name="last_name"
+            name="description_a"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
@@ -139,7 +121,7 @@ export default function AdminVerifyProperties() {
           <div className="w-full md:w-2/3">
             <FormField
               control={form.control}
-              name="address"
+              name="address_a"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address</FormLabel>

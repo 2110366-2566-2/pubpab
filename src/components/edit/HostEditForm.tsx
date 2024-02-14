@@ -13,38 +13,24 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
-import user from "/public/user.svg";
+import user from "/public/User.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import HostEditProperties from "../properties/HostEditProperties";
 import PropertyRoomCard from "../propertycard/PropertyRoomCard";
+import { HostData } from "@/app/edit/host/page";
 
 const formSchema = z
   .object({
-    citizen_id: z
-      .string()
-      .length(13, "Invalid Citizen ID.")
-      .regex(/^\d+$/, "Invalid Citizen ID."),
     first_name: z
       .string()
       .max(64, "Firstname must be less than 64 characters long."),
@@ -63,16 +49,16 @@ const formSchema = z
       ),
     password: z
       .string()
-      .min(12, "Password must be at least 12 characters long."),
+      .min(12, "Password must be at least 12 characters long.")
+      .optional(),
     confirmed_password: z
       .string()
-      .min(12, "Password must be at least 12 characters long."),
-    birth_date: z.date(),
+      .min(12, "Password must be at least 12 characters long.")
+      .optional(),
     phone_no: z
       .string()
       .length(10, "Invalid phone number format.")
       .regex(/^\d+$/, "Invalid phone number format."),
-    gender: z.enum(["M", "F"]),
   })
   .superRefine(({ confirmed_password, password }, ctx) => {
     if (confirmed_password !== password) {
@@ -83,15 +69,25 @@ const formSchema = z
     }
   });
 
-export default function HostEditForm() {
-  const mutation = trpc.user.create.useMutation();
+export default function HostEditForm({ hostData }: { hostData: HostData }) {
+  const { data: session } = useSession();
+  const router = useRouter();
 
+  const mutation = trpc.host.profile.update.useMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      first_name: hostData.first_name,
+      last_name: hostData.last_name,
+      bank_account: hostData.bank_account,
+      email: hostData.email,
+      phone_no: hostData.phone_no,
+    },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ ...values, user_type: "Travelers" });
+    mutation.mutate({ ...values, host_id: session?.user?.id });
+    router.push("/");
   }
   return (
     <main className="mt-4 min-h-screen px-4">
@@ -122,7 +118,7 @@ export default function HostEditForm() {
                 <CardContent className="space-y-2">
                   <div className="relative mt-8 flex items-center justify-center gap-x-4">
                     <Image src={user} alt="" className="w-20 lg:w-16"></Image>
-                    <div className="text-sm leading-6 ">
+                    <div className="text-sm leading-6">
                       <p className="font-semibold text-gray-900">
                         <a href="#">
                           <span className="absolute inset-0"></span>
@@ -172,6 +168,107 @@ export default function HostEditForm() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Phone Number</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <Select onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="M">Male</SelectItem>
+                              <SelectItem value="F">Female</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                        <FormField
+                          control={form.control}
+                          name="bank_account"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Bank Account</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* <FormField
+                      control={form.control}
+                      name="citizen_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Citizen ID</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Password</FormLabel>
+                              <FormControl>
+                                <Input {...field} type="password" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="confirmed_password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Confirmed Password</FormLabel>
+                              <FormControl>
+                                <Input {...field} type="password" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* <FormField
+                      control={form.control}
+                      name="birth_date"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Date of Birth</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -235,81 +332,27 @@ export default function HostEditForm() {
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="password"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <Input {...field} type="password" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="confirmed_password"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Confirmed Password</FormLabel>
-                              <FormControl>
-                                <Input {...field} type="password" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="birth_date"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                              <FormLabel>Date of Birth</FormLabel>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant={"outline"}
-                                      className={cn(
-                                        "w-[240px] pl-3 text-left font-normal",
-                                        !field.value && "text-muted-foreground",
-                                      )}
-                                    >
-                                      {field.value ? (
-                                        format(field.value, "PPP")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-auto p-0"
-                                  align="start"
-                                >
-                                  <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                      date > new Date() ||
-                                      date < new Date("1900-01-01")
-                                    }
-                                    initialFocus
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() ||
+                                  date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
                         <Button
                           type="submit"
                           className="text-grey-800 mt-10 border border-black bg-[#F4EDEA] hover:text-white"
