@@ -26,46 +26,63 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
+import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
-  citizen_id: z
-    .string()
-    .length(13, "Invalid Citizen ID.")
-    .regex(/^\d+$/, "Invalid Citizen ID."),
-  first_name: z
-    .string()
-    .max(64, "Firstname must be less than 64 characters long."),
-  last_name: z
-    .string()
-    .max(64, "Lastname must be less than 64 characters long."),
-  email: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-      "Invalid email format.",
-    ),
-  password: z.string().min(12, "Password must be at least 12 characters long."),
-  birth_date: z.date(),
-  phone_no: z
-    .string()
-    .length(10, "Invalid phone number format.")
-    .regex(/^\d+$/, "Invalid phone number format."),
-  gender: z.enum(["M", "F"]),
-});
+const formSchema = z
+  .object({
+    citizen_id: z
+      .string()
+      .length(13, "Invalid Citizen ID.")
+      .regex(/^\d+$/, "Invalid Citizen ID."),
+    first_name: z
+      .string()
+      .max(64, "Firstname must be less than 64 characters long."),
+    last_name: z
+      .string()
+      .max(64, "Lastname must be less than 64 characters long."),
+    email: z
+      .string()
+      .regex(
+        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        "Invalid email format.",
+      ),
+    password: z
+      .string()
+      .min(12, "Password must be at least 12 characters long."),
+    confirm_password: z.string(),
+    birth_date: z.date(),
+    phone_no: z
+      .string()
+      .length(10, "Invalid phone number format.")
+      .regex(/^\d+$/, "Invalid phone number format."),
+    gender: z.enum(["M", "F"]),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Password does not match",
+    path: ["confirm_password"],
+  });
 
 export default function TravelerRegisterForm() {
   const mutation = trpc.user.create.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onBlur",
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     mutation.mutate({ ...values, user_type: "Travelers" });
+    router.push("/");
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-full flex-col gap-1"
+      >
+        <div>
+          <label className="text-2xl font-bold">Traveler Information</label>
+        </div>
         <FormField
           control={form.control}
           name="citizen_id"
@@ -133,6 +150,19 @@ export default function TravelerRegisterForm() {
         />
         <FormField
           control={form.control}
+          name="confirm_password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <Input {...field} type="password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="phone_no"
           render={({ field }) => (
             <FormItem>
@@ -177,7 +207,7 @@ export default function TravelerRegisterForm() {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground",
                       )}
                     >
@@ -198,6 +228,7 @@ export default function TravelerRegisterForm() {
                     disabled={(date) =>
                       date > new Date() || date < new Date("1900-01-01")
                     }
+                    defaultMonth={field.value}
                     initialFocus
                   />
                 </PopoverContent>
@@ -206,7 +237,7 @@ export default function TravelerRegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-10">
+        <Button type="submit" className="mt-4">
           Register
         </Button>
       </form>
