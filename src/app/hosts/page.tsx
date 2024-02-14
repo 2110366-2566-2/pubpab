@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import Properties from "@/components/hosts/properties";
+import UnverifiedHost from "@/components/verify/UnverifiedHost";
 
 const Extra = async () => {
   const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ const Extra = async () => {
           {" "}
           Need to Verify{" "}
         </Button>
-        <Properties imageUrl={chefSmart} /> <Properties imageUrl={ta} />{" "}
+        <UnverifiedHost imageUrl={chefSmart} /> <UnverifiedHost imageUrl={ta} />{" "}
       </div>
     </div>
   );
