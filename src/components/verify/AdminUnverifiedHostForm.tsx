@@ -81,7 +81,7 @@ const formSchema = z
     }
   });
 
-export default function HostEditForm() {
+export default function AdminUnverifiedHostForm() {
   const mutation = trpc.user.create.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
