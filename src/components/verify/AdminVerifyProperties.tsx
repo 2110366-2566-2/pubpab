@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
+import Image from "next/image";
 
 const formSchema = z.object({
   citizen_id: z
@@ -87,7 +88,13 @@ export default function AdminVerifyProperties() {
           Opened
         </Button>
       </div>
-      <img src="/sk.jpeg" alt="Example" className="mr-2 px-4" />
+      <Image
+        src="/sk.jpeg"
+        alt="Long Building"
+        className="mr-2 px-4"
+        width={1000}
+        height={300}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
           <FormField
