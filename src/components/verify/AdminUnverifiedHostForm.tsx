@@ -36,60 +36,56 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-const formSchema = z
-  .object({
-    citizen_id: z
-      .string()
-      .length(13, "Invalid Citizen ID.")
-      .regex(/^\d+$/, "Invalid Citizen ID."),
-    first_name: z
-      .string()
-      .max(64, "Firstname must be less than 64 characters long."),
-    last_name: z
-      .string()
-      .max(64, "Lastname must be less than 64 characters long."),
-    bank_account: z
-      .string()
-      .length(10, "Invalid Bank Account.")
-      .regex(/^\d+$/, "Invalid Bank Account."),
-    email: z
-      .string()
-      .regex(
-        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-        "Invalid email format.",
-      ),
-    password: z
-      .string()
-      .min(12, "Password must be at least 12 characters long."),
-    confirmed_password: z
-      .string()
-      .min(12, "Password must be at least 12 characters long."),
-    birth_date: z.date(),
-    phone_no: z
-      .string()
-      .length(10, "Invalid phone number format.")
-      .regex(/^\d+$/, "Invalid phone number format."),
-    gender: z.enum(["M", "F"]),
-  })
-  .superRefine(({ confirmed_password, password }, ctx) => {
-    if (confirmed_password !== password) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The passwords did not match",
-      });
-    }
+const formSchema = z.object({
+  citizen_id: z
+    .string()
+    .length(13, "Invalid Citizen ID.")
+    .regex(/^\d+$/, "Invalid Citizen ID."),
+  first_name: z
+    .string()
+    .max(64, "Firstname must be less than 64 characters long."),
+  last_name: z
+    .string()
+    .max(64, "Lastname must be less than 64 characters long."),
+  bank_account: z
+    .string()
+    .length(10, "Invalid Bank Account.")
+    .regex(/^\d+$/, "Invalid Bank Account."),
+  email: z
+    .string()
+    .regex(
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+      "Invalid email format.",
+    ),
+  phone_no: z
+    .string()
+    .length(10, "Invalid phone number format.")
+    .regex(/^\d+$/, "Invalid phone number format."),
+});
+
+export default function AdminUnverifiedHostForm({
+  unhost_id,
+}: {
+  unhost_id: string;
+}) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const mutation = trpc.verification.verifyHost.useMutation();
+  const getHost = trpc.host.profile.findMany.useQuery({
+    host_id: unhost_id || undefined,
   });
-
-export default function AdminUnverifiedHostForm() {
-  const mutation = trpc.user.create.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ ...values, user_type: "Travelers" });
+    mutation.mutate({ admin_id: session?.user?.id, host_id: unhost_id });
+    router.push("/");
   }
   return (
     <main className="min-h-screent mt-8">
@@ -162,6 +158,19 @@ export default function AdminUnverifiedHostForm() {
                     </div>
                     <FormField
                       control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="phone_no"
                       render={({ field }) => (
                         <FormItem>
@@ -173,7 +182,6 @@ export default function AdminUnverifiedHostForm() {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="bank_account"

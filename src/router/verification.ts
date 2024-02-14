@@ -78,7 +78,7 @@ export const verificationRouter = router({
       if (!host_newIssue) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Host not found",
+          message: "Admin/Host not found",
         });
       }
       return host_newIssue;
