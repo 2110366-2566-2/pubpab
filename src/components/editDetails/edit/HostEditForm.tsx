@@ -26,6 +26,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import HostEditProperties from "@/components/properties/HostEditProperties";
 import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
+import HostProperties from "../hostProperties/HostProperties";
 
 const formSchema = z
   .object({
@@ -376,16 +377,17 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         <TabsContent value="properties_edit_form">
           <div className="flex justify-center">
             <div className="w-full max-w-4xl">
-              <Card>
+              <Card className="max-w-2xl">
                 <CardHeader>
                   <CardTitle>Property Information</CardTitle>
                   <CardDescription>
                     Make changes to property here.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <HostEditProperties />
-                  <label className="text-xl font-bold">Rooms</label>
+                {/* <CardContent className="space-y-2"> */}
+                {/* <HostEditProperties /> */}
+                <HostProperties />
+                {/* <label className="text-xl font-bold">Rooms</label>
                   <PropertyRoomCard
                     title="Studio Rooms"
                     imageUrl="/room1.jpeg"
@@ -400,22 +402,28 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                     title="Suites Rooms"
                     imageUrl="/room3.jpeg"
                     status="Available"
-                  />
-                  <div>
-                    <Button
-                      type="submit"
-                      className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                    >
-                      Save changes
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                    >
-                      Delete Property
-                    </Button>
-                  </div>
-                </CardContent>
+                  /> */}
+                <div className="flex justify-start gap-4 px-4 pb-4">
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Save changes
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Add Property
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Delete Property
+                  </Button>
+                </div>
+                {/* </CardContent> */}
               </Card>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const PropertyRoomCard = ({
   title,
@@ -9,12 +10,16 @@ const PropertyRoomCard = ({
   imageUrl: string;
   status: string;
 }) => {
+  const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
+
   return (
     <div className="relative rounded-lg bg-white shadow-md">
-      <img
+      <Image
         src={imageUrl}
         alt={title}
-        className="h-40 w-full rounded-t-lg object-cover"
+        width={1000}
+        height={100}
+        className="rounded-t-lg object-cover"
       />
       {status === "Available" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-green-500 px-2 py-1 text-white">

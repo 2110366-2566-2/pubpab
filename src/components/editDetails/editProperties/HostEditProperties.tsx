@@ -33,6 +33,13 @@ import { trpc } from "@/lib/trpc/client";
 import Image from "next/image";
 import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
 import PropertyCard from "@/components/propertycard/PropertyCard";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const formSchema = z.object({
   name_a: z
@@ -206,6 +213,51 @@ export default function HostEditProperties() {
                   </FormItem>
                 )}
               />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Property Information</CardTitle>
+                  <CardDescription>
+                    Make changes to property here.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <HostEditProperties />
+                  <label className="text-xl font-bold">Rooms</label>
+                  <PropertyRoomCard
+                    title="Studio Rooms"
+                    imageUrl="/room1.jpeg"
+                    status="Available"
+                  />
+                  <PropertyRoomCard
+                    title="Deluxe Rooms"
+                    imageUrl="/room2.jpeg"
+                    status="Unavailable"
+                  />
+                  <PropertyRoomCard
+                    title="Suites Rooms"
+                    imageUrl="/room3.jpeg"
+                    status="Available"
+                  />
+                  <div>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Save changes
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Delete Property
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
           {/* <Button type="submit" className="mt-10 w-40">

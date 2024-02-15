@@ -43,6 +43,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AdminVerifyProperties from "./AdminVerifyProperties";
 import VerifyRoomCard from "@/components/verify/VerifyRoomCard";
+import AdminVerifyProperty from "@/components/editDetails/hostProperties/AdminVerifyProperty";
 
 const formSchema = z.object({
   citizen_id: z
@@ -262,7 +263,8 @@ export default function AdminUnverifiedHostForm({
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <AdminVerifyProperties />
+                  <AdminVerifyProperty />
+                  {/* <AdminVerifyProperties />
                   <VerifyRoomCard
                     title="Studio Rooms"
                     imageUrl="/room1.jpeg"
@@ -277,7 +279,7 @@ export default function AdminUnverifiedHostForm({
                     title="Suites Rooms"
                     imageUrl="/room3.jpeg"
                     status="Unverified"
-                  />
+                  /> */}
                 </CardContent>
               </Card>
             </div>
