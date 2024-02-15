@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
 import {
@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/card";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import HostEditProperties from "../properties/HostEditProperties";
-import PropertyRoomCard from "../propertycard/PropertyRoomCard";
+import HostEditProperties from "@/components/properties/HostEditProperties";
+import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
 
 const formSchema = z
   .object({

@@ -441,7 +441,10 @@ export default function HostRegisterForm() {
           )}
         />
 
-        <Button type="submit" className="mt-4">
+        <Button
+          type="submit"
+          className="text-grey-800 mt-4 bg-[#F4EDEA] hover:text-white"
+        >
           Register
         </Button>
       </form>
