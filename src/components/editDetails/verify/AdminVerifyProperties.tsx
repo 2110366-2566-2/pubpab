@@ -12,18 +12,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Input } from "../ui/input";
-
-import VerifyPropertyCard from "./VerifyPropertyCard";
-import VerifyRoomCard from "./VerifyRoomCard";
+import { Input } from "@/components/ui/input";
+import VerifyPropertyCard from "@/components/verify/VerifyPropertyCard";
 
 const formSchema = z.object({
   name_a: z
@@ -204,34 +194,6 @@ export default function AdminVerifyProperties() {
           </div>
         </form>
       </Form>
-      <div className="flex justify-center">
-        <div className="w-full max-w-4xl">
-          <Card>
-            <CardHeader>
-              <CardTitle>Property Information</CardTitle>
-              <CardDescription>Make changes to property here.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <AdminVerifyProperties />
-              <VerifyRoomCard
-                title="Studio Rooms"
-                imageUrl="/room1.jpeg"
-                status="Verified"
-              />
-              <VerifyRoomCard
-                title="Deluxe Rooms"
-                imageUrl="/room2.jpeg"
-                status="Verified"
-              />
-              <VerifyRoomCard
-                title="Suites Rooms"
-                imageUrl="/room3.jpeg"
-                status="Unverified"
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 }

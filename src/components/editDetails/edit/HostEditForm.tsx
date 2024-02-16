@@ -22,12 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
 
-import HostEditProperties from "../properties/HostEditProperties";
-import PropertyRoomCard from "../propertycard/PropertyRoomCard";
-import { Input } from "../ui/input";
+import HostProperties from "../hostProperties/HostProperties";
 
 const formSchema = z
   .object({
@@ -97,7 +96,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
     router.push("/");
   }
   return (
-    <main className="mt-4 min-h-screen grow px-4">
+    <main className="mt-4 min-h-screen px-4">
       <div className="mx-auto max-w-4xl lg:mx-0">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Host Editing Page
@@ -114,7 +113,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         </TabsList>
         <TabsContent value="profile_edit_form">
           <div className="flex justify-center">
-            <div className="w-full">
+            <div className="w-full max-w-4xl">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
@@ -377,17 +376,18 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         </TabsContent>
         <TabsContent value="properties_edit_form">
           <div className="flex justify-center">
-            <div className="w-full">
-              <Card>
+            <div className="w-full max-w-4xl">
+              <Card className="max-w-2xl">
                 <CardHeader>
                   <CardTitle>Property Information</CardTitle>
                   <CardDescription>
                     Make changes to property here.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <HostEditProperties />
-                  <label className="text-xl font-bold">Rooms</label>
+                {/* <CardContent className="space-y-2"> */}
+                {/* <HostEditProperties /> */}
+                <HostProperties />
+                {/* <label className="text-xl font-bold">Rooms</label>
                   <PropertyRoomCard
                     title="Studio Rooms"
                     imageUrl="/room1.jpeg"
@@ -402,22 +402,28 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                     title="Suites Rooms"
                     imageUrl="/room3.jpeg"
                     status="Available"
-                  />
-                  <div>
-                    <Button
-                      type="submit"
-                      className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                    >
-                      Save changes
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                    >
-                      Delete Property
-                    </Button>
-                  </div>
-                </CardContent>
+                  /> */}
+                <div className="flex justify-start gap-4 px-4 pb-4">
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Save changes
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Add Property
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  >
+                    Delete Property
+                  </Button>
+                </div>
+                {/* </CardContent> */}
               </Card>
             </div>
           </div>

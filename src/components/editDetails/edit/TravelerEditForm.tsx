@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import user from "@/../public/User.svg";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,9 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
-
-import { Input } from "../ui/input";
 
 const formSchema = z
   .object({
@@ -85,7 +83,7 @@ export default function TravelerEditForm() {
       </div> */}
 
       <div className="relative mt-8 flex items-center justify-center gap-x-4">
-        <Image src={user} alt="" className="w-20 lg:w-16"></Image>
+        <Image src="/User.svg" width={40} height={40} alt="user" />
         <div className="text-sm leading-6">
           <p className="font-semibold text-gray-900">
             <a href="#">
@@ -182,10 +180,7 @@ export default function TravelerEditForm() {
               )}
             />
 
-            <Button
-              type="submit"
-              className="text-grey-800 mt-10 bg-[#F4EDEA] hover:text-white"
-            >
+            <Button type="submit" className="mt-10">
               Save changes
             </Button>
           </form>

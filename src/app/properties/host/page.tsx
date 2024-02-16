@@ -5,7 +5,6 @@ export default async function HostEditPropertiesPage() {
       <div className="flex flex-col space-y-8">
         <div>
           <HostEditProperties />
-          {/* <PropertyRoomCard /> */}
         </div>
       </div>
     </div>

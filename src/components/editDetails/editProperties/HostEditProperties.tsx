@@ -4,6 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import PropertyCard from "@/components/propertycard/PropertyCard";
+import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -12,18 +22,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Input } from "../ui/input";
-
-import VerifyPropertyCard from "./VerifyPropertyCard";
-import VerifyRoomCard from "./VerifyRoomCard";
+import { Input } from "@/components/ui/input";
+import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
   name_a: z
@@ -44,59 +44,57 @@ const formSchema = z.object({
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
 });
 
-export default function AdminVerifyProperties() {
+export default function HostEditProperties() {
+  const mutation = trpc.host.accomodation.update.useMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  // function onSubmit(values: z.infer<typeof formSchema>) {
-  //   console.log(values);
-  //   mutation.mutate({ ...values, user_type: "Travelers" });
-  // }
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    mutation.mutate({ ...values, accommodation_id: "" });
+  }
   return (
     <div className="mx-auto">
-      <VerifyPropertyCard
-        imageUrl="/sk.jpeg"
-        title="Long Building"
-        status="Verified"
-      />
+      <PropertyCard imageUrl="/sk.jpeg" title="Long Building" status="Opened" />
       <Form {...form}>
-        <form className="space-y-4 px-4">
-          <FormField
-            control={form.control}
-            name="name_a"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Property Name"
-                    className="border border-black"
-                    readOnly
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description_a"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Property Description"
-                    className="border border-black"
-                    readOnly
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
+          <div>
+            <FormField
+              control={form.control}
+              name="name_a"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Property Name"
+                      className="border border-black"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description_a"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Property Description"
+                      className="border border-black"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div>
             <label className="text-xl">Location</label>
           </div>
@@ -111,7 +109,6 @@ export default function AdminVerifyProperties() {
                     <Input
                       placeholder="Address"
                       className="border border-black"
-                      readOnly
                       {...field}
                     />
                   </FormControl>
@@ -128,12 +125,12 @@ export default function AdminVerifyProperties() {
                 render={({ field }) => (
                   <FormItem className="mb-4 mr-7">
                     {" "}
+                    {/* Add margin bottom and right */}
                     <FormLabel>City</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="City"
                         className="border border-black"
-                        readOnly
                         {...field}
                       />
                     </FormControl>
@@ -147,12 +144,12 @@ export default function AdminVerifyProperties() {
                 render={({ field }) => (
                   <FormItem className="mb-4 mr-7">
                     {" "}
+                    {/* Add margin bottom */}
                     <FormLabel>District</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="District"
                         className="border border-black"
-                        readOnly
                         {...field}
                       />
                     </FormControl>
@@ -168,12 +165,12 @@ export default function AdminVerifyProperties() {
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     {" "}
+                    {/* Add margin bottom and right */}
                     <FormLabel>Province</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Province"
                         className="border border-black"
-                        readOnly
                         {...field}
                       />
                     </FormControl>
@@ -187,12 +184,12 @@ export default function AdminVerifyProperties() {
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     {" "}
+                    {/* Add margin bottom */}
                     <FormLabel>Postal Code</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Postal Code"
                         className="border border-black"
-                        readOnly
                         {...field}
                       />
                     </FormControl>
@@ -202,36 +199,56 @@ export default function AdminVerifyProperties() {
               />
             </div>
           </div>
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Property Information</CardTitle>
+                  <CardDescription>
+                    Make changes to property here.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <HostEditProperties />
+                  <label className="text-xl font-bold">Rooms</label>
+                  <PropertyRoomCard
+                    title="Studio Rooms"
+                    imageUrl="/room1.jpeg"
+                    status="Available"
+                  />
+                  <PropertyRoomCard
+                    title="Deluxe Rooms"
+                    imageUrl="/room2.jpeg"
+                    status="Unavailable"
+                  />
+                  <PropertyRoomCard
+                    title="Suites Rooms"
+                    imageUrl="/room3.jpeg"
+                    status="Available"
+                  />
+                  <div>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Save changes
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    >
+                      Delete Property
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+          {/* <Button type="submit" className="mt-10 w-40">
+            Save changes
+          </Button> */}
         </form>
       </Form>
-      <div className="flex justify-center">
-        <div className="w-full max-w-4xl">
-          <Card>
-            <CardHeader>
-              <CardTitle>Property Information</CardTitle>
-              <CardDescription>Make changes to property here.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <AdminVerifyProperties />
-              <VerifyRoomCard
-                title="Studio Rooms"
-                imageUrl="/room1.jpeg"
-                status="Verified"
-              />
-              <VerifyRoomCard
-                title="Deluxe Rooms"
-                imageUrl="/room2.jpeg"
-                status="Verified"
-              />
-              <VerifyRoomCard
-                title="Suites Rooms"
-                imageUrl="/room3.jpeg"
-                status="Unverified"
-              />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 }
