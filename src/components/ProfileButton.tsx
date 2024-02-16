@@ -10,12 +10,12 @@ const ProfileButton = () => {
   const router = useRouter();
 
   const handleTravelerClick = async () => {
-    await router.push("/edit/traveler");
+    await router.push("/edit/traveler/profile");
     // setTimeout(() => location.reload(), 500);
   };
 
   const handleHostClick = async () => {
-    await router.push("/edit/host");
+    await router.push("/edit/host/profile");
     // setTimeout(() => location.reload(), 500);
   };
   if (session && session.user) {
