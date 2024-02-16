@@ -36,6 +36,12 @@ const Navbar = () => {
           >
             Admin Dashboard
           </Link>
+          <Link
+            className="text-gray-800 transition-colors hover:text-sky-400"
+            href={"/edit/host/profile"}
+          >
+            Host Profile
+          </Link>
         </div>
       </div>
       <div className="flex items-center">
