@@ -1,16 +1,11 @@
 // pages/extra/extra.tsx
 
-import chefSmart from "/public/chefSmart.png";
-import ta from "/public/taengooTVselfie.jpg";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import chefSmart from "@/../public/chefSmart.png";
+import ta from "@/../public/taengooTVselfie.jpg";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import UnverifiedHost from "@/components/verify/UnverifiedHost";
 
 const Extra = async () => {
-  const session = await getServerSession(authOptions);
-
   return (
     <div>
       <div className="h-16 w-full bg-[#004B64]"></div>

@@ -1,8 +1,20 @@
 "use client";
-import Image from "next/image";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import AdminVerifyProperty from "@/components/editDetails/hostProperties/AdminVerifyProperty";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,39 +23,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import AdminVerifyProperties from "./AdminVerifyProperties";
-import VerifyRoomCard from "@/components/verify/VerifyRoomCard";
-import AdminVerifyProperty from "@/components/editDetails/hostProperties/AdminVerifyProperty";
 
 const formSchema = z.object({
   citizen_id: z
@@ -81,9 +63,6 @@ export default function AdminUnverifiedHostForm({
   const router = useRouter();
 
   const mutation = trpc.verification.verifyHost.useMutation();
-  const getHost = trpc.host.profile.findMany.useQuery({
-    host_id: unhost_id || undefined,
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

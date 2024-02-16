@@ -1,5 +1,4 @@
 import AdminVerifyProperties from "@/components/verify/AdminVerifyProperties";
-import VerifyRoomCard from "@/components/verify/VerifyRoomCard";
 
 export default async function AdminVerifyPropertiesPage() {
   return (
@@ -7,7 +6,7 @@ export default async function AdminVerifyPropertiesPage() {
       <div className="flex flex-col space-y-8">
         <div>
           <AdminVerifyProperties />
-          <VerifyRoomCard />
+          {/* <VerifyRoomCard /> */}
         </div>
       </div>
     </div>

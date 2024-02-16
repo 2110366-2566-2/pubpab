@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 
 const PropertyRoomCard = ({
@@ -10,7 +9,7 @@ const PropertyRoomCard = ({
   imageUrl: string;
   status: string;
 }) => {
-  const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
+  // const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
 
   return (
     <div className="relative rounded-lg bg-white shadow-md">

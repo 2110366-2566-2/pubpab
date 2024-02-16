@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "../../../../lib/client";
-import { hash } from "bcrypt";
+import { NextResponse } from "next/server";
+
+import { prisma } from "../../../../lib/client";
 
 // Get all not verified host profile
-export async function GET(request: NextRequest) {
+export async function GET() {
   const getHostWithUser = await prisma.host.findMany({
     where: {
       admin_id: null,

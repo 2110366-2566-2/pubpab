@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 
 import HostEditForm from "@/components/editDetails/edit/HostEditForm";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function HostEditPage() {
   const session = await getServerSession(authOptions);

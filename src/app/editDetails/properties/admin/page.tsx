@@ -1,5 +1,4 @@
 import AdminVerifyProperties from "@/components/editDetails/verify/AdminVerifyProperties";
-import VerifyRoomCard from "@/components/verify/VerifyRoomCard";
 
 export default async function AdminVerifyPropertiesPage() {
   return (

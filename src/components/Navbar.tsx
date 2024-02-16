@@ -1,13 +1,14 @@
-import React from "react";
-import Link from "next/link";
 import Image from "next/image"; // Import Image component for the logo
-import SigninButton from "./SigninButton";
-import ProfileButton from "./ProfileButton";
+import Link from "next/link";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "../components/ui/popover";
+
+import ProfileButton from "./ProfileButton";
+import SigninButton from "./SigninButton";
 
 const Navbar = () => {
   return (

@@ -1,13 +1,10 @@
 "use client";
-import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { Button, buttonVariants } from "../components/ui/button";
-import { useRouter } from "next/navigation";
+
+import { Button } from "../components/ui/button";
 
 const SigninButton = () => {
   const { data: session } = useSession();
-  const router = useRouter();
 
   const handleSignOut = async () => {
     const port = process.env.PORT || 3000; // Use port from environment variable or default to 3000

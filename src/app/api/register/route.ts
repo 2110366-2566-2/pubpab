@@ -1,7 +1,8 @@
 // Import necessary modules
+import { hash } from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/client";
-import { compare, hash } from "bcrypt";
+
+import { prisma } from "../../../lib/client";
 // POST method for creating a new user
 export async function POST(request: NextRequest) {
   try {

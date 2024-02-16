@@ -1,5 +1,6 @@
-import HostRegisterForm from "@/components/register/HostRegisterForm";
 import Link from "next/link";
+
+import HostRegisterForm from "@/components/register/HostRegisterForm";
 import { Button } from "@/components/ui/button";
 
 export default async function HostRegisterPage() {

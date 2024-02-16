@@ -1,13 +1,6 @@
-import React from "react";
-import PropertyCard from "@/components/propertycard/PropertyCard";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import PropertyCard from "@/components/propertycard/PropertyCard";
 
 export default function HostProperties() {
   return (

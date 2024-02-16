@@ -1,8 +1,6 @@
 "use-client";
 
-import React from "react";
 import VerifyPropertyCard from "@/components/verify/VerifyPropertyCard";
-import Link from "next/link";
 
 export default function AdminVerifyProperty() {
   return (

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "../../../../../lib/client";
+
+import { prisma } from "../../../../../lib/client";
 
 export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("room_id");

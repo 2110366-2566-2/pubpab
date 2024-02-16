@@ -1,7 +1,7 @@
 // pages/extra/extra.tsx
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import React from "react";
+
+import { authOptions } from "@/lib/authOptions";
 const Extra = async () => {
   const session = await getServerSession(authOptions);
 
