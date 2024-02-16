@@ -1,8 +1,20 @@
 "use client";
-import Image from "next/image";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import user from "@/../public/User.svg";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,22 +23,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "../ui/input";
-import user from "/public/User.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
 import HostEditProperties from "../properties/HostEditProperties";
 import PropertyRoomCard from "../propertycard/PropertyRoomCard";
+import { Input } from "../ui/input";
 
 const formSchema = z
   .object({
@@ -96,7 +98,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
     router.push("/");
   }
   return (
-    <main className="mt-4 min-h-screen px-4">
+    <main className="mt-4 min-h-screen grow px-4">
       <div className="mx-auto max-w-4xl lg:mx-0">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Host Editing Page
@@ -113,7 +115,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         </TabsList>
         <TabsContent value="profile_edit_form">
           <div className="flex justify-center">
-            <div className="w-full max-w-4xl">
+            <div className="w-full">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
@@ -375,7 +377,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         </TabsContent>
         <TabsContent value="properties_edit_form">
           <div className="flex justify-center">
-            <div className="w-full max-w-4xl">
+            <div className="w-full">
               <Card>
                 <CardHeader>
                   <CardTitle>Property Information</CardTitle>

@@ -1,8 +1,13 @@
 "use client";
-import Image from "next/image";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import user from "@/../public/User.svg";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,12 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "../ui/input";
 import { trpc } from "@/lib/trpc/client";
-import user from "/public/User.svg";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
+import { Input } from "../ui/input";
 
 const formSchema = z
   .object({

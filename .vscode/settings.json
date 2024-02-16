@@ -1,0 +1,8 @@
+{
+  "path-intellisense.mappings": {
+    "@": "./src"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  }
+}

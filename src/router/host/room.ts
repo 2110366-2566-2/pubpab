@@ -1,7 +1,8 @@
-import prisma from "@/lib/client";
-import { router, publicProcedure } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
+import { prisma } from "@/lib/client";
+import { router, publicProcedure } from "@/server/trpc";
 
 export const roomRouter = router({
   findMany: publicProcedure

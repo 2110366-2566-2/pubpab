@@ -1,8 +1,9 @@
 import Image from "next/image";
-import hero from "/public/hero.jpg";
-import phuket from "/public/phuket.png";
-import ladprao from "/public/ladprao.png";
-import pattaya from "/public/pattaya.png";
+
+import hero from "@/../public/hero.jpg";
+import ladprao from "@/../public/ladprao.png";
+import pattaya from "@/../public/pattaya.png";
+import phuket from "@/../public/phuket.png";
 
 export default function Home() {
   return (
