@@ -81,248 +81,250 @@ export default function HostEditRoomForm() {
     mutation.mutate({ ...values, room_id: "" });
   }
   return (
-    <Card className="max-w-2xl">
-      <CardHeader>
-        <CardTitle>Property Information</CardTitle>
-        <CardDescription>Make changes to property here.</CardDescription>
-      </CardHeader>
-      <div className="mx-4">
-        <Link href="/editDetails/edit/host">
-          <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-            Back
-          </Button>
-        </Link>
-        <PropertyRoomCard
-          title="Suite"
-          imageUrl={"/room1.jpeg"}
-          status="Available"
-        />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mx-4 my-4 space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Name"
-                      className="border border-black"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Description"
-                      className="border border-black"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+    <div>
+      <Link href="/editDetails/edit/host">
+        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
+          Back
+        </Button>
+      </Link>
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <CardTitle>Room Information</CardTitle>
+          <CardDescription>Make changes to room here.</CardDescription>
+        </CardHeader>
+        <div className="mx-4">
+          <PropertyRoomCard
+            title="Suite"
+            imageUrl={"/room1.jpeg"}
+            status="Available"
+          />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="mx-4 my-4 space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Name"
+                        className="border border-black"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Description"
+                        className="border border-black"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Price"
-                      className="border border-black"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex flex-wrap">
-              <div className="w-full md:w-1/2 lg:w-1/3">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Price"
+                        className="border border-black"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-wrap">
+                <div className="w-full md:w-1/2 lg:w-1/3">
+                  <FormField
+                    control={form.control}
+                    name="adult"
+                    render={({ field }) => (
+                      <FormItem className="mb-4 mr-7">
+                        {" "}
+                        <FormLabel>Adult</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="border border-black" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 lg:w-1/3">
+                  <FormField
+                    control={form.control}
+                    name="children"
+                    render={({ field }) => (
+                      <FormItem className="mb-4 mr-7">
+                        {" "}
+                        <FormLabel>Children</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="border border-black" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="text-lg">Allow</div>
                 <FormField
                   control={form.control}
-                  name="adult"
+                  name="smoking"
                   render={({ field }) => (
-                    <FormItem className="mb-4 mr-7">
-                      {" "}
-                      <FormLabel>Adult</FormLabel>
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 ">
                       <FormControl>
-                        <Input {...field} className="border border-black" />
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Smoking</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="noise"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Noise</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="pet"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Pet</FormLabel>
+                      </div>
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="w-full md:w-1/2 lg:w-1/3">
+              <div>
+                <div className="text-lg"> Facility </div>
                 <FormField
                   control={form.control}
-                  name="children"
+                  name="washing_machine"
                   render={({ field }) => (
-                    <FormItem className="mb-4 mr-7">
-                      {" "}
-                      <FormLabel>Children</FormLabel>
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
                       <FormControl>
-                        <Input {...field} className="border border-black" />
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Washing Machine</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="restroom"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Restroom</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="wifi_available"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Wifi Available</FormLabel>
+                      </div>
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
 
-            <div>
-              <div className="text-lg">Allow</div>
-              <FormField
-                control={form.control}
-                name="smoking"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Smoking</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="noise"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Noise</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="pet"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Pet</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div>
-              <div className="text-lg"> Facility </div>
-              <FormField
-                control={form.control}
-                name="washing_machine"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Washing Machine</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="restroom"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Restroom</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="wifi_available"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4 ">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Wifi Available</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div>
-              <Button
-                type="submit"
-                className="text-grey-800 mt-15 ml-0 mr-2 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-              >
-                Save Changes
-              </Button>
-              <Button
-                type="submit"
-                className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-              >
-                Delete Room
-              </Button>
-            </div>
-            {/* <Button type="submit" className="mt-10">
-                    Save Changes
-                  </Button>
-                  <Button type="submit" className="mt-10">
-                    Delete Room
-                  </Button>
-                </div> */}
-          </form>
-        </Form>
-      </div>
-    </Card>
+              <div>
+                <Button
+                  type="submit"
+                  className="text-grey-800 mt-15 ml-0 mr-2 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                >
+                  Save Changes
+                </Button>
+                <Button
+                  type="submit"
+                  className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                >
+                  Delete Room
+                </Button>
+              </div>
+              {/* <Button type="submit" className="mt-10">
+                      Save Changes
+                    </Button>
+                    <Button type="submit" className="mt-10">
+                      Delete Room
+                    </Button>
+                  </div> */}
+            </form>
+          </Form>
+        </div>
+      </Card>
+    </div>
   );
 }

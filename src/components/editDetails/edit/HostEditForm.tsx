@@ -113,7 +113,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
         </TabsList>
         <TabsContent value="profile_edit_form">
           <div className="flex justify-center">
-            <div className="w-full max-w-4xl">
+            <div className="w-full">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
