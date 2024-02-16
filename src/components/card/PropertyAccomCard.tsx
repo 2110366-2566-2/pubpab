@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const PropertyCard = ({
+const PropertyAccomCard = ({
   title,
   imageUrl,
   status,
@@ -35,4 +35,4 @@ const PropertyCard = ({
     </div>
   );
 };
-export default PropertyCard;
+export default PropertyAccomCard;

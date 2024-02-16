@@ -1,6 +1,6 @@
 import Image from "next/image";
 //FOR ADMIN VERIFY
-export default function UnverifiedHost({ imageUrl }: { imageUrl: string }) {
+export default function UnverifiedHostCard({ imageUrl }: { imageUrl: string }) {
   return (
     <div className="relative flex w-fit flex-col overflow-hidden rounded-lg text-left">
       <div className="absolute right-5 top-5">Verify / Not Verify</div>

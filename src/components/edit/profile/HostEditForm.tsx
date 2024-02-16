@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
 
-import HostProperties from "../hostProperties/HostProperties";
+import HostProperties from "../properties/HostProperties";
 
 const formSchema = z
   .object({
@@ -182,27 +182,6 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                             </FormItem>
                           )}
                         />
-                        {/* <FormField
-                      control={form.control}
-                      name="gender"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gender</FormLabel>
-                          <Select onValueChange={field.onChange}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Gender" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="M">Male</SelectItem>
-                              <SelectItem value="F">Female</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                         <FormField
                           control={form.control}
                           name="bank_account"
@@ -268,98 +247,6 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                             </FormItem>
                           )}
                         />
-                        {/* <FormField
-                      control={form.control}
-                      name="birth_date"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Date of Birth</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="gender"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Gender</FormLabel>
-                              <Select onValueChange={field.onChange}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Gender" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="M">Male</SelectItem>
-                                  <SelectItem value="F">Female</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="bank_account"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Bank Account</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="citizen_id"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Citizen ID</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                  date > new Date() ||
-                                  date < new Date("1900-01-01")
-                                }
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                         <Button
                           type="submit"
                           className="text-grey-800 mt-10 border border-black bg-[#F4EDEA] hover:text-white"
@@ -384,25 +271,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                     Make changes to property here.
                   </CardDescription>
                 </CardHeader>
-                {/* <CardContent className="space-y-2"> */}
-                {/* <HostEditProperties /> */}
                 <HostProperties />
-                {/* <label className="text-xl font-bold">Rooms</label>
-                  <PropertyRoomCard
-                    title="Studio Rooms"
-                    imageUrl="/room1.jpeg"
-                    status="Available"
-                  />
-                  <PropertyRoomCard
-                    title="Deluxe Rooms"
-                    imageUrl="/room2.jpeg"
-                    status="Unavailable"
-                  />
-                  <PropertyRoomCard
-                    title="Suites Rooms"
-                    imageUrl="/room3.jpeg"
-                    status="Available"
-                  /> */}
                 <div className="flex justify-start gap-4 px-4 pb-4">
                   <Button
                     type="submit"
@@ -423,7 +292,6 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                     Delete Property
                   </Button>
                 </div>
-                {/* </CardContent> */}
               </Card>
             </div>
           </div>

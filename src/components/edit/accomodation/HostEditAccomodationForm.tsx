@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import PropertyCard from "@/components/propertycard/PropertyCard";
-import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
+import PropertyAccomCard from "@/components/card/PropertyAccomCard";
+import PropertyRoomCard from "@/components/card/PropertyRoomCard";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,7 +44,7 @@ const formSchema = z.object({
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
 });
 
-export default function HostEditProperties() {
+export default function HostEditAccomodationForm() {
   const mutation = trpc.host.accomodation.update.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,7 +56,7 @@ export default function HostEditProperties() {
   }
   return (
     <div>
-      <Link href="/editDetails/edit/host">
+      <Link href="/edit/host/profile">
         <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
           Back
         </Button>
@@ -67,7 +67,7 @@ export default function HostEditProperties() {
           <CardDescription>Make changes to property here.</CardDescription>
         </CardHeader>
         <div className="mb-4">
-          <PropertyCard
+          <PropertyAccomCard
             imageUrl="/Menorca.webp"
             title="Menorca Hotel"
             status="Opened"
@@ -220,21 +220,21 @@ export default function HostEditProperties() {
                 </div>
               </div>
               <div className="my-4 flex flex-wrap gap-4">
-                <Link href="/editDetails/editRoom/host">
+                <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room1.jpeg"
                     title="Suite"
                     status="Available"
                   />
                 </Link>
-                <Link href="/editDetails/editRoom/host">
+                <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room2.jpeg"
                     title="Superior room"
                     status="Available"
                   />
                 </Link>
-                <Link href="/editDetails/editRoom/host">
+                <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room3.jpeg"
                     title="Deluxe room"

@@ -55,7 +55,7 @@ const formSchema = z.object({
   // }),
 });
 
-export default function HostEditRoomForm() {
+export default function AdminHostRoom() {
   const mutation = trpc.host.room.update.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({

@@ -1,9 +1,9 @@
-import AdminVerifyRoomForm from "@/components/editDetails/editRoom/AdminVerifyRoomForm";
+import AdminHostRoom from "@/components/admin/AdminHostRoom";
 
-export default async function AdminVerifyRoom() {
+export default async function AdminHostRoomPage() {
   return (
     <div className="my-12 flex min-h-screen justify-center">
-      <AdminVerifyRoomForm />
+      <AdminHostRoom />
     </div>
   );
 }

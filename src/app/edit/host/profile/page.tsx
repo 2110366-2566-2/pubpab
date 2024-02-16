@@ -1,9 +1,9 @@
 // import { getServerSession } from "next-auth";
 
-import HostEditForm from "@/components/editDetails/edit/HostEditForm";
+import HostEditForm from "@/components/edit/profile/HostEditForm";
 // import { authOptions } from "@/lib/authOptions";
 
-export default async function HostEditPage() {
+export default async function HostEditProfilePage() {
   // const session = await getServerSession(authOptions);
   // if (!session?.user) {
   //   return <h1 className="text-lg">Not logged in</h1>;

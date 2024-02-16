@@ -1,4 +1,4 @@
-import TravelerEditForm from "@/components/editDetails/edit/TravelerEditForm";
+import TravelerEditForm from "@/components/edit/profile/TravelerEditForm";
 
 export default async function TravelerEditPage() {
   return (

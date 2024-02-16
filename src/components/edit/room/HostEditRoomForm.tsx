@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import PropertyRoomCard from "@/components/propertycard/PropertyRoomCard";
+import PropertyRoomCard from "@/components/card/PropertyRoomCard";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -82,7 +82,7 @@ export default function HostEditRoomForm() {
   }
   return (
     <div>
-      <Link href="/editDetails/edit/host">
+      <Link href="/edit/host/accomodation">
         <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
           Back
         </Button>

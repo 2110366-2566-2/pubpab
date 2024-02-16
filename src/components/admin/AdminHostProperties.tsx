@@ -1,8 +1,8 @@
 "use-client";
 
-import VerifyPropertyCard from "@/components/verify/VerifyPropertyCard";
+import VerifyPropertyCard from "@/components/card/VerifyHostCard";
 
-export default function AdminVerifyProperty() {
+export default function AdminHostProperties() {
   return (
     <div>
       <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">

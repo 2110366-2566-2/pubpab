@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import AdminVerifyProperty from "@/components/editDetails/hostProperties/AdminVerifyProperty";
+import AdminHostProperties from "@/components/admin/AdminHostProperties";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -54,11 +54,7 @@ const formSchema = z.object({
     .regex(/^\d+$/, "Invalid phone number format."),
 });
 
-export default function AdminUnverifiedHostForm({
-  unhost_id,
-}: {
-  unhost_id: string;
-}) {
+export default function AdminHostProfile({ unhost_id }: { unhost_id: string }) {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -242,23 +238,7 @@ export default function AdminUnverifiedHostForm({
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <AdminVerifyProperty />
-                  {/* <AdminVerifyProperties />
-                  <VerifyRoomCard
-                    title="Studio Rooms"
-                    imageUrl="/room1.jpeg"
-                    status="Verified"
-                  />
-                  <VerifyRoomCard
-                    title="Deluxe Rooms"
-                    imageUrl="/room2.jpeg"
-                    status="Verified"
-                  />
-                  <VerifyRoomCard
-                    title="Suites Rooms"
-                    imageUrl="/room3.jpeg"
-                    status="Unverified"
-                  /> */}
+                  <AdminHostProperties />
                 </CardContent>
               </Card>
             </div>
