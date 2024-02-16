@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "../../../../lib/client";
 import { hash } from "bcrypt";
+import { NextRequest, NextResponse } from "next/server";
+
+import { prisma } from "../../../../lib/client";
 
 // Get host profile
 export async function GET(request: NextRequest) {

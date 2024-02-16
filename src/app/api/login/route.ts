@@ -1,7 +1,7 @@
 // Import necessary modules
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/client";
-import bcrypt from "bcrypt";
+
+import { prisma } from "../../../lib/client";
 
 // GET method for user login
 export async function GET(request: NextRequest) {

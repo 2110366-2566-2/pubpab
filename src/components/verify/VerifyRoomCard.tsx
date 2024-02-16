@@ -1,6 +1,3 @@
-import { Verify } from "crypto";
-import React from "react";
-
 const VerifyRoomCard = ({
   title,
   imageUrl,

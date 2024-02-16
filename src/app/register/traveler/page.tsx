@@ -1,5 +1,6 @@
-import TravelerRegisterForm from "@/components/register/TravelerRegisterForm";
 import Link from "next/link";
+
+import TravelerRegisterForm from "@/components/register/TravelerRegisterForm";
 import { Button } from "@/components/ui/button";
 
 export default async function TravelerRegisterPage() {

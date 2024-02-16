@@ -1,8 +1,9 @@
-import prisma from "@/lib/client";
-import { router, publicProcedure } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
 import { hash } from "bcrypt";
 import { z } from "zod";
+
+import { prisma } from "@/lib/client";
+import { router, publicProcedure } from "@/server/trpc";
 
 const calculateAge = (birthDate: Date) => {
   const today = new Date();

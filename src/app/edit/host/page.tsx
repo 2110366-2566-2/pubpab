@@ -1,6 +1,7 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import HostEditForm from "@/components/edit/HostEditForm";
 import { getServerSession } from "next-auth";
+
+import HostEditForm from "@/components/edit/HostEditForm";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function HostEditPage() {
   const session = await getServerSession(authOptions);
@@ -11,7 +12,7 @@ export default async function HostEditPage() {
     return <h1 className="text-lg">Not a host</h1>;
   }
   return (
-    <div className="my-12 flex justify-center">
+    <div className="mx-auto my-12 flex max-w-3xl justify-center">
       <HostEditForm />
     </div>
   );

@@ -1,8 +1,9 @@
 "use client";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import {
   Form,
   FormControl,
@@ -11,22 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+
 import { Input } from "../ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { trpc } from "@/lib/trpc/client";
-import Image from "next/image";
+
 import VerifyPropertyCard from "./VerifyPropertyCard";
 
 const formSchema = z.object({
@@ -49,8 +37,6 @@ const formSchema = z.object({
 });
 
 export default function AdminVerifyProperties() {
-  const getAccom = trpc.host.accomodation.findMany.useQuery({ id: "" });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });

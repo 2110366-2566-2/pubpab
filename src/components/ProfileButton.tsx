@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { Button, buttonVariants } from "../components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+import { Button } from "../components/ui/button";
 
 const ProfileButton = () => {
   const { data: session } = useSession();
@@ -12,12 +11,12 @@ const ProfileButton = () => {
 
   const handleTravelerClick = async () => {
     await router.push("/edit/traveler");
-    setTimeout(() => location.reload(), 500);
+    // setTimeout(() => location.reload(), 500);
   };
 
   const handleHostClick = async () => {
     await router.push("/edit/host");
-    setTimeout(() => location.reload(), 500);
+    // setTimeout(() => location.reload(), 500);
   };
   if (session && session.user) {
     if (session.user.role == "Hosts") {

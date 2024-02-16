@@ -1,4 +1,3 @@
-import React from "react";
 const PropertyCard = ({
   title,
   imageUrl,
