@@ -19,6 +19,35 @@ const calculateAge = (birthDate: Date) => {
 };
 
 export const travelerProfileRouter = router({
+  find: publicProcedure
+    .input(
+      z.object({
+        traveler_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const traveler = await prisma.traveler.findUnique({
+        where: { traveler_id: input.traveler_id },
+        select: {
+          users: {
+            select: {
+              first_name: true,
+              last_name: true,
+              phone_no: true,
+              banner: true,
+              email: true,
+            },
+          },
+        },
+      });
+      if (!traveler) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Traveler not found",
+        });
+      }
+      return traveler;
+    }),
   findMany: publicProcedure
     .input(z.object({ traveler_id: z.string() }))
     .query(async ({ input }) => {

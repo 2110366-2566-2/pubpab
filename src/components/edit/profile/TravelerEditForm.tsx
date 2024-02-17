@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
+import TravelerEditPage from "@/app/edit/traveler/profile/page";
 
 const formSchema = z
   .object({
@@ -52,24 +53,36 @@ const formSchema = z
     }
   });
 
-export default function TravelerEditForm() {
+  type TravelerData = {
+    first_name?: string;
+    last_name?: string;
+    bank_account?: string;
+    email?: string;
+    phone_no?: string;
+  };
+
+function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
   const { data: session } = useSession();
   const router = useRouter();
 
   const updatemutation = trpc.traveler.profile.update.useMutation();
-
+  const mutation = trpc.traveler.profile.update.useMutation();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: travelerData.email,
+      first_name: travelerData.first_name,
+      last_name: travelerData.last_name,
+      phone_no: travelerData.phone_no,
+    },
+  });
+  
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     updatemutation.mutate({ ...values, traveler_id: session?.user?.id });
     router.push("/");
   }
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   first_name: getTraveler?.data?.[0]?.users?.first_name || undefined,
-    // },
-  });
   return (
     <main className="min-h-screent mt-8">
       <div className="mx-auto max-w-2xl lg:mx-0">
@@ -187,5 +200,25 @@ export default function TravelerEditForm() {
         </Form>
       </div>
     </main>
+  );
+}
+
+export default function TravelerEditForm() {
+  const { data: session } = useSession();
+  const hostDataQuery = trpc.traveler.profile.find.useQuery({
+    traveler_id: session?.user?.id,
+  });
+  if (hostDataQuery.status === "loading") {
+    return <div>Loading...</div>;
+  }
+  return (
+    <TravelerProfileForm
+      travelerData={{
+        email: hostDataQuery.data?.users?.email,
+        first_name: hostDataQuery.data?.users?.first_name ?? "",
+        last_name: hostDataQuery.data?.users?.last_name ?? "",
+        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+      }}
+    />
   );
 }
