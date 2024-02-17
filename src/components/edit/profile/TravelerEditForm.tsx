@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
-import TravelerEditPage from "@/app/edit/traveler/profile/page";
 
 const formSchema = z
   .object({
@@ -53,19 +52,18 @@ const formSchema = z
     }
   });
 
-  type TravelerData = {
-    first_name?: string;
-    last_name?: string;
-    bank_account?: string;
-    email?: string;
-    phone_no?: string;
-  };
+type TravelerData = {
+  first_name?: string;
+  last_name?: string;
+  bank_account?: string;
+  email?: string;
+  phone_no?: string;
+};
 
 function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const updatemutation = trpc.traveler.profile.update.useMutation();
   const mutation = trpc.traveler.profile.update.useMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,10 +74,10 @@ function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
       phone_no: travelerData.phone_no,
     },
   });
-  
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    updatemutation.mutate({ ...values, traveler_id: session?.user?.id });
+    mutation.mutate({ ...values, traveler_id: session?.user?.id });
     router.push("/");
   }
 
