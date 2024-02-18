@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
@@ -26,38 +27,62 @@ import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
-  name_a: z
-    .string()
-    .max(64, "Accomodation name must be less than 64 characters long."),
-  description_a: z.string(),
-  address_a: z
-    .string()
-    .max(255, "Address must be less than 255 characters long."),
-  city: z.string().max(100, "City must be less than 100 characters long."),
-  province: z
-    .string()
-    .max(100, "Province must be less than 100 characters long."),
-  district: z
-    .string()
-    .max(100, "District must be less than 100 characters long."),
-  postalcode: z.string().length(5, "Invalid postal code format."),
-  accommodation_status: z.enum(["OPEN", "CLOSE"]),
-  rating: z
-      .number()
-      .max(5, "Oh! I think you're overrated your accommodation. You should be shame!")
-});
+    host_id: z
+      .string()
+      .length(13, "Invalid Citizen ID.")
+      .regex(/^\d+$/, "Invalid Citizen ID."),
+    name_a: z
+      .string()
+      .max(64, "Accomodation name must be less than 64 characters long."),
+    description_a: z.string(),
+    price: z.
+      coerce.number(),
+    qr_code: z
+      .string(),
+    address_a: z
+      .string()
+      .max(255, "Address must be less than 255 characters long."),   
+    city: z.string().max(100, "City must be less than 100 characters long."),
+    province: z
+      .string()
+      .max(100, "Province must be less than 100 characters long."),
+    distinct_a: z
+      .string()
+      .max(100, "District must be less than 100 characters long."),
+    postal_code: z.string().length(5, "Invalid postal code format."),
+    accommodation_status: z.enum(["OPEN", "CLOSE"]),
+    ggmap_link: z
+      .string()
+      .regex(
+        /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+      ),
+    rating: z.
+      coerce.number()
+      .max(5, "Oh! I think you're overrated your accommodation. You should be shame!"),
+  });
 
-export default function HostEditAccomodationForm() {
-  const mutation = trpc.host.accomodation.update.useMutation();
+interface AccommodationAddFormProps {
+  user_id: string;
+}
+
+const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) => {
+  const createAccommodation = trpc.host.accomodation.create.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onBlur",
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    mutation.mutate({ ...values, accommodation_id: "" });
+    console.log("add new");
+    createAccommodation.mutateAsync({
+      ...values,
+      host_id: user_id,
+    });
+    router.push("/");
   }
-  return (
+  return( 
     <div>
       <Link href="/edit/host/profile">
         <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
@@ -67,7 +92,7 @@ export default function HostEditAccomodationForm() {
       <Card className="my-4 max-w-2xl flex-wrap gap-4 px-4 py-4">
         <CardHeader>
           <CardTitle>Property Information</CardTitle>
-          <CardDescription>Make changes to property here.</CardDescription>
+          <CardDescription>Create your new property here.</CardDescription>
         </CardHeader>
         <div className="mb-4">
           <PropertyAccomCard
@@ -92,6 +117,40 @@ export default function HostEditAccomodationForm() {
                       <FormControl>
                         <Input
                           placeholder="Property Name"
+                          className="border border-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Starting Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Property Staring Price"
+                          className="border border-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="rating"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rating</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Accommodation rating"
                           className="border border-black"
                           {...field}
                         />
@@ -163,7 +222,7 @@ export default function HostEditAccomodationForm() {
                   />
                   <FormField
                     control={form.control}
-                    name="district"
+                    name="distinct_a"
                     render={({ field }) => (
                       <FormItem className="mb-4 mr-7">
                         {" "}
@@ -203,7 +262,7 @@ export default function HostEditAccomodationForm() {
                   />
                   <FormField
                     control={form.control}
-                    name="postalcode"
+                    name="postal_code"
                     render={({ field }) => (
                       <FormItem className="mb-4">
                         {" "}
@@ -221,6 +280,24 @@ export default function HostEditAccomodationForm() {
                     )}
                   />
                 </div>
+              </div>
+              <div className="w-full md:w-2/3">
+                <FormField
+                  control={form.control}
+                  name="ggmap_link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Google Map Link</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="border border-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
               <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
@@ -249,10 +326,9 @@ export default function HostEditAccomodationForm() {
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
               >
-                Save changes
+                Add Property
               </Button>
               <Button
-                type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
               >
                 Delete Property
@@ -264,3 +340,5 @@ export default function HostEditAccomodationForm() {
     </div>
   );
 }
+
+export default AccommodationAddForm;
