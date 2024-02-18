@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
@@ -79,6 +79,7 @@ const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) 
     createAccommodation.mutateAsync({
       ...values,
       host_id: user_id,
+      accommodation_status: "OPEN"
     });
     router.push("/");
   }
