@@ -93,10 +93,8 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
   });
 
   const handleAddPropertyClick = () => {
-    router.push('../../add/accommodation');
+    router.push("../../add/accommodation");
   };
-
-  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);

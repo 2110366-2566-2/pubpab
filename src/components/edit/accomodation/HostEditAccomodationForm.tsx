@@ -30,8 +30,7 @@ const formSchema = z.object({
     .string()
     .max(64, "Accomodation name must be less than 64 characters long."),
   description_a: z.string(),
-  qr_code: z
-    .string(),
+  qr_code: z.string(),
   address_a: z
     .string()
     .max(255, "Address must be less than 255 characters long."),
@@ -45,8 +44,11 @@ const formSchema = z.object({
   postalcode: z.string().length(5, "Invalid postal code format."),
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
   rating: z
-      .number()
-      .max(5, "Oh! I think you're overrated your accommodation. You should be shame!")
+    .number()
+    .max(
+      5,
+      "Oh! I think you're overrated your accommodation. You should be shame!",
+    ),
 });
 
 export default function HostEditAccomodationForm() {

@@ -28,37 +28,37 @@ import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
-    host_id: z
-      .string(),  
-    name_a: z
-      .string()
-      .max(64, "Accomodation name must be less than 64 characters long."),
-    description_a: z.string(),
-    price: z.
-      coerce.number(),
-    qr_code: z
-      .string(),
-    address_a: z
-      .string()
-      .max(255, "Address must be less than 255 characters long."),   
-    city: z.string().max(100, "City must be less than 100 characters long."),
-    province: z
-      .string()
-      .max(100, "Province must be less than 100 characters long."),
-    distinct_a: z
-      .string()
-      .max(100, "District must be less than 100 characters long."),
-    postal_code: z.string().length(5, "Invalid postal code format."),
-    accommodation_status: z.enum(["OPEN", "CLOSE"]),
-    ggmap_link: z
-      .string()
-      .regex(
-        /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
-      ),
-    rating: z.
-      coerce.number()
-      .max(5, "Oh! I think you're overrated your accommodation. You should be shame!"),
-  });
+  host_id: z.string(),
+  name_a: z
+    .string()
+    .max(64, "Accomodation name must be less than 64 characters long."),
+  description_a: z.string(),
+  price: z.coerce.number(),
+  qr_code: z.string(),
+  address_a: z
+    .string()
+    .max(255, "Address must be less than 255 characters long."),
+  city: z.string().max(100, "City must be less than 100 characters long."),
+  province: z
+    .string()
+    .max(100, "Province must be less than 100 characters long."),
+  distinct_a: z
+    .string()
+    .max(100, "District must be less than 100 characters long."),
+  postal_code: z.string().length(5, "Invalid postal code format."),
+  accommodation_status: z.enum(["OPEN", "CLOSE"]),
+  ggmap_link: z
+    .string()
+    .regex(
+      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+    ),
+  rating: z.coerce
+    .number()
+    .max(
+      5,
+      "Oh! I think you're overrated your accommodation. You should be shame!",
+    ),
+});
 
 export default function AccommodationAddForm() {
   const createAccommodation = trpc.host.accomodation.create.useMutation();
@@ -76,7 +76,7 @@ export default function AccommodationAddForm() {
     mode: "onBlur",
   });
 
-  const onInvalid = (errors: unknown) => console.error(errors)
+  const onInvalid = (errors: unknown) => console.error(errors);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("add new");
@@ -85,7 +85,7 @@ export default function AccommodationAddForm() {
     });
     router.push("/");
   }
-  return( 
+  return (
     <div>
       <Link href="/edit/host/profile">
         <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
@@ -275,10 +275,7 @@ export default function AccommodationAddForm() {
                     <FormItem>
                       <FormLabel>Google Map Link</FormLabel>
                       <FormControl>
-                        <Input
-                          className="border border-black"
-                          {...field}
-                        />
+                        <Input className="border border-black" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -314,9 +311,7 @@ export default function AccommodationAddForm() {
               >
                 Add Property
               </Button>
-              <Button
-                className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-              >
+              <Button className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white">
                 Delete Property
               </Button>
             </form>
