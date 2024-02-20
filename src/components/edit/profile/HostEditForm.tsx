@@ -93,9 +93,10 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
   });
 
   const handleAddPropertyClick = () => {
-    const user_id = session?.user.id;
-    router.push(`../../add/accommodation?user_id=${user_id}`);
+    router.push('../../add/accommodation');
   };
+
+  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);

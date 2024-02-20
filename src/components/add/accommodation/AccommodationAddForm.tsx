@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,9 +29,7 @@ import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
     host_id: z
-      .string()
-      .length(13, "Invalid Citizen ID.")
-      .regex(/^\d+$/, "Invalid Citizen ID."),
+      .string(),  
     name_a: z
       .string()
       .max(64, "Accomodation name must be less than 64 characters long."),
@@ -61,25 +60,28 @@ const formSchema = z.object({
       .max(5, "Oh! I think you're overrated your accommodation. You should be shame!"),
   });
 
-interface AccommodationAddFormProps {
-  user_id: string;
-}
-
-const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) => {
+export default function AccommodationAddForm() {
   const createAccommodation = trpc.host.accomodation.create.useMutation();
   const router = useRouter();
+  const { data: session } = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      host_id: session?.user?.id,
+      rating: 0,
+      accommodation_status: "OPEN",
+      qr_code: "",
+    },
     mode: "onBlur",
   });
+
+  const onInvalid = (errors: unknown) => console.error(errors)
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("add new");
     createAccommodation.mutateAsync({
       ...values,
-      host_id: user_id,
-      accommodation_status: "OPEN"
     });
     router.push("/");
   }
@@ -105,7 +107,7 @@ const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) 
         <div className="mx-auto">
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
               className="space-y-4 px-4"
             >
               <div>
@@ -135,23 +137,6 @@ const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) 
                       <FormControl>
                         <Input
                           placeholder="Property Staring Price"
-                          className="border border-black"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rating"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Rating</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Accommodation rating"
                           className="border border-black"
                           {...field}
                         />
@@ -341,5 +326,3 @@ const AccommodationAddForm: React.FC<AccommodationAddFormProps> = ({ user_id }) 
     </div>
   );
 }
-
-export default AccommodationAddForm;

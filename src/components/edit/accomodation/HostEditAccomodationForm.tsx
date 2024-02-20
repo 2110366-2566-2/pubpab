@@ -30,6 +30,8 @@ const formSchema = z.object({
     .string()
     .max(64, "Accomodation name must be less than 64 characters long."),
   description_a: z.string(),
+  qr_code: z
+    .string(),
   address_a: z
     .string()
     .max(255, "Address must be less than 255 characters long."),
