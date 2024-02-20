@@ -23,7 +23,7 @@ const ProfileButton = () => {
       return (
         <div className="flex flex-col items-center">
           <p className="m-2 text-center text-lg font-bold">
-            {session.user.name}
+            {session.user.role}
           </p>
           {/* <Link href="edit/host"> */}
           <Button
@@ -40,7 +40,7 @@ const ProfileButton = () => {
       return (
         <div className="flex flex-col items-center">
           <p className="m-2 text-center text-lg font-bold">
-            {session.user.name}
+            {session.user.role}
           </p>
           {/* <Link href="edit/traveler"> */}
           <Button

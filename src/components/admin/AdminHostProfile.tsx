@@ -65,8 +65,10 @@ export default function AdminHostProfile({ unhost_id }: { unhost_id: string }) {
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ admin_id: session?.user?.id, host_id: unhost_id });
-    router.push("/");
+    if (session) {
+      mutation.mutate({ admin_id: session?.user?.id, host_id: unhost_id });
+      router.push("/");
+    }
   }
   return (
     <main className="min-h-screent mt-8 px-4">

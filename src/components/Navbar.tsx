@@ -32,7 +32,7 @@ const Navbar = () => {
           </Link>
           <Link
             className="text-gray-800 transition-colors hover:text-sky-400"
-            href={"/admin"}
+            href={"/admin/verify/host"}
           >
             Admin Dashboard
           </Link>

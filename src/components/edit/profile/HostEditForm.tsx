@@ -92,8 +92,10 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    mutation.mutate({ ...values, host_id: session?.user.id });
-    router.push("/");
+    if (session) {
+      mutation.mutate({ ...values, host_id: session?.user.id });
+      router.push("/");
+    }
   }
   return (
     <main className="mt-4 min-h-screen px-4">
@@ -303,21 +305,23 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
 
 export default function HostEditForm() {
   const { data: session } = useSession();
-  const hostDataQuery = trpc.host.profile.find.useQuery({
-    host_id: session?.user?.id,
-  });
-  if (hostDataQuery.status === "loading") {
-    return <div>Loading...</div>;
+  if (session) {
+    const hostDataQuery = trpc.host.profile.find.useQuery({
+      host_id: session?.user?.id,
+    });
+    if (hostDataQuery.status === "loading") {
+      return <div>Loading...</div>;
+    }
+    return (
+      <HostProfileForm
+        hostData={{
+          bank_account: hostDataQuery.data?.bank_account ?? "",
+          email: hostDataQuery.data?.users?.email,
+          first_name: hostDataQuery.data?.users?.first_name ?? "",
+          last_name: hostDataQuery.data?.users?.last_name ?? "",
+          phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+        }}
+      />
+    );
   }
-  return (
-    <HostProfileForm
-      hostData={{
-        bank_account: hostDataQuery.data?.bank_account ?? "",
-        email: hostDataQuery.data?.users?.email,
-        first_name: hostDataQuery.data?.users?.first_name ?? "",
-        last_name: hostDataQuery.data?.users?.last_name ?? "",
-        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
-      }}
-    />
-  );
 }

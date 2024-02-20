@@ -72,19 +72,22 @@ export const authOptions: AuthOptions = {
 
   // debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // If - if you have multiple providers, because they return different user objects
       // and you need to check for undefined because sometimes jwt runs multiple times in a row, and in the second one the user data gets lost, or will overwrite what you have with undefined
-      if (account?.provider === "credentials" && user !== undefined) {
-        token.user = user;
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+        // token.name = user.kuay;
       }
 
       return token;
     },
     async session({ session, token }) {
-      // session.user.role = token.role;
-      if (token.user !== undefined) {
-        session.user = token.user;
+      if (session?.user) {
+        session.user.role = token.role;
+        session.user.id = token.id;
+        // session.user.name = token.name;
       }
       return session;
     },
