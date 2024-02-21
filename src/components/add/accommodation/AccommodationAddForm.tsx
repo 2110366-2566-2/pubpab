@@ -79,7 +79,6 @@ export default function AccommodationAddForm() {
   const onInvalid = (errors: unknown) => console.error(errors);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("add new");
     createAccommodation.mutateAsync({
       ...values,
     });

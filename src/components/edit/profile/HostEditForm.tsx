@@ -97,7 +97,6 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     mutation.mutate({ ...values, host_id: session?.user.id });
     router.push("/");
   }

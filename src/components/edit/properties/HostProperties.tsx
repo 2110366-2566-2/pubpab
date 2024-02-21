@@ -1,11 +1,12 @@
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import PropertyAccomCard from "@/components/card/PropertyAccomCard";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 
-import PropertyAccomCard from "@/components/card/PropertyAccomCard";
 
 const formSchema = z
   .object({
@@ -47,39 +47,46 @@ const formSchema = z
   })
 
 export default function HostProperties() {
+  const { data: session } = useSession();
+  const findAccommodation = trpc.host.profile.findMany.useQuery({ host_id: session?.user?.id });
+
+  if (findAccommodation.error) {
+    return <div>Error: {findAccommodation.error.message}</div>;
+  }
+  
+  if (findAccommodation.isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  const accommodations = findAccommodation.data;
+
+//Create an array of objects with title, banner, and status properties for each accommodation
+const propertyData = accommodations.flatMap(entry => entry.accommodation.map(accommodation => ({
+  title: accommodation.name_a,
+  banner: "/defaultAccommodation.webq",
+  status: accommodation.accommodation_status
+})));
+
+  // const propertyData = [
+  //    { title: "Menorca Hotel", imageUrl: "/Menorca.webp", status: "Opened" },
+  //    { title: "Bellagio Hotel", imageUrl: "/Bellagio.webp", status: "Closed" },
+  //    { title: "East Hotel", imageUrl: "/easthotel.jpeg", status: "Opened" }
+  //    // Add more property data as needed
+  //  ];
+
   return (
     <div className="px-4 py-4">
-      <div className="mb-4">
-        <Link href="/edit/host/accomodation">
-          <PropertyAccomCard
-            title="Menorca Hotel"
-            imageUrl={"/Menorca.webp"}
-            status="Opened"
-          />
-        </Link>
-      </div>
-      <div className="mb-4">
-        {" "}
-        {/* Add margin bottom of 4 */}
-        <Link href="/edit/host/accomodation">
-          <PropertyAccomCard
-            title="Bellagio Hotel"
-            imageUrl={"/Bellagio.webp"}
-            status="Closed"
-          />
-        </Link>
-      </div>
-      <div className="mb-4">
-        {" "}
-        {/* Add margin bottom of 4 */}
-        <Link href="/edit/host/accomodation">
-          <PropertyAccomCard
-            title="East Hotel"
-            imageUrl={"/easthotel.jpeg"}
-            status="Opened"
-          />
-        </Link>
-      </div>
+      {propertyData.map((property, index) => (
+        <div key={index} className="mb-4">
+          <Link href="/edit/host/accomodation">
+            <PropertyAccomCard
+              title={property.title}
+              imageUrl={property.banner}
+              status={property.status}
+            />
+          </Link>
+        </div>
+      ))}
     </div>
   );
 }
