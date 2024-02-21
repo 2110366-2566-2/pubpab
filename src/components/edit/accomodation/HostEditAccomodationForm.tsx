@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,15 +52,36 @@ const formSchema = z.object({
     ),
 });
 
-export default function HostEditAccomodationForm() {
+type AccommodationData = {
+  accommodation_id?: string;
+  name_a?: string;
+  description_a?: string;
+  qr_code?: string;
+  address_a?: string;
+  city?: string;
+  province?: string;
+  district?: string;
+  postalcode?: string;
+  accommodation_status?: "OPEN" | "CLOSE";
+};
+
+function HostEditAccommodationForm({ accommodationData }: { accommodationData: AccommodationData }) {
   const mutation = trpc.host.accomodation.update.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name_a: accommodationData.name_a,
+      description_a: accommodationData.description_a,
+      address_a: accommodationData.address_a,
+      city: accommodationData.city,
+      province: accommodationData.province,
+      district: accommodationData.district,
+      accommodation_status: accommodationData.accommodation_status,
+    },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    mutation.mutate({ ...values, accommodation_id: "" });
+    mutation.mutate({ ...values, accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id: ""});
   }
   return (
     <div>
@@ -74,10 +96,16 @@ export default function HostEditAccomodationForm() {
           <CardDescription>Make changes to property here.</CardDescription>
         </CardHeader>
         <div className="mb-4">
-          <PropertyAccomCard
+          {/* <PropertyAccomCard
             imageUrl="/Menorca.webp"
             title="Menorca Hotel"
             status="Opened"
+          /> */}
+          <PropertyAccomCard
+            imageUrl = "/defaultAccommodation.webp"
+            title = {accommodationData.name_a || ""}
+            status = {accommodationData.accommodation_status || ""}
+            id = {accommodationData.accommodation_id || ""}
           />
         </div>
         <div className="mx-auto">
@@ -266,5 +294,31 @@ export default function HostEditAccomodationForm() {
         </div>
       </Card>
     </div>
+  );
+}
+
+export default function AccommodationEditForm({ accommodation_id }: { accommodation_id: string }) {
+  const { data: session } = useSession();
+  const accommodationDataQuery = trpc.host.accomodation.find.useQuery({
+    host_id: session?.user?.id,
+    accommodation_id: accommodation_id,
+  });
+  if (accommodationDataQuery.status === "loading") {
+    return <div>Loading...</div>;
+  }
+  return (
+    <HostEditAccommodationForm
+      accommodationData={{
+        name_a: accommodationDataQuery.data?.name_a,
+        description_a: accommodationDataQuery.data?.description_a,
+        qr_code: accommodationDataQuery.data?.qr_code,
+        address_a: accommodationDataQuery.data?.address_a,
+        city: accommodationDataQuery.data?.city,
+        province: accommodationDataQuery.data?.province,
+        district: accommodationDataQuery.data?.distinct_a,
+        postalcode: accommodationDataQuery.data?.postal_code,
+        accommodation_status: accommodationDataQuery.data?.accommodation_status,
+      }}
+    />
   );
 }

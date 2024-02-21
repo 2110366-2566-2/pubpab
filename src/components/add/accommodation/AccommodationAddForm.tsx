@@ -101,6 +101,7 @@ export default function AccommodationAddForm() {
             imageUrl="/Menorca.webp"
             title="Menorca Hotel"
             status="Opened"
+            id=""
           />
         </div>
         <div className="mx-auto">

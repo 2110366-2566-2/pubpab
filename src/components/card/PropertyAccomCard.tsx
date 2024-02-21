@@ -4,10 +4,12 @@ const PropertyAccomCard = ({
   title,
   imageUrl,
   status,
+  id,
 }: {
   title: string;
   imageUrl: string;
   status: string;
+  id: string;
 }) => {
   return (
     <div className="relative rounded-lg bg-white shadow-md">

@@ -47,7 +47,7 @@ const formSchema = z
   })
 
 export default function HostProperties() {
-  const { data: session } = useSession();
+  const { data: session} = useSession();
   const findAccommodation = trpc.host.profile.findMany.useQuery({ host_id: session?.user?.id });
 
   if (findAccommodation.error) {
@@ -60,12 +60,13 @@ export default function HostProperties() {
   
   const accommodations = findAccommodation.data;
 
-//Create an array of objects with title, banner, and status properties for each accommodation
-const propertyData = accommodations.flatMap(entry => entry.accommodation.map(accommodation => ({
-  title: accommodation.name_a,
-  banner: "/defaultAccommodation.webq",
-  status: accommodation.accommodation_status
-})));
+  //Create an array of objects with title, banner, and status properties for each accommodation
+  const propertyData = accommodations.flatMap(entry => entry.accommodation.map(accommodation => ({
+    title: accommodation.name_a,
+    banner: "/defaultAccommodation.webq",
+    status: accommodation.accommodation_status,
+    id: accommodation.accommodation_id
+  })));
 
   // const propertyData = [
   //    { title: "Menorca Hotel", imageUrl: "/Menorca.webp", status: "Opened" },
@@ -80,9 +81,10 @@ const propertyData = accommodations.flatMap(entry => entry.accommodation.map(acc
         <div key={index} className="mb-4">
           <Link href="/edit/host/accomodation">
             <PropertyAccomCard
-              title={property.title}
-              imageUrl={property.banner}
-              status={property.status}
+              title = {property.title}
+              imageUrl = {property.banner}
+              status = {property.status}
+              id = {property.id}
             />
           </Link>
         </div>
