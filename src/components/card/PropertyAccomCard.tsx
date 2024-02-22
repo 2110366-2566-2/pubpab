@@ -8,6 +8,7 @@ const PropertyAccomCard = ({
   title: string;
   imageUrl: string;
   status: string;
+  id: string;
 }) => {
   return (
     <div className="relative rounded-lg bg-white shadow-md">
@@ -18,12 +19,12 @@ const PropertyAccomCard = ({
         height={100}
         className="rounded-t-lg object-cover"
       />
-      {status === "Opened" && (
+      {status === "OPEN" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-green-500 px-2 py-1 text-white">
           Opened
         </span>
       )}
-      {status !== "Opened" && (
+      {status !== "OPEN" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-red-500 px-2 py-1 text-white">
           Closed
         </span>

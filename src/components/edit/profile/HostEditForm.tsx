@@ -74,6 +74,7 @@ type HostData = {
   bank_account?: string;
   email?: string;
   phone_no?: string;
+  host_id?: string;
 };
 
 function HostProfileForm({ hostData }: { hostData: HostData }) {
@@ -90,8 +91,12 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
       phone_no: hostData.phone_no,
     },
   });
+
+  const handleAddPropertyClick = () => {
+    router.push("../../add/accommodation");
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     mutation.mutate({ ...values, host_id: session?.user.id });
     router.push("/");
   }
@@ -282,6 +287,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                   <Button
                     type="submit"
                     className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    onClick={handleAddPropertyClick}
                   >
                     Add Property
                   </Button>

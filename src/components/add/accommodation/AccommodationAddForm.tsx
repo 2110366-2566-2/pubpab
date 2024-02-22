@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -27,10 +28,12 @@ import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
+  host_id: z.string(),
   name_a: z
     .string()
     .max(64, "Accomodation name must be less than 64 characters long."),
   description_a: z.string(),
+  price: z.coerce.number(),
   qr_code: z.string(),
   address_a: z
     .string()
@@ -39,12 +42,17 @@ const formSchema = z.object({
   province: z
     .string()
     .max(100, "Province must be less than 100 characters long."),
-  district: z
+  distinct_a: z
     .string()
     .max(100, "District must be less than 100 characters long."),
-  postalcode: z.string().length(5, "Invalid postal code format."),
+  postal_code: z.string().length(5, "Invalid postal code format."),
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
-  rating: z
+  ggmap_link: z
+    .string()
+    .regex(
+      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+    ),
+  rating: z.coerce
     .number()
     .max(
       5,
@@ -52,46 +60,29 @@ const formSchema = z.object({
     ),
 });
 
-type AccommodationData = {
-  accommodation_id?: string;
-  name_a?: string;
-  description_a?: string;
-  qr_code?: string;
-  address_a?: string;
-  city?: string;
-  province?: string;
-  district?: string;
-  postalcode?: string;
-  accommodation_status?: "OPEN" | "CLOSE";
-};
-
-function HostEditAccommodationForm({
-  accommodationData,
-}: {
-  accommodationData: AccommodationData;
-}) {
-  const mutation = trpc.host.accomodation.update.useMutation();
+export default function AccommodationAddForm() {
+  const createAccommodation = trpc.host.accomodation.create.useMutation();
+  const router = useRouter();
+  const { data: session } = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name_a: accommodationData.name_a,
-      description_a: accommodationData.description_a,
-      address_a: accommodationData.address_a,
-      city: accommodationData.city,
-      province: accommodationData.province,
-      district: accommodationData.district,
-      postalcode: accommodationData.postalcode,
-      accommodation_status: accommodationData.accommodation_status,
+      host_id: session?.user?.id,
+      rating: 0,
+      accommodation_status: "OPEN",
+      qr_code: "",
     },
+    mode: "onBlur",
   });
+
+  const onInvalid = (errors: unknown) => console.error(errors);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({
+    createAccommodation.mutateAsync({
       ...values,
-      accommodation_id: accommodationData.accommodation_id
-        ? accommodationData.accommodation_id
-        : "",
     });
+    router.push("/");
   }
   return (
     <div>
@@ -103,25 +94,20 @@ function HostEditAccommodationForm({
       <Card className="my-4 max-w-2xl flex-wrap gap-4 px-4 py-4">
         <CardHeader>
           <CardTitle>Property Information</CardTitle>
-          <CardDescription>Make changes to property here.</CardDescription>
+          <CardDescription>Create your new property here.</CardDescription>
         </CardHeader>
         <div className="mb-4">
-          {/* <PropertyAccomCard
+          <PropertyAccomCard
             imageUrl="/Menorca.webp"
             title="Menorca Hotel"
             status="Opened"
-          /> */}
-          <PropertyAccomCard
-            imageUrl="/defaultAccommodation.webp"
-            title={accommodationData.name_a || ""}
-            status={accommodationData.accommodation_status || ""}
-            id={accommodationData.accommodation_id || ""}
+            id=""
           />
         </div>
         <div className="mx-auto">
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
               className="space-y-4 px-4"
             >
               <div>
@@ -134,6 +120,23 @@ function HostEditAccommodationForm({
                       <FormControl>
                         <Input
                           placeholder="Property Name"
+                          className="border border-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Starting Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Property Staring Price"
                           className="border border-black"
                           {...field}
                         />
@@ -205,7 +208,7 @@ function HostEditAccommodationForm({
                   />
                   <FormField
                     control={form.control}
-                    name="district"
+                    name="distinct_a"
                     render={({ field }) => (
                       <FormItem className="mb-4 mr-7">
                         {" "}
@@ -245,7 +248,7 @@ function HostEditAccommodationForm({
                   />
                   <FormField
                     control={form.control}
-                    name="postalcode"
+                    name="postal_code"
                     render={({ field }) => (
                       <FormItem className="mb-4">
                         {" "}
@@ -263,6 +266,21 @@ function HostEditAccommodationForm({
                     )}
                   />
                 </div>
+              </div>
+              <div className="w-full md:w-2/3">
+                <FormField
+                  control={form.control}
+                  name="ggmap_link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Google Map Link</FormLabel>
+                      <FormControl>
+                        <Input className="border border-black" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
               <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
@@ -291,12 +309,9 @@ function HostEditAccommodationForm({
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
               >
-                Save changes
+                Add Property
               </Button>
-              <Button
-                type="submit"
-                className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-              >
+              <Button className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white">
                 Delete Property
               </Button>
             </form>
@@ -304,35 +319,5 @@ function HostEditAccommodationForm({
         </div>
       </Card>
     </div>
-  );
-}
-
-export default function AccommodationEditForm({
-  accommodation_id,
-}: {
-  accommodation_id: string;
-}) {
-  const { data: session } = useSession();
-  const accommodationDataQuery = trpc.host.accomodation.find.useQuery({
-    host_id: session?.user?.id,
-    accommodation_id: accommodation_id,
-  });
-  if (accommodationDataQuery.status === "loading") {
-    return <div>Loading...</div>;
-  }
-  return (
-    <HostEditAccommodationForm
-      accommodationData={{
-        name_a: accommodationDataQuery.data?.name_a,
-        description_a: accommodationDataQuery.data?.description_a,
-        qr_code: accommodationDataQuery.data?.qr_code,
-        address_a: accommodationDataQuery.data?.address_a,
-        city: accommodationDataQuery.data?.city,
-        province: accommodationDataQuery.data?.province,
-        district: accommodationDataQuery.data?.distinct_a,
-        postalcode: accommodationDataQuery.data?.postal_code,
-        accommodation_status: accommodationDataQuery.data?.accommodation_status,
-      }}
-    />
   );
 }
