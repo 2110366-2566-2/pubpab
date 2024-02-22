@@ -9,34 +9,34 @@ export const accomodationRouter = router({
     .input(
       z.object({
         host_id: z.string(),
-        accommodation_id: z.string()
+        accommodation_id: z.string(),
       }),
     )
     .query(async ({ input }) => {
-        const getAccomodation = await prisma.accommodation.findUnique({
-          where: {
-            accommodation_id: input.accommodation_id,
-            host_id: input.host_id
-          },
-          select: {
-            name_a: true,
-            description_a: true,
-            qr_code: true,
-            address_a: true,
-            city: true,
-            province: true,
-            distinct_a: true,
-            postal_code: true,
-            accommodation_status: true,
-          }
+      const getAccomodation = await prisma.accommodation.findUnique({
+        where: {
+          accommodation_id: input.accommodation_id,
+          host_id: input.host_id,
+        },
+        select: {
+          name_a: true,
+          description_a: true,
+          qr_code: true,
+          address_a: true,
+          city: true,
+          province: true,
+          distinct_a: true,
+          postal_code: true,
+          accommodation_status: true,
+        },
+      });
+      if (!getAccomodation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Accommodation not found",
         });
-        if (!getAccomodation) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Accommodation not found",
-          });
-        }
-        return getAccomodation;
+      }
+      return getAccomodation;
     }),
   findMany: publicProcedure
     .input(

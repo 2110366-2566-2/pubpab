@@ -65,7 +65,11 @@ type AccommodationData = {
   accommodation_status?: "OPEN" | "CLOSE";
 };
 
-function HostEditAccommodationForm({ accommodationData }: { accommodationData: AccommodationData }) {
+function HostEditAccommodationForm({
+  accommodationData,
+}: {
+  accommodationData: AccommodationData;
+}) {
   const mutation = trpc.host.accomodation.update.useMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,7 +86,12 @@ function HostEditAccommodationForm({ accommodationData }: { accommodationData: A
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({ ...values, accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id: ""});
+    mutation.mutate({
+      ...values,
+      accommodation_id: accommodationData.accommodation_id
+        ? accommodationData.accommodation_id
+        : "",
+    });
   }
   return (
     <div>
@@ -103,10 +112,10 @@ function HostEditAccommodationForm({ accommodationData }: { accommodationData: A
             status="Opened"
           /> */}
           <PropertyAccomCard
-            imageUrl = "/defaultAccommodation.webp"
-            title = {accommodationData.name_a || ""}
-            status = {accommodationData.accommodation_status || ""}
-            id = {accommodationData.accommodation_id || ""}
+            imageUrl="/defaultAccommodation.webp"
+            title={accommodationData.name_a || ""}
+            status={accommodationData.accommodation_status || ""}
+            id={accommodationData.accommodation_id || ""}
           />
         </div>
         <div className="mx-auto">
@@ -298,7 +307,11 @@ function HostEditAccommodationForm({ accommodationData }: { accommodationData: A
   );
 }
 
-export default function AccommodationEditForm({ accommodation_id }: { accommodation_id: string }) {
+export default function AccommodationEditForm({
+  accommodation_id,
+}: {
+  accommodation_id: string;
+}) {
   const { data: session } = useSession();
   const accommodationDataQuery = trpc.host.accomodation.find.useQuery({
     host_id: session?.user?.id,
