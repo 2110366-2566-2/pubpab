@@ -63,7 +63,7 @@ export default function HostProperties() {
   //Create an array of objects with title, banner, and status properties for each accommodation
   const propertyData = accommodations.flatMap(entry => entry.accommodation.map(accommodation => ({
     title: accommodation.name_a,
-    banner: "/defaultAccommodation.webq",
+    banner: "/defaultAccommodation.webp",
     status: accommodation.accommodation_status,
     id: accommodation.accommodation_id
   })));

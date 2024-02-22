@@ -77,6 +77,7 @@ function HostEditAccommodationForm({ accommodationData }: { accommodationData: A
       city: accommodationData.city,
       province: accommodationData.province,
       district: accommodationData.district,
+      postalcode: accommodationData.postalcode,
       accommodation_status: accommodationData.accommodation_status,
     },
   });
