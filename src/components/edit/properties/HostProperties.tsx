@@ -79,7 +79,14 @@ export default function HostProperties() {
     <div className="px-4 py-4">
       {propertyData.map((property, index) => (
         <div key={index} className="mb-4">
-          <Link href="/edit/host/accomodation">
+          <Link 
+            href={{
+              pathname: "/edit/host/accomodation",
+              query: {
+                accommodation_id: property.id,
+              }
+            }}
+          >
             <PropertyAccomCard
               title = {property.title}
               imageUrl = {property.banner}
