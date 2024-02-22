@@ -4,7 +4,6 @@ const PropertyAccomCard = ({
   title,
   imageUrl,
   status,
-  id,
 }: {
   title: string;
   imageUrl: string;
