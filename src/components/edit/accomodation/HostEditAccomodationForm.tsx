@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z.object({
@@ -318,7 +319,12 @@ export default function AccommodationEditForm({
     accommodation_id: accommodation_id,
   });
   if (accommodationDataQuery.status === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
+    // <div>Loading...</div>;
   }
   return (
     <HostEditAccommodationForm

@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z
@@ -207,7 +208,12 @@ export default function TravelerEditForm() {
     traveler_id: session?.user?.id,
   });
   if (hostDataQuery.status === "loading") {
-    return <div>Loading...</div>;
+    // return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
   return (
     <TravelerProfileForm
