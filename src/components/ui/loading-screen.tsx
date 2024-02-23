@@ -9,22 +9,22 @@ export default function loadingscreen() {
           width={150}
           height={40}
           alt="logo"
-          className="animate-pulse"
+          className="animate-bounce"
         />
-        <div className="dot relative h-10 w-10 rounded-full bg-red-500">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-white"></div>
+        <div className="dot relative h-10 w-10 animate-bounce rounded-full bg-red-500">
+          <div className="absolute inset-0 rounded-full"></div>
         </div>
-        <div className="dot relative h-10 w-10 rounded-full bg-yellow-500">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-white"></div>
+        <div className="dot relative h-10 w-10 animate-bounce rounded-full bg-yellow-500">
+          <div className="absolute inset-0 rounded-full"></div>
         </div>
-        <div className="dot relative h-10 w-10 rounded-full bg-green-500">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-white"></div>
+        <div className="dot relative h-10 w-10 animate-bounce rounded-full bg-green-500">
+          <div className="absolute inset-0 rounded-full"></div>
         </div>
-        <div className="dot relative h-10 w-10 rounded-full bg-purple-500">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-white"></div>
+        <div className="dot relative h-10 w-10 animate-bounce rounded-full bg-purple-500">
+          <div className="absolute inset-0 rounded-full"></div>
         </div>
-        <div className="dot relative h-10 w-10 rounded-full bg-blue-500">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-white"></div>
+        <div className="dot relative h-10 w-10 animate-bounce rounded-full bg-blue-500">
+          <div className="absolute inset-0 rounded-full "></div>
         </div>
       </div>
     </div>
