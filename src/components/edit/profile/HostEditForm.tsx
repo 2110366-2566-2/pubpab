@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
 
@@ -313,7 +314,12 @@ export default function HostEditForm() {
     host_id: session?.user?.id,
   });
   if (hostDataQuery.status === "loading") {
-    return <div>Loading...</div>;
+    // return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
   return (
     <HostProfileForm

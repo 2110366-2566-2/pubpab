@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
 export default function HostProperties() {
@@ -15,7 +16,11 @@ export default function HostProperties() {
   }
 
   if (findAccommodation.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   const accommodations = findAccommodation.data;
