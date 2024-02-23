@@ -22,7 +22,7 @@ export const roomRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        accomodation_id: z.string(),
+        accommodation_id: z.string(),
         room_name: z.string(),
         price: z.number(),
         floor: z.number(),
@@ -42,7 +42,7 @@ export const roomRouter = router({
       try {
         const room = await prisma.room.create({
           data: {
-            accommodation_id: input.accomodation_id,
+            accommodation_id: input.accommodation_id,
             room_name: input.room_name,
             price: input.price,
             floor: input.floor,

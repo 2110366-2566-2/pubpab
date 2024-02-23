@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -71,6 +72,7 @@ function HostEditAccommodationForm({
   accommodationData: AccommodationData;
 }) {
   const mutation = trpc.host.accomodation.update.useMutation();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,6 +87,10 @@ function HostEditAccommodationForm({
       accommodation_status: accommodationData.accommodation_status,
     },
   });
+  const handleAddRoomClick = () => {
+    router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({
       ...values,
@@ -264,6 +270,12 @@ function HostEditAccommodationForm({
                   />
                 </div>
               </div>
+              <button
+                onClick={handleAddRoomClick}
+                className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+              >
+                Add New Room
+              </button>
               <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
                   <PropertyRoomCard
@@ -323,6 +335,7 @@ export default function AccommodationEditForm({
   return (
     <HostEditAccommodationForm
       accommodationData={{
+        accommodation_id: accommodation_id,
         name_a: accommodationDataQuery.data?.name_a,
         description_a: accommodationDataQuery.data?.description_a,
         qr_code: accommodationDataQuery.data?.qr_code,
