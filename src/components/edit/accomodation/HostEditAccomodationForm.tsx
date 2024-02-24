@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -71,9 +73,6 @@ function HostEditAccommodationForm({
 }: {
   accommodationData: AccommodationData;
 }) {
-  const mutation = trpc.host.accomodation.update.useMutation();
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -87,12 +86,38 @@ function HostEditAccommodationForm({
       accommodation_status: accommodationData.accommodation_status,
     },
   });
+
+  const findRoom = trpc.host.room.findMany.useQuery({
+    accommodation_id: accommodationData.accommodation_id || "",
+  });
+
+  if (findRoom.error) {
+    return <div>Error: {findRoom.error.message}</div>;
+  }
+
+  if (findRoom.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const rooms = findRoom.data;
+  const router = useRouter();
+  
+  const propertyData = rooms.flatMap((entry) =>
+    entry.room.map((room) => ({
+      image: "/room1.png",
+      title: room.room_name,
+      status: room.is_reserve,
+      id: room.room_id,
+    })),
+  );
+
   const handleAddRoomClick = () => {
     router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({
+    const mutation = trpc.host.accomodation.update.useMutation();
+    mutation.mutateAsync({
       ...values,
       accommodation_id: accommodationData.accommodation_id
         ? accommodationData.accommodation_id
@@ -276,7 +301,28 @@ function HostEditAccommodationForm({
               >
                 Add New Room
               </button>
-              <div className="my-4 flex flex-wrap gap-4">
+              <div className="px-4 py-4">
+                {propertyData.map((property, index) => (
+                  <div key={index} className="mb-4">
+                    <Link
+                      href={{
+                        pathname: "/edit/host/room",
+                        query: {
+                          room_id: property.id,
+                        },
+                      }}
+                    >
+                      <PropertyRoomCard
+                        title={property.title}
+                        imageUrl={property.image}
+                        status={property.status? "Available" : "Unavailable"}
+                        id={property.id}
+                      />
+                   </Link>
+                  </div>
+                ))}
+              </div>
+              {/* <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room1.jpeg"
@@ -297,8 +343,8 @@ function HostEditAccommodationForm({
                     title="Deluxe room"
                     status="Unavailable"
                   />
-                </Link>
-              </div>
+                </Link> }
+              </div> */}
               <Button
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
@@ -316,7 +362,7 @@ function HostEditAccommodationForm({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
 export default function AccommodationEditForm({
