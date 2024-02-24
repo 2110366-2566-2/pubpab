@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -66,6 +65,7 @@ type AccommodationData = {
   district?: string;
   postalcode?: string;
   accommodation_status?: "OPEN" | "CLOSE";
+  rating?: number;
 };
 
 function HostEditAccommodationForm({
@@ -84,8 +84,11 @@ function HostEditAccommodationForm({
       district: accommodationData.district,
       postalcode: accommodationData.postalcode,
       accommodation_status: accommodationData.accommodation_status,
+      qr_code: accommodationData.qr_code,
+      rating: accommodationData.rating,
     },
   });
+  const router = useRouter();
 
   const findRoom = trpc.host.room.findMany.useQuery({
     accommodation_id: accommodationData.accommodation_id || "",
@@ -100,7 +103,8 @@ function HostEditAccommodationForm({
   }
 
   const rooms = findRoom.data;
-  const router = useRouter();
+
+  const onInvalid = (errors: unknown) => console.error(errors);
   
   const propertyData = rooms.flatMap((entry) =>
     entry.room.map((room) => ({
@@ -115,8 +119,17 @@ function HostEditAccommodationForm({
     router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
   };
 
+  const handleDeleteClick = () => {
+    const deleteAccom = trpc.host.accomodation.delete.useMutation();
+
+    deleteAccom.mutateAsync({
+      accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
+    })
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const mutation = trpc.host.accomodation.update.useMutation();
+    
     mutation.mutateAsync({
       ...values,
       accommodation_id: accommodationData.accommodation_id
@@ -152,7 +165,7 @@ function HostEditAccommodationForm({
         <div className="mx-auto">
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
               className="space-y-4 px-4"
             >
               <div>
@@ -352,8 +365,8 @@ function HostEditAccommodationForm({
                 Save changes
               </Button>
               <Button
-                type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                onClick={handleDeleteClick}
               >
                 Delete Property
               </Button>
@@ -391,6 +404,7 @@ export default function AccommodationEditForm({
         district: accommodationDataQuery.data?.distinct_a,
         postalcode: accommodationDataQuery.data?.postal_code,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
+        rating: accommodationDataQuery.data?.rating,
       }}
     />
   );

@@ -37,22 +37,42 @@ import { trpc } from "@/lib/trpc/client";
 //   { id: "washingMachine", label: "Washing Machine" },
 // ] as const;
 
+type RoomData = {
+  room_id?: string;
+  room_name?: string,
+  price?: number,
+  floor?: number,
+  is_reserve?: boolean,
+  room_no?: string,
+  smoking?: boolean,
+  noise?: boolean,
+  pet?: boolean,
+  washing_machine?: boolean,
+  bed_type?: "KING" | "QUEEN",
+  rest_room?: boolean,
+  wifi_available?: boolean,
+}
+
 const formSchema = z.object({
-  name: z.string().max(64, "Name must be less than 64 characters long."),
+  room_name: z.string().max(64, "Name must be less than 64 characters long."),
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
-  price: z.number().min(0, "Price must not be less than 0."),
-  adult: z.number().min(0, "The number of adult must not be less than 0."),
+  price: z.coerce.number().min(0, "Price must not be less than 0."),
+  is_reserve: z.boolean(),
+  adult: z.coerce.number().min(0, "The number of adult must not be less than 0."),
   children: z
-    .number()
+    .coerce.number()
     .min(0, "The number of children must not be less than 0."),
+  floor: z.coerce.number(),
+  room_no: z.string(),
   smoking: z.boolean().default(false).optional(),
   noise: z.boolean().default(false).optional(),
   pet: z.boolean().default(false).optional(),
   washing_machine: z.boolean().default(false).optional(),
   restroom: z.boolean().default(false).optional(),
   wifi_available: z.boolean().default(false).optional(),
+  bed_type: z.enum(["KING","QUEEN"]),
   // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
   //   message: "You have to select at least one item.",
   // }),
@@ -62,23 +82,43 @@ const formSchema = z.object({
   // }),
 });
 
-export default function HostEditRoomForm() {
-  const mutation = trpc.host.room.update.useMutation();
-
+function HostEditRoomForm({
+  roomData
+}: {
+  roomData : RoomData;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      smoking: false,
-      noise: false,
-      pet: false,
-      washing_machine: false,
-      restroom: false,
-      wifi_available: false,
+      room_name: roomData.room_name,
+      price: roomData.price,
+      floor: roomData.floor,
+      is_reserve: roomData.is_reserve,
+      room_no: roomData.room_no,
+      smoking: roomData.smoking,
+      noise: roomData.noise,
+      pet: roomData.pet,
+      washing_machine: roomData.washing_machine,
+      bed_type: roomData.bed_type,
+      restroom: roomData.rest_room,
+      wifi_available: roomData.wifi_available,
     },
   });
+
+  const onInvalid = (errors: unknown) => console.error(errors);
+
+  function DeleteHandle() {
+    const deleteRoom = trpc.host.room.delete.useMutation();
+    
+    deleteRoom.mutateAsync({
+      room_id: roomData.room_id? roomData.room_id : "",
+    })
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    mutation.mutate({ ...values, room_id: "" });
+    const mutation = trpc.host.room.update.useMutation();
+    
+    mutation.mutate({ ...values, room_id: roomData.room_id? roomData.room_id : "" });
   }
   return (
     <div>
@@ -97,15 +137,16 @@ export default function HostEditRoomForm() {
             title="Suite"
             imageUrl={"/room1.jpeg"}
             status="Available"
+            id={roomData.room_id? roomData.room_id : ""}
           />
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
               className="mx-4 my-4 space-y-4"
             >
               <FormField
                 control={form.control}
-                name="name"
+                name="room_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -155,6 +196,42 @@ export default function HostEditRoomForm() {
                   </FormItem>
                 )}
               />
+              <div className="flex flex-wrap">
+                <div className="w-full md:w-1/2 lg:w-1/3">
+                  <FormField
+                    control={form.control}
+                    name="floor"
+                    render={({ field }) => (
+                      <FormItem className="mb-4 mr-7">
+                        {" "}
+                        <FormLabel>Floor</FormLabel>
+                        <FormControl>
+                          <Input {...field}
+                          className="border border-black" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="w-full md:w-1/2 lg:w-1/3">
+                  <FormField
+                    control={form.control}
+                    name="room_no"
+                    render={({ field }) => (
+                      <FormItem className="mb-4 mr-7">
+                        {" "}
+                        <FormLabel>Room Number</FormLabel>
+                        <FormControl>
+                          <Input {...field}
+                          className="border border-black" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
               <div className="flex flex-wrap">
                 <div className="w-full md:w-1/2 lg:w-1/3">
                   <FormField
@@ -308,8 +385,8 @@ export default function HostEditRoomForm() {
                   Save Changes
                 </Button>
                 <Button
-                  type="submit"
                   className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                  onClick={DeleteHandle}
                 >
                   Delete Room
                 </Button>
@@ -326,5 +403,37 @@ export default function HostEditRoomForm() {
         </div>
       </Card>
     </div>
+  );
+}
+
+export default function RoomEditForm({
+  room_id,
+}: {
+  room_id: string;
+}) {
+  const roomDataQuery = trpc.host.room.find.useQuery({
+    room_id: room_id
+  });
+  if (roomDataQuery.status === "loading") {
+    return <div>Loading...</div>;
+  }
+  return (
+    <HostEditRoomForm
+      roomData={{
+        room_id: room_id,
+        room_name: roomDataQuery.data?.room_name,
+        price: roomDataQuery.data?.price,
+        floor: roomDataQuery.data?.floor,
+        is_reserve: roomDataQuery.data?.is_reserve,
+        room_no: roomDataQuery.data?.room_no,
+        smoking: roomDataQuery.data?.smoking,
+        noise: roomDataQuery.data?.noise,
+        pet: roomDataQuery.data?.pet,
+        washing_machine: roomDataQuery.data?.washing_machine,
+        bed_type: roomDataQuery.data?.bed_type,
+        rest_room: roomDataQuery.data?.restroom,
+        wifi_available: roomDataQuery.data?.wifi_available,
+      }}
+    />
   );
 }

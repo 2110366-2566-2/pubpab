@@ -28,6 +28,7 @@ export const accomodationRouter = router({
           distinct_a: true,
           postal_code: true,
           accommodation_status: true,
+          rating: true,
         },
       });
       if (!getAccomodation) {
@@ -125,6 +126,8 @@ export const accomodationRouter = router({
         distinct_a: z.string().optional(),
         postal_code: z.string().optional(),
         accommodation_status: z.enum(["OPEN", "CLOSE"]).optional(),
+        qr_code: z.string().optional(),
+        rating: z.number().optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -137,6 +140,8 @@ export const accomodationRouter = router({
         distinct_a: input.distinct_a,
         postal_code: input.postal_code,
         accommodation_status: input.accommodation_status,
+        qr_code: input.qr_code,
+        rating: input.rating,
       };
       const acom_newIssue = await prisma.accommodation.update({
         where: { accommodation_id: input.accommodation_id },
