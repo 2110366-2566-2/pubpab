@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -119,7 +118,7 @@ function HostEditRoomForm({
     deleteRoom.mutate({
       room_id: roomData.room_id? roomData.room_id : "",
     })
-    router.push(`../accommodation?accommodation_id=${roomData.accommodation_id}`)
+    router.back();
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {

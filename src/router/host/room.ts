@@ -29,6 +29,7 @@ export const roomRouter = router({
           bed_type: true,
           restroom: true,
           wifi_available: true,
+          accommodation_id: true,
         },
       });
       if (!getAccomodation) {

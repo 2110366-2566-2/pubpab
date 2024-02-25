@@ -118,14 +118,14 @@ function HostEditAccommodationForm({
   );
 
   const handleAddRoomClick = () => {
-    router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
+    router.back();
   };
 
   const handleDeleteClick = () => {
     deleteAccom.mutate({
       accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
     })
-    router.push('../profile');
+    router.back();
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {

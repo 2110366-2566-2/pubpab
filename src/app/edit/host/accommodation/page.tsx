@@ -1,4 +1,4 @@
-import HostEditAccomodationForm from "@/components/edit/accomodation/HostEditAccomodationForm";
+import HostEditAccommodationForm from "@/components/edit/accommodation/HostEditAccommodationForm";
 
 export default async function HostEditAccomodationPage({
   searchParams,
@@ -10,7 +10,7 @@ export default async function HostEditAccomodationPage({
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div>
-        <HostEditAccomodationForm
+        <HostEditAccommodationForm
           accommodation_id={searchParams.accommodation_id}
         />
       </div>

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -77,9 +77,9 @@ const formSchema = z.object({
 });
 
 export default function RoomAddForm() {
+  const router = useRouter();
   const mutation = trpc.host.room.create.useMutation();
   const searchParams = useSearchParams()
-  console.log(searchParams.get("accommodation_id"));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -102,6 +102,7 @@ export default function RoomAddForm() {
     mutation.mutate({
       ...values,
     });
+    router.back();
   }
   return (
     <div>
@@ -120,6 +121,7 @@ export default function RoomAddForm() {
             title="Suite"
             imageUrl={"/room1.jpeg"}
             status="Available"
+            id={""}
           />
           <Form {...form}>
             <form
