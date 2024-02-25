@@ -33,16 +33,12 @@ function Map({ onMapMarker, onMapClick }: GoogleMapViewProps) {
     lng: number;
   }>({ lat: 44, lng: -80 });
 
-  useEffect(() => {
-    getUserLocation();
-  }, []);
+  const generateGoogleMapsUrl = (lat: number, lng: number) => {
+    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  };
 
-  const updateMarkerPosition = (
-    fistInit: boolean,
-    default_lat: number,
-    default_lng: number,
-  ) => {
-    if (!onMapMarker || fistInit) {
+  const updateMarkerPosition = (default_lat: number, default_lng: number) => {
+    if (!onMapMarker) {
       console.log(default_lat);
       // If onMapMarker is null or undefined, use default values
       setMarker({ lat: default_lat, lng: default_lng });
@@ -59,29 +55,38 @@ function Map({ onMapMarker, onMapClick }: GoogleMapViewProps) {
     }
   };
 
-  useEffect(() => {
-    updateMarkerPosition(false, userLocation.lat, userLocation.lng);
-  }, [onMapMarker]);
-
   const getUserLocation = () => {
     navigator.geolocation.getCurrentPosition(
       function (pos) {
         console.log("Update location");
-        setUserLocation({
+        const pos_lat_lng = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
-        });
-        updateMarkerPosition(true, pos.coords.latitude, pos.coords.longitude);
-        onMapClick(googleMapsUrl);
+        };
+        setUserLocation(pos_lat_lng);
+        updateMarkerPosition(pos_lat_lng.lat, pos_lat_lng.lng);
+        onMapClick(generateGoogleMapsUrl(pos_lat_lng.lat, pos_lat_lng.lng));
       },
       function (error) {
         console.error("Error getting user location:", error);
       },
     );
   };
-  const generateGoogleMapsUrl = (lat: number, lng: number) => {
-    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    const nlat = e.latLng?.lat() as number;
+    const nlng = e.latLng?.lng() as number;
+    onMapClick(generateGoogleMapsUrl(nlat, nlng));
+    console.log("Click the map");
   };
+
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+
+  useEffect(() => {
+    updateMarkerPosition(userLocation.lat, userLocation.lng);
+  }, [onMapMarker]);
 
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
@@ -91,19 +96,6 @@ function Map({ onMapMarker, onMapClick }: GoogleMapViewProps) {
     }),
     [],
   );
-
-  const handleMapClick = (e: google.maps.MapMouseEvent) => {
-    const nlat = e.latLng?.lat() as number;
-    const nlng = e.latLng?.lng() as number;
-    setMarker({
-      lat: nlat,
-      lng: nlng,
-    });
-    onMapClick(googleMapsUrl);
-    console.log("Click the map");
-  };
-  const googleMapsUrl = generateGoogleMapsUrl(marker.lat, marker.lng);
-  // onMapClick(googleMapsUrl);
 
   return (
     <div className="relative">
