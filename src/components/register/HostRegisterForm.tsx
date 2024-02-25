@@ -19,6 +19,7 @@ import {
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 
+import GoogleMapView from "../GoogleMapView";
 import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -435,6 +436,10 @@ export default function HostRegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Google Map Link</FormLabel>
+              <GoogleMapView
+                onMapMarker={field.value}
+                onMapClick={field.onChange}
+              />
               <FormControl>
                 <Input {...field} />
               </FormControl>

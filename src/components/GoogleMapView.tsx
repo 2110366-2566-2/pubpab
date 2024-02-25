@@ -3,16 +3,27 @@
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import { useEffect, useMemo, useState } from "react";
 
-export default function GoogleMapView() {
+interface GoogleMapViewProps {
+  onMapMarker: string;
+  onMapClick: (googleMapsUrl: string) => void;
+}
+
+export default function GoogleMapView({
+  onMapMarker,
+  onMapClick,
+}: GoogleMapViewProps) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
-  if (!isLoaded) return <div>Loading...</div>;
-  return <Map />;
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    return <Map onMapMarker={onMapMarker} onMapClick={onMapClick} />;
+  }
 }
 
-function Map() {
+function Map({ onMapMarker, onMapClick }: GoogleMapViewProps) {
   const [marker, setMarker] = useState<{ lat: number; lng: number }>({
     lat: 44,
     lng: -80,
@@ -26,18 +37,42 @@ function Map() {
     getUserLocation();
   }, []);
 
+  const updateMarkerPosition = (
+    fistInit: boolean,
+    default_lat: number,
+    default_lng: number,
+  ) => {
+    if (!onMapMarker || fistInit) {
+      console.log(default_lat);
+      // If onMapMarker is null or undefined, use default values
+      setMarker({ lat: default_lat, lng: default_lng });
+    } else {
+      const urlParams = new URLSearchParams(new URL(onMapMarker).search);
+
+      const queryString = urlParams.get("query");
+      const latString = queryString?.split(",")[0];
+      const lat = latString ? parseFloat(latString) : default_lat;
+
+      const lngString = queryString?.split(",")[1];
+      const lng = lngString ? parseFloat(lngString) : default_lng;
+      setMarker({ lat: lat, lng: lng });
+    }
+  };
+
+  useEffect(() => {
+    updateMarkerPosition(false, userLocation.lat, userLocation.lng);
+  }, [onMapMarker]);
+
   const getUserLocation = () => {
     navigator.geolocation.getCurrentPosition(
       function (pos) {
-        setMarker({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        });
-
+        console.log("Update location");
         setUserLocation({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         });
+        updateMarkerPosition(true, pos.coords.latitude, pos.coords.longitude);
+        onMapClick(googleMapsUrl);
       },
       function (error) {
         console.error("Error getting user location:", error);
@@ -64,9 +99,12 @@ function Map() {
       lat: nlat,
       lng: nlng,
     });
+    onMapClick(googleMapsUrl);
+    console.log("Click the map");
   };
   const googleMapsUrl = generateGoogleMapsUrl(marker.lat, marker.lng);
-  console.log(googleMapsUrl);
+  // onMapClick(googleMapsUrl);
+
   return (
     <div className="relative">
       <GoogleMap
@@ -79,7 +117,7 @@ function Map() {
         }}
         center={userLocation}
         options={mapOptions}
-        onClick={(e) => handleMapClick(e)}
+        onClick={handleMapClick}
       >
         <Marker position={marker} />
       </GoogleMap>
