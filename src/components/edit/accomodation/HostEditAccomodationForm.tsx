@@ -122,9 +122,10 @@ function HostEditAccommodationForm({
   };
 
   const handleDeleteClick = () => {
-    deleteAccom.mutateAsync({
+    deleteAccom.mutate({
       accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
     })
+    router.push('../profile');
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {

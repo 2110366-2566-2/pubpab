@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,6 +53,7 @@ type RoomData = {
   bed_type?: "KING" | "QUEEN",
   rest_room?: boolean,
   wifi_available?: boolean,
+  accommodation_id?: string,
 }
 
 const formSchema = z.object({
@@ -73,6 +76,7 @@ const formSchema = z.object({
   restroom: z.boolean().default(false).optional(),
   wifi_available: z.boolean().default(false).optional(),
   bed_type: z.enum(["KING","QUEEN"]),
+  accommodation_id: z.string(),
   // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
   //   message: "You have to select at least one item.",
   // }),
@@ -104,15 +108,18 @@ function HostEditRoomForm({
       wifi_available: roomData.wifi_available,
     },
   });
+  const router = useRouter();
   const deleteRoom = trpc.host.room.delete.useMutation();
   const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
 
+  console.log(roomData.accommodation_id);
+
   function DeleteHandle() {
-    console.log(roomData.room_id);
-    deleteRoom.mutateAsync({
+    deleteRoom.mutate({
       room_id: roomData.room_id? roomData.room_id : "",
     })
+    router.push(`../accommodation?accommodation_id=${roomData.accommodation_id}`)
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -419,6 +426,7 @@ export default function RoomEditForm({
     <HostEditRoomForm
       roomData={{
         room_id: room_id,
+        accommodation_id: roomDataQuery.data?.accommodation_id,
         room_name: roomDataQuery.data?.room_name,
         price: roomDataQuery.data?.price,
         floor: roomDataQuery.data?.floor,
