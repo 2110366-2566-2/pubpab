@@ -7,7 +7,6 @@ export default async function HostEditAccomodationPage({
     accommodation_id: string;
   };
 }) {
-  console.log(searchParams.accommodation_id);
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div>

@@ -89,6 +89,10 @@ function HostEditAccommodationForm({
     },
   });
   const router = useRouter();
+  const onInvalid = (errors: unknown) => console.error(errors);
+
+  const deleteAccom = trpc.host.accomodation.delete.useMutation();
+  const mutation = trpc.host.accomodation.update.useMutation();
 
   const findRoom = trpc.host.room.findMany.useQuery({
     accommodation_id: accommodationData.accommodation_id || "",
@@ -103,8 +107,6 @@ function HostEditAccommodationForm({
   }
 
   const rooms = findRoom.data;
-
-  const onInvalid = (errors: unknown) => console.error(errors);
   
   const propertyData = rooms.flatMap((entry) =>
     entry.room.map((room) => ({
@@ -120,16 +122,12 @@ function HostEditAccommodationForm({
   };
 
   const handleDeleteClick = () => {
-    const deleteAccom = trpc.host.accomodation.delete.useMutation();
-
     deleteAccom.mutateAsync({
       accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
     })
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const mutation = trpc.host.accomodation.update.useMutation();
-    
     mutation.mutateAsync({
       ...values,
       accommodation_id: accommodationData.accommodation_id

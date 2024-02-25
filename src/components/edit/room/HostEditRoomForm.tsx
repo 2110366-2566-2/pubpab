@@ -104,20 +104,18 @@ function HostEditRoomForm({
       wifi_available: roomData.wifi_available,
     },
   });
-
+  const deleteRoom = trpc.host.room.delete.useMutation();
+  const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
 
   function DeleteHandle() {
-    const deleteRoom = trpc.host.room.delete.useMutation();
-    
+    console.log(roomData.room_id);
     deleteRoom.mutateAsync({
       room_id: roomData.room_id? roomData.room_id : "",
     })
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const mutation = trpc.host.room.update.useMutation();
-    
     mutation.mutate({ ...values, room_id: roomData.room_id? roomData.room_id : "" });
   }
   return (
