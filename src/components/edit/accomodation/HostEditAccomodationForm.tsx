@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
 import PropertyRoomCard from "@/components/card/PropertyRoomCard";
+import GoogleMapView from "@/components/GoogleMapView";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -45,6 +46,11 @@ const formSchema = z.object({
     .max(100, "District must be less than 100 characters long."),
   postalcode: z.string().length(5, "Invalid postal code format."),
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
+  ggmap_link: z
+    .string()
+    .regex(
+      /^https?:\/\/www\.google\.com\/maps\/search\/\?api=1&query=[\d.-]+,[\d.-]+$/,
+    ),
   rating: z
     .number()
     .max(
@@ -63,6 +69,7 @@ type AccommodationData = {
   province?: string;
   district?: string;
   postalcode?: string;
+  ggmap_link?: string;
   accommodation_status?: "OPEN" | "CLOSE";
 };
 
@@ -83,6 +90,7 @@ function HostEditAccommodationForm({
       province: accommodationData.province,
       district: accommodationData.district,
       postalcode: accommodationData.postalcode,
+      ggmap_link: accommodationData.ggmap_link,
       accommodation_status: accommodationData.accommodation_status,
     },
   });
@@ -265,6 +273,25 @@ function HostEditAccommodationForm({
                   />
                 </div>
               </div>
+              <div className="w-full md:w-2/3">
+                <FormField
+                  control={form.control}
+                  name="ggmap_link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Google Map Link</FormLabel>
+                      <GoogleMapView
+                        onMapMarker={field.value}
+                        onMapClick={field.onChange}
+                      />
+                      <FormControl>
+                        <Input className="border border-black" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
                   <PropertyRoomCard
@@ -337,6 +364,7 @@ export default function AccommodationEditForm({
         province: accommodationDataQuery.data?.province,
         district: accommodationDataQuery.data?.distinct_a,
         postalcode: accommodationDataQuery.data?.postal_code,
+        ggmap_link: accommodationDataQuery.data?.ggmap_link,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
       }}
     />

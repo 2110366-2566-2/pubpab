@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
 import PropertyRoomCard from "@/components/card/PropertyRoomCard";
+import GoogleMapView from "@/components/GoogleMapView";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,7 +51,7 @@ const formSchema = z.object({
   ggmap_link: z
     .string()
     .regex(
-      /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+      /^https?:\/\/www\.google\.com\/maps\/search\/\?api=1&query=[\d.-]+,[\d.-]+$/,
     ),
   rating: z.coerce
     .number()
@@ -274,6 +275,10 @@ export default function AccommodationAddForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Google Map Link</FormLabel>
+                      <GoogleMapView
+                        onMapMarker={field.value}
+                        onMapClick={field.onChange}
+                      />
                       <FormControl>
                         <Input className="border border-black" {...field} />
                       </FormControl>

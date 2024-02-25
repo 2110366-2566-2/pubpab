@@ -27,6 +27,7 @@ export const accomodationRouter = router({
           province: true,
           distinct_a: true,
           postal_code: true,
+          ggmap_link: true,
           accommodation_status: true,
         },
       });
@@ -124,6 +125,7 @@ export const accomodationRouter = router({
         province: z.string().optional(),
         distinct_a: z.string().optional(),
         postal_code: z.string().optional(),
+        ggmap_link: z.string().optional(),
         accommodation_status: z.enum(["OPEN", "CLOSE"]).optional(),
       }),
     )
@@ -136,6 +138,7 @@ export const accomodationRouter = router({
         province: input.province,
         distinct_a: input.distinct_a,
         postal_code: input.postal_code,
+        ggmap_link: input.ggmap_link,
         accommodation_status: input.accommodation_status,
       };
       const acom_newIssue = await prisma.accommodation.update({
