@@ -155,7 +155,12 @@ export default function AdminHostProfile({ unhost_id }: { unhost_id: string }) {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              placeholder="Email"
+                              className="border border-black"
+                              readOnly
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
