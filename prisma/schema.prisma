@@ -33,8 +33,8 @@ model accommodation {
 model admin {
   admin_id   String     @id @db.VarChar(36)
   admin_type admintypes
+  users      users      @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
   host       host[]
-  users      users   @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
 }
 
 model attachment {
@@ -76,7 +76,7 @@ model feedback {
 }
 
 model host {
-  host_id       String          @id @db.VarChar(36) 
+  host_id       String          @id @db.VarChar(36)
   admin_id      String?         @db.VarChar(36)
   bank_account  String?         @db.VarChar(255)
   accommodation accommodation[]
@@ -135,9 +135,9 @@ model reserve {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String         @id @default(uuid()) @db.VarChar(36)
+  room_id          String        @id @default(uuid()) @db.VarChar(36)
   accommodation_id String        @db.VarChar(36)
-  room_name        String         @db.VarChar(64)
+  room_name        String        @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -151,7 +151,7 @@ model room {
   wifi_available   Boolean
   max_resident_no  Int
   banner           String?
-  accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
+  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
 }
 
 model text {
@@ -173,19 +173,19 @@ model traveler {
 
 model users {
   user_id       String     @id @default(uuid()) @db.VarChar(36)
-  citizen_id    String?     @unique @db.Char(13)
-  first_name    String?     @db.VarChar(64)
-  last_name     String?     @db.VarChar(64)
+  citizen_id    String?    @unique @db.Char(13)
+  first_name    String?    @db.VarChar(64)
+  last_name     String?    @db.VarChar(64)
   email         String     @unique
   password_hash String     @db.VarChar(255)
-  birth_date    DateTime?   @db.Date
+  birth_date    DateTime?  @db.Date
   age           Int?
   user_type     users_type
-  phone_no      String?     @db.Char(10)
+  phone_no      String?    @db.Char(10)
   gender        genders?
   banner        String?
-  host          host?
   admin         admin?
+  host          host?
   messages      messages[]
   problem       problem[]
   traveler      traveler?
