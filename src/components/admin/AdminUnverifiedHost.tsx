@@ -1,11 +1,31 @@
+/* eslint-disable react/jsx-key */
 "use-client";
 
-import VerifyPropertyCard from "@/components/card/VerifyHostCard";
+import UnverifiedHostCard from "@/components/card/UnverifiedHostCard";
+import { trpc } from "@/lib/trpc/client";
 
-export default function AdminUnverifiedProperties() {
+export default function AdminUnverifiedHost() {
+  const unverifiedHost = trpc.verification.getUnverifiedHosts.useQuery().data;
+
+  if (unverifiedHost == null){
+    return null;
+  }
+
+  const unverifiedHostData = unverifiedHost.map((host) => ({
+    id: host.host_id,
+    banner: host.users.banner,
+    first_name: host.users.first_name,
+    last_name: host.users.last_name,
+    phone_no: host.users.phone_no,
+  }));
   return (
     <div>
-      <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">
+      {unverifiedHostData.map((property) => (
+        <UnverifiedHostCard
+          imageUrl= {property.banner || ""}
+        />
+        ))}
+      {/* <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">
         <label className="text-4xl font-bold">Unverified Host</label>
         <VerifyPropertyCard
           title="Menorca Hotel"
@@ -22,7 +42,7 @@ export default function AdminUnverifiedProperties() {
           imageUrl={"/easthotel.jpeg"}
           status="Verified"
         />
-      </div>
+      </div> */}
     </div>
   );
 }
