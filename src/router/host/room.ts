@@ -5,24 +5,69 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const roomRouter = router({
-  findMany: publicProcedure
-    .input(z.object({ room_id: z.string() }))
+  find: publicProcedure
+    .input(
+      z.object({
+        room_id: z.string(),
+      }),
+    )
     .query(async ({ input }) => {
-      const getRoom = await prisma.room.findMany({
-        where: { room_id: input.room_id },
+      const getAccomodation = await prisma.room.findUnique({
+        where: {
+          room_id: input.room_id,
+        },
+        select: {
+          room_name: true,
+          price: true,
+          floor: true,
+          is_reserve: true,
+          room_no: true,
+          smoking: true,
+          noise: true,
+          pet: true,
+          washing_machine: true,
+          bed_type: true,
+          restroom: true,
+          wifi_available: true,
+          accommodation_id: true,
+        },
       });
-      if (!getRoom) {
+      if (!getAccomodation) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "room not found",
+          message: "Accommodation not found",
         });
       }
-      return getRoom;
+      return getAccomodation;
+    }),
+  findMany: publicProcedure
+    .input(z.object({ accommodation_id: z.string() }))
+    .query(async ({ input }) => {
+      const getAccomodation = await prisma.accommodation.findMany({
+        where: { accommodation_id: input.accommodation_id },
+        select: {
+          room: {
+            select: {
+              room_id: true,
+              is_reserve: true,
+              room_name: true,
+              banner: true,
+            },
+          },
+        },
+      });
+      if (!getAccomodation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Accommodation not found",
+        });
+      }
+      return getAccomodation;
     }),
   create: publicProcedure
     .input(
       z.object({
-        accomodation_id: z.string(),
+        accommodation_id: z.string(),
         room_name: z.string(),
         price: z.number(),
         floor: z.number(),
@@ -42,7 +87,7 @@ export const roomRouter = router({
       try {
         const room = await prisma.room.create({
           data: {
-            accommodation_id: input.accomodation_id,
+            accommodation_id: input.accommodation_id,
             room_name: input.room_name,
             price: input.price,
             floor: input.floor,

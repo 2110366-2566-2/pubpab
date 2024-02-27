@@ -1,8 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,6 +25,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
 
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../ui/select";
+
 // const allow = [
 //   { id: "pet", label: "Pet" },
 //   { id: "noise", label: "Noise" },
@@ -38,48 +45,31 @@ import { trpc } from "@/lib/trpc/client";
 //   { id: "washingMachine", label: "Washing Machine" },
 // ] as const;
 
-type RoomData = {
-  room_id?: string;
-  room_name?: string;
-  price?: number;
-  floor?: number;
-  is_reserve?: boolean;
-  room_no?: string;
-  smoking?: boolean;
-  noise?: boolean;
-  pet?: boolean;
-  washing_machine?: boolean;
-  bed_type?: "KING" | "QUEEN";
-  rest_room?: boolean;
-  wifi_available?: boolean;
-  accommodation_id?: string;
-};
-
 const formSchema = z.object({
   room_name: z.string().max(64, "Name must be less than 64 characters long."),
+  floor: z.coerce.number().min(1),
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
-  is_reserve: z.boolean(),
   adult: z.coerce
     .number()
     .min(0, "The number of adult must not be less than 0."),
   children: z.coerce
     .number()
-    .min(0, "The number of children must not be less than 0."),
-  floor: z.coerce.number(),
+    .min(0, "The number of adult must not be less than 0."),
   room_no: z.string(),
-  smoking: z.boolean().default(false).optional(),
-  noise: z.boolean().default(false).optional(),
-  pet: z.boolean().default(false).optional(),
-  washing_machine: z.boolean().default(false).optional(),
-  restroom: z.boolean().default(false).optional(),
-  wifi_available: z.boolean().default(false).optional(),
   bed_type: z.enum(["KING", "QUEEN"]),
+  is_reserve: z.boolean(),
+  max_resident_no: z.number(),
+  smoking: z.boolean().default(false),
+  noise: z.boolean().default(false),
+  pet: z.boolean().default(false),
+  washing_machine: z.boolean().default(false),
+  restroom: z.boolean().default(false),
+  wifi_available: z.boolean().default(false),
   accommodation_id: z.string(),
-  // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
-  //   message: "You have to select at least one item.",
+  // allow: z.array(z.string()).refine((value) => value.some((item) =>d
   // }),
 
   // facility: z.array(z.string()).refine((value) => value.some((item) => item), {
@@ -87,51 +77,45 @@ const formSchema = z.object({
   // }),
 });
 
-function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
+export default function RoomAddForm() {
+  const router = useRouter();
+  const mutation = trpc.host.room.create.useMutation();
+  const searchParams = useSearchParams();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      room_name: roomData.room_name,
-      price: roomData.price,
-      floor: roomData.floor,
-      is_reserve: roomData.is_reserve,
-      room_no: roomData.room_no,
-      smoking: roomData.smoking,
-      noise: roomData.noise,
-      pet: roomData.pet,
-      washing_machine: roomData.washing_machine,
-      bed_type: roomData.bed_type,
-      restroom: roomData.rest_room,
-      wifi_available: roomData.wifi_available,
+      max_resident_no: 5,
+      accommodation_id: searchParams.get("accommodation_id") || "",
+      is_reserve: false,
+      smoking: false,
+      noise: false,
+      pet: false,
+      washing_machine: false,
+      restroom: false,
+      wifi_available: false,
     },
   });
-  const router = useRouter();
-  const deleteRoom = trpc.host.room.delete.useMutation();
-  const mutation = trpc.host.room.update.useMutation();
+
   const onInvalid = (errors: unknown) => console.error(errors);
-
-  console.log(roomData.accommodation_id);
-
-  function DeleteHandle() {
-    deleteRoom.mutate({
-      room_id: roomData.room_id ? roomData.room_id : "",
-    });
+  const handleBackClick = () => {
     router.back();
-  }
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({
       ...values,
-      room_id: roomData.room_id ? roomData.room_id : "",
     });
+    router.back();
   }
   return (
     <div>
-      <Link href="/edit/host/accomodation">
-        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Back
-        </Button>
-      </Link>
+      <Button
+        className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+        onClick={handleBackClick}
+      >
+        Back
+      </Button>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Room Information</CardTitle>
@@ -142,7 +126,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
             title="Suite"
             imageUrl={"/room1.jpeg"}
             status="Available"
-            id={roomData.room_id ? roomData.room_id : ""}
+            id={""}
           />
           <Form {...form}>
             <form
@@ -269,6 +253,27 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                   />
                 </div>
               </div>
+              <FormField
+                control={form.control}
+                name="bed_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bed Type</FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Bed Type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="KING">KING</SelectItem>
+                        <SelectItem value="QUEEN">QUEEN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div>
                 <div className="text-lg">Allow</div>
@@ -385,13 +390,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                   type="submit"
                   className="text-grey-800 mt-15 ml-0 mr-2 w-40 border border-black bg-[#F4EDEA] hover:text-white"
                 >
-                  Save Changes
-                </Button>
-                <Button
-                  className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                  onClick={DeleteHandle}
-                >
-                  Delete Room
+                  Add Room
                 </Button>
               </div>
               {/* <Button type="submit" className="mt-10">
@@ -406,34 +405,5 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
         </div>
       </Card>
     </div>
-  );
-}
-
-export default function RoomEditForm({ room_id }: { room_id: string }) {
-  const roomDataQuery = trpc.host.room.find.useQuery({
-    room_id: room_id,
-  });
-  if (roomDataQuery.status === "loading") {
-    return <div>Loading...</div>;
-  }
-  return (
-    <HostEditRoomForm
-      roomData={{
-        room_id: room_id,
-        accommodation_id: roomDataQuery.data?.accommodation_id,
-        room_name: roomDataQuery.data?.room_name,
-        price: roomDataQuery.data?.price,
-        floor: roomDataQuery.data?.floor,
-        is_reserve: roomDataQuery.data?.is_reserve,
-        room_no: roomDataQuery.data?.room_no,
-        smoking: roomDataQuery.data?.smoking,
-        noise: roomDataQuery.data?.noise,
-        pet: roomDataQuery.data?.pet,
-        washing_machine: roomDataQuery.data?.washing_machine,
-        bed_type: roomDataQuery.data?.bed_type,
-        rest_room: roomDataQuery.data?.restroom,
-        wifi_available: roomDataQuery.data?.wifi_available,
-      }}
-    />
   );
 }

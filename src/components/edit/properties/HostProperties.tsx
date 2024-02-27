@@ -48,7 +48,7 @@ export default function HostProperties() {
         <div key={index} className="mb-4">
           <Link
             href={{
-              pathname: "/edit/host/accomodation",
+              pathname: "/edit/host/accommodation",
               query: {
                 accommodation_id: property.id,
               },
