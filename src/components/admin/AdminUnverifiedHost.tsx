@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-"use-client";
+"use client";
 
 import UnverifiedHostCard from "@/components/card/UnverifiedHostCard";
 import { trpc } from "@/lib/trpc/client";
@@ -7,7 +7,7 @@ import { trpc } from "@/lib/trpc/client";
 export default function AdminUnverifiedHost() {
   const unverifiedHost = trpc.verification.getUnverifiedHosts.useQuery().data;
 
-  if (unverifiedHost == null){
+  if (unverifiedHost == null) {
     return null;
   }
 
@@ -21,10 +21,8 @@ export default function AdminUnverifiedHost() {
   return (
     <div>
       {unverifiedHostData.map((property) => (
-        <UnverifiedHostCard
-          imageUrl= {property.banner || ""}
-        />
-        ))}
+        <UnverifiedHostCard imageUrl={property.banner || ""} />
+      ))}
       {/* <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">
         <label className="text-4xl font-bold">Unverified Host</label>
         <VerifyPropertyCard
