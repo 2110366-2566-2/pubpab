@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,17 +47,19 @@ import {
 
 const formSchema = z.object({
   room_name: z.string().max(64, "Name must be less than 64 characters long."),
-  floor: z.
-    coerce.number()
-    .min(1),
+  floor: z.coerce.number().min(1),
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
-  adult: z.coerce.number().min(0, "The number of adult must not be less than 0."),
-  children: z.coerce.number().min(0, "The number of adult must not be less than 0."),
+  adult: z.coerce
+    .number()
+    .min(0, "The number of adult must not be less than 0."),
+  children: z.coerce
+    .number()
+    .min(0, "The number of adult must not be less than 0."),
   room_no: z.string(),
-  bed_type: z.enum(["KING","QUEEN"]),
+  bed_type: z.enum(["KING", "QUEEN"]),
   is_reserve: z.boolean(),
   max_resident_no: z.number(),
   smoking: z.boolean().default(false),
@@ -79,13 +80,13 @@ const formSchema = z.object({
 export default function RoomAddForm() {
   const router = useRouter();
   const mutation = trpc.host.room.create.useMutation();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       max_resident_no: 5,
-      accommodation_id: searchParams.get("accommodation_id") ||  "",
+      accommodation_id: searchParams.get("accommodation_id") || "",
       is_reserve: false,
       smoking: false,
       noise: false,
@@ -97,6 +98,9 @@ export default function RoomAddForm() {
   });
 
   const onInvalid = (errors: unknown) => console.error(errors);
+  const handleBackClick = () => {
+    router.back();
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate({
@@ -106,11 +110,12 @@ export default function RoomAddForm() {
   }
   return (
     <div>
-      <Link href="/edit/host/accomodation">
-        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Back
-        </Button>
-      </Link>
+      <Button
+        className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+        onClick={handleBackClick}
+      >
+        Back
+      </Button>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Room Information</CardTitle>
@@ -252,23 +257,23 @@ export default function RoomAddForm() {
                 control={form.control}
                 name="bed_type"
                 render={({ field }) => (
-                 <FormItem>
+                  <FormItem>
                     <FormLabel>Bed Type</FormLabel>
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
-                         <SelectValue placeholder="Bed Type" />
+                          <SelectValue placeholder="Bed Type" />
                         </SelectTrigger>
                       </FormControl>
-                     <SelectContent>
+                      <SelectContent>
                         <SelectItem value="KING">KING</SelectItem>
                         <SelectItem value="QUEEN">QUEEN</SelectItem>
-                     </SelectContent>
-                   </Select>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
-                 </FormItem>
-               )}
-             />
+                  </FormItem>
+                )}
+              />
 
               <div>
                 <div className="text-lg">Allow</div>

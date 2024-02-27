@@ -9,9 +9,7 @@ export default async function HostEditRoomPage({
 }) {
   return (
     <div className="my-12 flex min-h-screen justify-center">
-      <HostEditRoomForm
-        room_id={searchParams.room_id}
-      />
+      <HostEditRoomForm room_id={searchParams.room_id} />
     </div>
   );
 }

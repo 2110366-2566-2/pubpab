@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
 import PropertyRoomCard from "@/components/card/PropertyRoomCard";
+import GoogleMapView from "@/components/GoogleMapView";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,6 +48,11 @@ const formSchema = z.object({
     .max(100, "District must be less than 100 characters long."),
   postalcode: z.string().length(5, "Invalid postal code format."),
   accommodation_status: z.enum(["OPEN", "CLOSE"]),
+  ggmap_link: z
+    .string()
+    .regex(
+      /^https?:\/\/www\.google\.com\/maps\/search\/\?api=1&query=[\d.-]+,[\d.-]+$/,
+    ),
   rating: z
     .number()
     .max(
@@ -65,6 +71,7 @@ type AccommodationData = {
   province?: string;
   district?: string;
   postalcode?: string;
+  ggmap_link?: string;
   accommodation_status?: "OPEN" | "CLOSE";
   rating?: number;
 };
@@ -84,6 +91,7 @@ function HostEditAccommodationForm({
       province: accommodationData.province,
       district: accommodationData.district,
       postalcode: accommodationData.postalcode,
+      ggmap_link: accommodationData.ggmap_link,
       accommodation_status: accommodationData.accommodation_status,
       qr_code: accommodationData.qr_code,
       rating: accommodationData.rating,
@@ -108,7 +116,7 @@ function HostEditAccommodationForm({
   }
 
   const rooms = findRoom.data;
-  
+
   const propertyData = rooms.flatMap((entry) =>
     entry.room.map((room) => ({
       image: "/room1.png",
@@ -119,15 +127,19 @@ function HostEditAccommodationForm({
   );
 
   const handleAddRoomClick = () => {
-    router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
+    router.push(
+      `../../add/room?accommodation_id=${accommodationData.accommodation_id}`,
+    );
   };
 
   const handleDeleteClick = () => {
     deleteAccom.mutate({
-      accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
-    })
+      accommodation_id: accommodationData.accommodation_id
+        ? accommodationData.accommodation_id
+        : "",
+    });
     router.back();
-  }
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutateAsync({
@@ -308,6 +320,25 @@ function HostEditAccommodationForm({
                   />
                 </div>
               </div>
+              <div className="w-full md:w-2/3">
+                <FormField
+                  control={form.control}
+                  name="ggmap_link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Google Map Link</FormLabel>
+                      <GoogleMapView
+                        onMapMarker={field.value}
+                        onMapClick={field.onChange}
+                      />
+                      <FormControl>
+                        <Input className="border border-black" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <button
                 onClick={handleAddRoomClick}
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
@@ -328,36 +359,13 @@ function HostEditAccommodationForm({
                       <PropertyRoomCard
                         title={property.title}
                         imageUrl={property.image}
-                        status={property.status? "Available" : "Unavailable"}
+                        status={property.status ? "Available" : "Unavailable"}
                         id={property.id}
                       />
-                   </Link>
+                    </Link>
                   </div>
                 ))}
               </div>
-              {/* <div className="my-4 flex flex-wrap gap-4">
-                <Link href="/edit/host/room">
-                  <PropertyRoomCard
-                    imageUrl="/room1.jpeg"
-                    title="Suite"
-                    status="Available"
-                  />
-                </Link>
-                <Link href="/edit/host/room">
-                  <PropertyRoomCard
-                    imageUrl="/room2.jpeg"
-                    title="Superior room"
-                    status="Available"
-                  />
-                </Link>
-                <Link href="/edit/host/room">
-                  <PropertyRoomCard
-                    imageUrl="/room3.jpeg"
-                    title="Deluxe room"
-                    status="Unavailable"
-                  />
-                </Link> }
-              </div> */}
               <Button
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
@@ -375,7 +383,7 @@ function HostEditAccommodationForm({
         </div>
       </Card>
     </div>
-  )
+  );
 }
 
 export default function AccommodationEditForm({
@@ -408,6 +416,7 @@ export default function AccommodationEditForm({
         province: accommodationDataQuery.data?.province,
         district: accommodationDataQuery.data?.distinct_a,
         postalcode: accommodationDataQuery.data?.postal_code,
+        ggmap_link: accommodationDataQuery.data?.ggmap_link,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
         rating: accommodationDataQuery.data?.rating,
       }}
