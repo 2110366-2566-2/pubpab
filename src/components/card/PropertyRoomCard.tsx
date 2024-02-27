@@ -4,10 +4,12 @@ const PropertyRoomCard = ({
   title,
   imageUrl,
   status,
+  id,
 }: {
   title: string;
   imageUrl: string;
   status: string;
+  id: string;
 }) => {
   // const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
 

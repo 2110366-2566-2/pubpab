@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -64,6 +66,7 @@ type AccommodationData = {
   district?: string;
   postalcode?: string;
   accommodation_status?: "OPEN" | "CLOSE";
+  rating?: number;
 };
 
 function HostEditAccommodationForm({
@@ -71,8 +74,6 @@ function HostEditAccommodationForm({
 }: {
   accommodationData: AccommodationData;
 }) {
-  const mutation = trpc.host.accomodation.update.useMutation();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -84,10 +85,52 @@ function HostEditAccommodationForm({
       district: accommodationData.district,
       postalcode: accommodationData.postalcode,
       accommodation_status: accommodationData.accommodation_status,
+      qr_code: accommodationData.qr_code,
+      rating: accommodationData.rating,
     },
   });
+  const router = useRouter();
+  const onInvalid = (errors: unknown) => console.error(errors);
+
+  const deleteAccom = trpc.host.accomodation.delete.useMutation();
+  const mutation = trpc.host.accomodation.update.useMutation();
+
+  const findRoom = trpc.host.room.findMany.useQuery({
+    accommodation_id: accommodationData.accommodation_id || "",
+  });
+
+  if (findRoom.error) {
+    return <div>Error: {findRoom.error.message}</div>;
+  }
+
+  if (findRoom.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const rooms = findRoom.data;
+  
+  const propertyData = rooms.flatMap((entry) =>
+    entry.room.map((room) => ({
+      image: "/room1.png",
+      title: room.room_name,
+      status: room.is_reserve,
+      id: room.room_id,
+    })),
+  );
+
+  const handleAddRoomClick = () => {
+    router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
+  };
+
+  const handleDeleteClick = () => {
+    deleteAccom.mutate({
+      accommodation_id: accommodationData.accommodation_id? accommodationData.accommodation_id : "",
+    })
+    router.back();
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({
+    mutation.mutateAsync({
       ...values,
       accommodation_id: accommodationData.accommodation_id
         ? accommodationData.accommodation_id
@@ -122,7 +165,7 @@ function HostEditAccommodationForm({
         <div className="mx-auto">
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
               className="space-y-4 px-4"
             >
               <div>
@@ -265,7 +308,34 @@ function HostEditAccommodationForm({
                   />
                 </div>
               </div>
-              <div className="my-4 flex flex-wrap gap-4">
+              <button
+                onClick={handleAddRoomClick}
+                className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+              >
+                Add New Room
+              </button>
+              <div className="px-4 py-4">
+                {propertyData.map((property, index) => (
+                  <div key={index} className="mb-4">
+                    <Link
+                      href={{
+                        pathname: "/edit/host/room",
+                        query: {
+                          room_id: property.id,
+                        },
+                      }}
+                    >
+                      <PropertyRoomCard
+                        title={property.title}
+                        imageUrl={property.image}
+                        status={property.status? "Available" : "Unavailable"}
+                        id={property.id}
+                      />
+                   </Link>
+                  </div>
+                ))}
+              </div>
+              {/* <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room1.jpeg"
@@ -286,8 +356,8 @@ function HostEditAccommodationForm({
                     title="Deluxe room"
                     status="Unavailable"
                   />
-                </Link>
-              </div>
+                </Link> }
+              </div> */}
               <Button
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
@@ -295,8 +365,8 @@ function HostEditAccommodationForm({
                 Save changes
               </Button>
               <Button
-                type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                onClick={handleDeleteClick}
               >
                 Delete Property
               </Button>
@@ -305,7 +375,7 @@ function HostEditAccommodationForm({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
 export default function AccommodationEditForm({
@@ -329,6 +399,7 @@ export default function AccommodationEditForm({
   return (
     <HostEditAccommodationForm
       accommodationData={{
+        accommodation_id: accommodation_id,
         name_a: accommodationDataQuery.data?.name_a,
         description_a: accommodationDataQuery.data?.description_a,
         qr_code: accommodationDataQuery.data?.qr_code,
@@ -338,6 +409,7 @@ export default function AccommodationEditForm({
         district: accommodationDataQuery.data?.distinct_a,
         postalcode: accommodationDataQuery.data?.postal_code,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
+        rating: accommodationDataQuery.data?.rating,
       }}
     />
   );
