@@ -119,7 +119,7 @@ function HostEditAccommodationForm({
   );
 
   const handleAddRoomClick = () => {
-    router.back();
+    router.push(`../../add/room?accommodation_id=${accommodationData.accommodation_id}`);
   };
 
   const handleDeleteClick = () => {
