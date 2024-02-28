@@ -21,7 +21,11 @@ export default function AdminUnverifiedHost() {
   return (
     <div>
       {unverifiedHostData.map((property) => (
-        <UnverifiedHostCard imageUrl={property.banner || ""} />
+        <UnverifiedHostCard
+          imageUrl={property.banner || ""}
+          first_name={property.first_name || ""}
+          last_name={property.last_name || ""}
+        />
       ))}
       {/* <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">
         <label className="text-4xl font-bold">Unverified Host</label>
