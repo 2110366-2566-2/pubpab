@@ -36,8 +36,8 @@ const formSchema = z.object({
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
   price: z.number().min(0, "Price must not be less than 0."),
-  adult: z.number().min(0, "The number of adult must not be less than 0."),
-  children: z
+  max_adult: z.number().min(0, "The number of adult must not be less than 0."),
+  max_children: z
     .number()
     .min(0, "The number of children must not be less than 0."),
   smoking: z.boolean().default(false).optional(),
@@ -147,7 +147,7 @@ export default function AdminHostRoom() {
             <div className="w-full md:w-1/2 lg:w-1/3">
               <FormField
                 control={form.control}
-                name="adult"
+                name="max_adult"
                 render={({ field }) => (
                   <FormItem className="mb-4 mr-7">
                     {" "}
@@ -167,7 +167,7 @@ export default function AdminHostRoom() {
             <div className="w-full md:w-1/2 lg:w-1/3">
               <FormField
                 control={form.control}
-                name="children"
+                name="max_children"
                 render={({ field }) => (
                   <FormItem className="mb-4 mr-7">
                     {" "}

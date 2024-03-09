@@ -53,6 +53,8 @@ type RoomData = {
   rest_room?: boolean;
   wifi_available?: boolean;
   accommodation_id?: string;
+  max_adult?: number;
+  max_children?: number;
 };
 
 const formSchema = z.object({
@@ -62,10 +64,10 @@ const formSchema = z.object({
   //   .max(64, "Description must be less than 64 characters long."),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
   is_reserve: z.boolean(),
-  adult: z.coerce
+  max_adult: z.coerce
     .number()
     .min(0, "The number of adult must not be less than 0."),
-  children: z.coerce
+  max_children: z.coerce
     .number()
     .min(0, "The number of children must not be less than 0."),
   floor: z.coerce.number(),
@@ -103,6 +105,8 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
       bed_type: roomData.bed_type,
       restroom: roomData.rest_room,
       wifi_available: roomData.wifi_available,
+      max_adult: roomData.max_adult,
+      max_children: roomData.max_children,
     },
   });
   const router = useRouter();
@@ -142,7 +146,6 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
             title="Suite"
             imageUrl={"/room1.jpeg"}
             status="Available"
-            id={roomData.room_id ? roomData.room_id : ""}
           />
           <Form {...form}>
             <form
@@ -239,7 +242,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                 <div className="w-full md:w-1/2 lg:w-1/3">
                   <FormField
                     control={form.control}
-                    name="adult"
+                    name="max_adult"
                     render={({ field }) => (
                       <FormItem className="mb-4 mr-7">
                         {" "}
@@ -255,7 +258,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                 <div className="w-full md:w-1/2 lg:w-1/3">
                   <FormField
                     control={form.control}
-                    name="children"
+                    name="max_children"
                     render={({ field }) => (
                       <FormItem className="mb-4 mr-7">
                         {" "}
@@ -433,6 +436,8 @@ export default function RoomEditForm({ room_id }: { room_id: string }) {
         bed_type: roomDataQuery.data?.bed_type,
         rest_room: roomDataQuery.data?.restroom,
         wifi_available: roomDataQuery.data?.wifi_available,
+        max_adult: roomDataQuery.data?.max_adult,
+        max_children: roomDataQuery.data?.max_children,
       }}
     />
   );

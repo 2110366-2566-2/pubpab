@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import PropertyAccomCard from "@/components/card/PropertyAccomCard";
-import PropertyRoomCard from "@/components/card/PropertyRoomCard";
 import GoogleMapView from "@/components/GoogleMapView";
 import { Button } from "@/components/ui/button";
 import {
@@ -287,7 +286,7 @@ export default function AccommodationAddForm() {
                   )}
                 />
               </div>
-              <div className="my-4 flex flex-wrap gap-4">
+              {/* <div className="my-4 flex flex-wrap gap-4">
                 <Link href="/edit/host/room">
                   <PropertyRoomCard
                     imageUrl="/room1.jpeg"
@@ -309,7 +308,7 @@ export default function AccommodationAddForm() {
                     status="Unavailable"
                   />
                 </Link>
-              </div>
+              </div> */}
               <Button
                 type="submit"
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"

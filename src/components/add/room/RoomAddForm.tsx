@@ -61,7 +61,8 @@ const formSchema = z.object({
   room_no: z.string(),
   bed_type: z.enum(["KING", "QUEEN"]),
   is_reserve: z.boolean(),
-  max_resident_no: z.number(),
+  max_adult: z.number(),
+  max_children: z.number(),
   smoking: z.boolean().default(false),
   noise: z.boolean().default(false),
   pet: z.boolean().default(false),
@@ -85,7 +86,8 @@ export default function RoomAddForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      max_resident_no: 5,
+      max_adult: 2,
+      max_children: 1,
       accommodation_id: searchParams.get("accommodation_id") || "",
       is_reserve: false,
       smoking: false,
@@ -126,7 +128,6 @@ export default function RoomAddForm() {
             title="Suite"
             imageUrl={"/room1.jpeg"}
             status="Available"
-            id={""}
           />
           <Form {...form}>
             <form
