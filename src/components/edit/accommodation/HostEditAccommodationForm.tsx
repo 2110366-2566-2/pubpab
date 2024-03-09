@@ -360,7 +360,6 @@ function HostEditAccommodationForm({
                         title={property.title}
                         imageUrl={property.image}
                         status={property.status ? "Available" : "Unavailable"}
-                        id={property.id}
                       />
                     </Link>
                   </div>

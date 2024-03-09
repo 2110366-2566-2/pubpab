@@ -30,6 +30,8 @@ export const roomRouter = router({
           restroom: true,
           wifi_available: true,
           accommodation_id: true,
+          max_adult: true,
+          max_children: true,
         },
       });
       if (!getAccomodation) {
@@ -80,7 +82,8 @@ export const roomRouter = router({
         bed_type: z.enum(["KING", "QUEEN"]),
         restroom: z.boolean(),
         wifi_available: z.boolean(),
-        max_resident_no: z.number(),
+        max_adult: z.number(),
+        max_children: z.number(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -100,7 +103,8 @@ export const roomRouter = router({
             bed_type: input.bed_type,
             restroom: input.restroom,
             wifi_available: input.wifi_available,
-            max_resident_no: input.max_resident_no,
+            max_adult: input.max_adult,
+            max_children: input.max_children,
           },
         });
         return room;
@@ -127,27 +131,30 @@ export const roomRouter = router({
         bed_type: z.enum(["KING", "QUEEN"]).optional(),
         restroom: z.boolean().optional(),
         wifi_available: z.boolean().optional(),
-        max_resident_no: z.number().optional(),
+        max_adult: z.number().optional(),
+        max_children: z.number().optional(),
       }),
     )
     .mutation(async ({ input }) => {
+      const RoomUpdateData = {
+        room_name: input.room_name,
+        price: input.price,
+        floor: input.floor,
+        is_reserve: input.is_reserve,
+        room_no: input.room_no,
+        smoking: input.smoking,
+        noise: input.noise,
+        pet: input.pet,
+        washing_machine: input.washing_machine,
+        bed_type: input.bed_type,
+        restroom: input.restroom,
+        wifi_available: input.wifi_available,
+        max_adult: input.max_adult,
+        max_children: input.max_children,
+      };
       const room_newIssue = await prisma.room.update({
         where: { room_id: input.room_id },
-        data: {
-          room_name: input.room_name,
-          price: input.price,
-          floor: input.floor,
-          is_reserve: input.is_reserve,
-          room_no: input.room_no,
-          smoking: input.smoking,
-          noise: input.noise,
-          pet: input.pet,
-          washing_machine: input.washing_machine,
-          bed_type: input.bed_type,
-          restroom: input.restroom,
-          wifi_available: input.wifi_available,
-          max_resident_no: input.max_resident_no,
-        },
+        data: RoomUpdateData,
       });
       if (!room_newIssue) {
         throw new TRPCError({

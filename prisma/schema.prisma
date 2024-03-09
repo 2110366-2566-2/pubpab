@@ -26,7 +26,6 @@ model accommodation {
   accommodation_status a_status   @default(CLOSE)
   host                 host       @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
   feedback             feedback[]
-  reserve              reserve[]
   room                 room[]
 }
 
@@ -97,6 +96,16 @@ model messages {
   @@id([message_id, chatroom_id])
 }
 
+model notification {
+  notification_id   String   @id @default(uuid()) @db.VarChar(36)
+  user_id           String   @db.VarChar(36)
+  reservation_id    String   @db.VarChar(36)
+  timestamp         DateTime @default(now()) @db.Timestamp(6)
+  notification_type n_type
+  users             users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  reserve           reserve  @relation(fields: [reservation_id], references: [reservation_id], onDelete: Cascade)
+}
+
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payment {
   payment_id            String    @id @db.VarChar(36)
@@ -119,18 +128,19 @@ model problem {
 }
 
 model reserve {
-  reservation_id   String        @default(uuid()) @db.VarChar(36)
-  accommodation_id String        @db.VarChar(36)
-  traveler_id      String        @db.VarChar(36)
-  payment_id       String        @db.VarChar(36)
-  timestamp        DateTime      @default(now()) @db.Timestamp(6)
-  start_date       DateTime      @db.Date
-  end_date         DateTime      @db.Date
-  check_in_status  Boolean
-  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
-  traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  reservation_id  String         @default(uuid()) @db.VarChar(36)
+  room_id         String         @db.VarChar(36)
+  traveler_id     String         @db.VarChar(36)
+  payment_id      String         @db.VarChar(36)
+  timestamp       DateTime       @default(now()) @db.Timestamp(6)
+  start_date      DateTime       @db.Date
+  end_date        DateTime       @db.Date
+  check_in_status Boolean
+  room            room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
+  traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  notification    notification[]
 
-  @@id([reservation_id, accommodation_id, traveler_id])
+  @@id([reservation_id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -149,9 +159,11 @@ model room {
   bed_type         b_type
   restroom         Boolean
   wifi_available   Boolean
-  max_resident_no  Int
+  max_adult         Int
+  max_children     Int
   banner           String?
-  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
+  reserve          reserve[]
+  accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
 }
 
 model text {
@@ -172,22 +184,23 @@ model traveler {
 }
 
 model users {
-  user_id       String     @id @default(uuid()) @db.VarChar(36)
-  citizen_id    String?    @unique @db.Char(13)
-  first_name    String?    @db.VarChar(64)
-  last_name     String?    @db.VarChar(64)
-  email         String     @unique
-  password_hash String     @db.VarChar(255)
-  birth_date    DateTime?  @db.Date
+  user_id       String         @id @default(uuid()) @db.VarChar(36)
+  citizen_id    String?        @unique @db.Char(13)
+  first_name    String?        @db.VarChar(64)
+  last_name     String?        @db.VarChar(64)
+  email         String         @unique
+  password_hash String         @db.VarChar(255)
+  birth_date    DateTime?      @db.Date
   age           Int?
   user_type     users_type
-  phone_no      String?    @db.Char(10)
+  phone_no      String?        @db.Char(10)
   gender        genders?
   banner        String?
   admin         admin?
   host          host?
   messages      messages[]
   problem       problem[]
+  notification  notification[]
   traveler      traveler?
 }
 
@@ -204,6 +217,12 @@ enum admintypes {
 enum b_type {
   KING
   QUEEN
+}
+
+enum n_type {
+  Reminder
+  Cancellaion
+  Reservation
 }
 
 enum genders {
