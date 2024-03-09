@@ -32,8 +32,8 @@ model accommodation {
 model admin {
   admin_id   String     @id @db.VarChar(36)
   admin_type admintypes
-  host       host[]
   users      users      @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
+  host       host[]
 }
 
 model attachment {
@@ -145,9 +145,9 @@ model reserve {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String         @id @default(uuid()) @db.VarChar(36)
-  accommodation_id String         @db.VarChar(36)
-  room_name        String         @db.VarChar(64)
+  room_id          String        @id @default(uuid()) @db.VarChar(36)
+  accommodation_id String        @db.VarChar(36)
+  room_name        String        @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -196,8 +196,8 @@ model users {
   phone_no      String?        @db.Char(10)
   gender        genders?
   banner        String?
-  host          host?
   admin         admin?
+  host          host?
   messages      messages[]
   problem       problem[]
   notification  notification[]
