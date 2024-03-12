@@ -206,25 +206,27 @@ function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
 
 export default function TravelerEditForm() {
   const { data: session } = useSession();
-  const hostDataQuery = trpc.traveler.profile.find.useQuery({
-    traveler_id: session?.user?.id,
-  });
-  if (hostDataQuery.status === "loading") {
-    // return <div>Loading...</div>;
+  if (session) {
+    const hostDataQuery = trpc.traveler.profile.find.useQuery({
+      traveler_id: session?.user?.id,
+    });
+    if (hostDataQuery.status === "loading") {
+      // return <div>Loading...</div>;
+      return (
+        <div>
+          <LoadingScreen />
+        </div>
+      );
+    }
     return (
-      <div>
-        <LoadingScreen />
-      </div>
+      <TravelerProfileForm
+        travelerData={{
+          email: hostDataQuery.data?.users?.email,
+          first_name: hostDataQuery.data?.users?.first_name ?? "",
+          last_name: hostDataQuery.data?.users?.last_name ?? "",
+          phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+        }}
+      />
     );
   }
-  return (
-    <TravelerProfileForm
-      travelerData={{
-        email: hostDataQuery.data?.users?.email,
-        first_name: hostDataQuery.data?.users?.first_name ?? "",
-        last_name: hostDataQuery.data?.users?.last_name ?? "",
-        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
-      }}
-    />
-  );
 }
