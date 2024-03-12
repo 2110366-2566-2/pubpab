@@ -221,7 +221,7 @@ enum b_type {
 
 enum n_type {
   Reminder
-  Cancellaion
+  Cancellation
   Reservation
 }
 

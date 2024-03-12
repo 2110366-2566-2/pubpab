@@ -10,7 +10,7 @@ export const hostNotificationRouter = router({
       z.object({
         user_id: z.string(),
         reservation_id: z.string(),
-        notification_type: z.enum(["Reservation", "Cancellaion"]),
+        notification_type: z.enum(["Reservation", "Cancellation"]),
       }),
     )
     .mutation(async ({ input }) => {
