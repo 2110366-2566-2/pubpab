@@ -1,9 +1,51 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const travelerReservationRouter = router({
+  findMany: publicProcedure
+    .input(
+      z.object({
+        traveler_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const reserves = await prisma.reserve.findMany({
+        where: {
+          traveler_id: input.traveler_id,
+        },
+        select: {
+          start_date: true,
+          end_date: true,
+          room: {
+            select: {
+              room_name: true,
+              max_adult: true,
+              max_children: true,
+              accommodation: {
+                select: {
+                  name_a: true,
+                },
+              },
+            },
+          },
+          payment: {
+            select: {
+              amount: true,
+            },
+          },
+        },
+      });
+      if (!reserves) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "host reservations not found",
+        });
+      }
+      return reserves;
+    }),
   create: publicProcedure
     .input(
       z.object({
