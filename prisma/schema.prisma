@@ -11,7 +11,7 @@ datasource db {
 model accommodation {
   accommodation_id     String     @id @default(uuid()) @db.VarChar(36)
   host_id              String     @db.VarChar(36)
-  qr_code              String
+  qr_code              String?
   name_a               String     @db.VarChar(64)
   description_a        String
   price                Int
@@ -21,7 +21,7 @@ model accommodation {
   province             String     @db.VarChar(64)
   distinct_a           String     @db.VarChar(64)
   postal_code          String     @db.Char(5)
-  ggmap_link           String
+  ggmap_link           String?
   rating               Float      @default(0)
   accommodation_status a_status   @default(CLOSE)
   host                 host       @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
@@ -66,10 +66,10 @@ model feedback {
   feedback_id      String        @id @default(uuid()) @db.VarChar(36)
   traveler_id      String        @db.VarChar(36)
   accommodation_id String        @db.VarChar(36)
-  picture          String
+  picture          String?
   timestamp        DateTime      @default(now()) @db.Timestamp(6)
-  text             String
-  score            Float
+  text             String?
+  score            Float?
   accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
   traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
 }
@@ -113,14 +113,14 @@ model payment {
   amount                Float?
   host_bank_account     String    @db.VarChar(36)
   traveler_bank_account String    @db.VarChar(36)
-  payment_status        pm_status
-  qrcode_payment        String
+  payment_status        pm_status @default(Waiting)
+  qrcode_payment        String?
 }
 
 model problem {
   problem_id     String        @id @default(uuid()) @db.VarChar(36)
   user_id        String        @db.VarChar(36)
-  text           String
+  text           String?
   topic          String
   timestamp      DateTime      @default(now()) @db.Timestamp(6)
   problem_status problemstatus
