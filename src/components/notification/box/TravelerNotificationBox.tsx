@@ -10,7 +10,7 @@ const Traveler_Notification = ({
   checkInDate,
   checkOutDate,
   totalAmount,
-  isReserved,
+  noti_type,
 }: {
   sentDate: string;
   sentTime: string;
@@ -19,13 +19,13 @@ const Traveler_Notification = ({
   checkInDate: string;
   checkOutDate: string;
   totalAmount: string;
-  isReserved: boolean;
+  noti_type: string;
 }) => {
   return (
     <Card className="w-full p-3">
       <div className="flex justify-between">
         <div>
-          {isReserved ? (
+          {noti_type === "Reservation" && (
             <div>
               <p className="text-xs">
                 {sentDate} {sentTime}
@@ -53,7 +53,9 @@ const Traveler_Notification = ({
                 </div>
               </div>
             </div>
-          ) : (
+          )}
+
+          {noti_type === "Cancellation" && (
             <div>
               <span className="text-[#701414]">
                 <p className="text-xs">
@@ -83,6 +85,39 @@ const Traveler_Notification = ({
                   </div>
                 </div>
               </span>
+            </div>
+          )}
+
+          {noti_type === "Reminder" && (
+            <div className="flex justify-between">
+              <div>
+                <div>
+                  <span className="text-[#004B64]">
+                    <p className="text-xs">
+                      {sentDate} {sentTime}
+                    </p>
+                    <div className="flex items-start">
+                      <div>
+                        <Image
+                          src="/Reminder.svg"
+                          width={30}
+                          height={30}
+                          alt="reserve"
+                        />
+                      </div>
+                      <div className="ml-2">
+                        <p>Reminder for reservation.</p>
+                        <p>
+                          {roomName} at {accommodationName}
+                        </p>
+                        <p>
+                          <strong>Date: </strong> {checkInDate} - {checkOutDate}
+                        </p>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>

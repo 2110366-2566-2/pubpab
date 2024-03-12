@@ -1,4 +1,4 @@
-import Host_Notification from "@/components/notification/host/host_noti";
+import Host_Notification from "@/components/notification/box/HostNotificationBox";
 
 export default function Host_Notifications() {
   return (
@@ -16,7 +16,7 @@ export default function Host_Notifications() {
             checkInDate="2024/02/17"
             checkOutDate="2024/02/19"
             totalAmount="฿6,969"
-            isReserved={true}
+            noti_type="Reservation"
           />
           <Host_Notification
             sentDate="2024-02-19"
@@ -28,7 +28,7 @@ export default function Host_Notifications() {
             checkInDate="2024/02/19"
             checkOutDate="2024/02/20"
             totalAmount="฿1,112"
-            isReserved={false}
+            noti_type="Cancellation"
           />
           <Host_Notification
             sentDate="2024-02-23"
@@ -40,7 +40,7 @@ export default function Host_Notifications() {
             checkInDate="2024/02/23"
             checkOutDate="2024/02/27"
             totalAmount="฿1,150"
-            isReserved={true}
+            noti_type="Reservation"
           />
         </div>
       </div>

@@ -295,12 +295,12 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                   >
                     Add Property
                   </Button>
-                  <Button
+                  {/* <Button
                     type="submit"
                     className="text-grey-800 mt-15 w-40 border border-black bg-[#F4EDEA] hover:text-white"
                   >
                     Delete Property
-                  </Button>
+                  </Button> */}
                 </div>
               </Card>
             </div>
