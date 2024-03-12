@@ -1,11 +1,15 @@
 /* eslint-disable react/jsx-key */
 "use client";
 
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 import UnverifiedHostCard from "@/components/card/UnverifiedHostCard";
 import { trpc } from "@/lib/trpc/client";
 
 export default function AdminUnverifiedHost() {
   const unverifiedHost = trpc.verification.getUnverifiedHosts.useQuery().data;
+  const { data: session } = useSession();
 
   if (unverifiedHost == null) {
     return null;
@@ -18,14 +22,26 @@ export default function AdminUnverifiedHost() {
     last_name: host.users.last_name,
     phone_no: host.users.phone_no,
   }));
+
+  const admin_id = session?.user?.id;
   return (
     <div>
       {unverifiedHostData.map((property) => (
-        <UnverifiedHostCard
-          imageUrl={property.banner || ""}
-          first_name={property.first_name || ""}
-          last_name={property.last_name || ""}
-        />
+        <Link
+          href={{
+            pathname: "host/profile",
+            query: {
+              host_id: property.id,
+              admin_id: admin_id,
+            },
+          }}
+        >
+          <UnverifiedHostCard
+            imageUrl={property.banner || ""}
+            first_name={property.first_name || ""}
+            last_name={property.last_name || ""}
+          />
+        </Link>
       ))}
       {/* <div className="mx-auto my-4 flex max-w-prose flex-col justify-center space-y-4 px-4">
         <label className="text-4xl font-bold">Unverified Host</label>
