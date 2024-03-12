@@ -12,48 +12,52 @@ export const hostReservationRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      const notis = await prisma.notification.findMany({
-        where: { user_id: input.host_id },
-        select: {
-          users: {
-            select: {
-              first_name: true,
-              last_name: true,
+      const reserves = await prisma.reserve.findMany({
+        where: {
+          room: {
+            accommodation: {
+              host_id: input.host_id,
             },
           },
-          reserve: {
+        },
+        select: {
+          start_date: true,
+          end_date: true,
+          room: {
             select: {
-              payment_id: true,
-              room_id: true,
-              start_date: true,
-              end_date: true,
-              payment: {
+              room_name: true,
+              max_adult: true,
+              max_children: true,
+              accommodation: {
                 select: {
-                  amount: true,
+                  name_a: true,
                 },
               },
-              room: {
+            },
+          },
+          traveler: {
+            select: {
+              users: {
                 select: {
-                  room_name: true,
-                  max_adult: true,
-                  max_children: true,
-                  accommodation: {
-                    select: {
-                      name_a: true,
-                    },
-                  },
+                  first_name: true,
+                  last_name: true,
                 },
               },
+            },
+          },
+          payment: {
+            select: {
+              amount: true,
             },
           },
         },
       });
-      if (!notis) {
+      if (!reserves) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "host notification not found",
+          message: "host reservations not found",
         });
       }
-      return notis;
+      return reserves;
     }),
 });
