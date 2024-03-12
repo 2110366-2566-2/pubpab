@@ -25,7 +25,45 @@ export default function TravelerNotifications() {
         </div>
       );
     }
-    const notifications = findNotification.data;
+    // const notifications = findNotification.data;
+
+    const notifications = [
+      {
+        timestamp: new Date(),
+        reserve: {
+          room: {
+            room_name: "Sample Room",
+            accommodation: {
+              name_a: "Sample Accommodation",
+            },
+          },
+          start_date: new Date("2024-02-17"),
+          end_date: new Date("2024-02-19"),
+          payment: {
+            amount: 6969,
+          },
+        },
+        notification_type: true,
+      },
+      {
+        timestamp: new Date(),
+        reserve: {
+          room: {
+            room_name: "Sample Room",
+            accommodation: {
+              name_a: "Sample Accommodation",
+            },
+          },
+          start_date: new Date("2024-02-17"),
+          end_date: new Date("2024-02-19"),
+          payment: {
+            amount: 6969,
+          },
+        },
+        notification_type: true,
+      },
+      // Add more entries as needed
+    ];
 
     return (
       <div className="px-4 py-4">
