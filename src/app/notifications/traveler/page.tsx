@@ -1,4 +1,4 @@
-import Traveler_Notification from "@/components/notification/traveler/traveler_noti";
+import Traveler_Notification from "@/components/notification/box/TravelerNotificationBox";
 
 export default function Traveler_Notifications() {
   return (
