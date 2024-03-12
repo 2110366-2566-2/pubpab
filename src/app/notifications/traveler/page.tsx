@@ -1,5 +1,4 @@
-import Reminder_Notification from "@/components/notification/traveler/reminder_noti";
-import Traveler_Notification from "@/components/notification/traveler/reserve_noti";
+import Traveler_Notification from "@/components/notification/traveler/traveler_noti";
 
 export default function Traveler_Notifications() {
   return (
@@ -15,7 +14,7 @@ export default function Traveler_Notifications() {
             checkInDate="2024/02/21"
             checkOutDate="2024/02/25"
             totalAmount="฿6,969"
-            isReserved={true}
+            noti_type="Reservation"
           />
           <Traveler_Notification
             sentDate="2024-02-19"
@@ -25,15 +24,17 @@ export default function Traveler_Notifications() {
             checkInDate="2024/02/26"
             checkOutDate="2024/02/29"
             totalAmount="฿1,112"
-            isReserved={false}
+            noti_type="Cancellation"
           />
-          <Reminder_Notification
+          <Traveler_Notification
             sentDate="2024-02-20"
             sentTime="08:00 AM"
             roomName="Loli Room"
             accommodationName="Loli Hotel"
             checkInDate="2024/02/21"
             checkOutDate="2024/02/25"
+            totalAmount="฿6,969"
+            noti_type="Reminder"
           />
         </div>
       </div>
