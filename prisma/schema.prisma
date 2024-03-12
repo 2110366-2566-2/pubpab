@@ -108,13 +108,13 @@ model notification {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payment {
-  payment_id            String    @id @db.VarChar(36)
+  payment_id            String    @id @default(uuid()) @db.VarChar(36)
   timestamp             DateTime  @default(now()) @db.Timestamp(6)
-  amount                Float?
+  amount                Float
   host_bank_account     String    @db.VarChar(36)
-  traveler_bank_account String    @db.VarChar(36)
   payment_status        pm_status @default(Waiting)
   qrcode_payment        String?
+  reserve               reserve[]
 }
 
 model problem {
@@ -128,19 +128,19 @@ model problem {
 }
 
 model reserve {
-  reservation_id  String         @default(uuid()) @db.VarChar(36)
+  reservation_id  String         @id @default(uuid()) @db.VarChar(36)
   room_id         String         @db.VarChar(36)
   traveler_id     String         @db.VarChar(36)
   payment_id      String         @db.VarChar(36)
   timestamp       DateTime       @default(now()) @db.Timestamp(6)
   start_date      DateTime       @db.Date
   end_date        DateTime       @db.Date
-  check_in_status Boolean
+  check_in_status cn_status      @default(Not_checkin)
   room            room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
   traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  payment         payment        @relation(fields: [payment_id], references: [payment_id], onDelete: Cascade)
   notification    notification[]
 
-  @@id([reservation_id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -240,6 +240,12 @@ enum pm_status {
 enum problemstatus {
   Pending
   Solved
+}
+
+enum cn_status {
+  Not_checkin
+  Checkin
+  Cancel
 }
 
 enum users_type {
