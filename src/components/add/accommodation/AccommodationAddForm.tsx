@@ -82,7 +82,7 @@ export default function AccommodationAddForm() {
     createAccommodation.mutateAsync({
       ...values,
     });
-    router.push("/");
+    router.push("/edit/host/profile");
   }
   return (
     <div>
@@ -315,9 +315,9 @@ export default function AccommodationAddForm() {
               >
                 Add Property
               </Button>
-              <Button className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white">
+              {/* <Button className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white">
                 Delete Property
-              </Button>
+              </Button> */}
             </form>
           </Form>
         </div>

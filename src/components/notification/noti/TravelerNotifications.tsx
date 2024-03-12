@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
-import Traveler_Notification from "../traveler/reserve_noti";
+import Traveler_Notification from "../box/TravelerNotificationBox";
 
 export default function TravelerNotifications() {
   const { data: session } = useSession();
@@ -25,45 +25,7 @@ export default function TravelerNotifications() {
         </div>
       );
     }
-    // const notifications = findNotification.data;
-
-    const notifications = [
-      {
-        timestamp: new Date(),
-        reserve: {
-          room: {
-            room_name: "Sample Room",
-            accommodation: {
-              name_a: "Sample Accommodation",
-            },
-          },
-          start_date: new Date("2024-02-17"),
-          end_date: new Date("2024-02-19"),
-          payment: {
-            amount: 6969,
-          },
-        },
-        notification_type: true,
-      },
-      {
-        timestamp: new Date(),
-        reserve: {
-          room: {
-            room_name: "Sample Room",
-            accommodation: {
-              name_a: "Sample Accommodation",
-            },
-          },
-          start_date: new Date("2024-02-17"),
-          end_date: new Date("2024-02-19"),
-          payment: {
-            amount: 6969,
-          },
-        },
-        notification_type: true,
-      },
-      // Add more entries as needed
-    ];
+    const notifications = findNotification.data;
 
     return (
       <div className="px-4 py-4">
@@ -85,8 +47,7 @@ export default function TravelerNotifications() {
               totalAmount={
                 notification.reserve?.payment?.amount?.toString() ?? ""
               }
-              //   isReserved={notification.notification_type ?? ""}
-              isReserved={true}
+              noti_type={notification.notification_type ?? ""}
             />
           </div>
         ))}
@@ -95,27 +56,40 @@ export default function TravelerNotifications() {
   }
 }
 
-// const findNotification = [
-//     {
-//       timestamp: new Date(),
-//       users: {
-//         first_name: "John",
-//         last_name: "Doe",
-//       },
-//       reserve: {
-//         room: {
-//           room_name: "Sample Room",
-//           accommodation: {
-//             name_a: "Sample Accommodation",
-//           },
-//         },
-//         start_date: new Date("2024-02-17"),
-//         end_date: new Date("2024-02-19"),
-//         payment: {
-//           amount: 6969,
+// const notifications = [
+//   {
+//     timestamp: new Date(),
+//     reserve: {
+//       room: {
+//         room_name: "Sample Room",
+//         accommodation: {
+//           name_a: "Sample Accommodation",
 //         },
 //       },
-//       notification_type: true,
+//       start_date: new Date("2024-02-17"),
+//       end_date: new Date("2024-02-19"),
+//       payment: {
+//         amount: 6969,
+//       },
 //     },
-//     // Add more entries as needed
-//   ];
+//     notification_type: true,
+//   },
+//   {
+//     timestamp: new Date(),
+//     reserve: {
+//       room: {
+//         room_name: "Sample Room",
+//         accommodation: {
+//           name_a: "Sample Accommodation",
+//         },
+//       },
+//       start_date: new Date("2024-02-17"),
+//       end_date: new Date("2024-02-19"),
+//       payment: {
+//         amount: 6969,
+//       },
+//     },
+//     notification_type: true,
+//   },
+//   // Add more entries as needed
+// ];

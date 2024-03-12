@@ -1,4 +1,3 @@
-// import Host_Notification from "@/components/notification/host/host_noti";
 import HostNotifications from "@/components/notification/noti/HostNotifications";
 
 export default function Host_Notifications() {

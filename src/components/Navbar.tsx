@@ -2,6 +2,7 @@
 
 import Image from "next/image"; // Import Image component for the logo
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import {
@@ -10,10 +11,12 @@ import {
   PopoverTrigger,
 } from "../components/ui/popover";
 
+import Notification_Button from "./notification/NotificationButton";
 import ProfileButton from "./ProfileButton";
 import SigninButton from "./SigninButton";
 
 const Navbar = () => {
+  const { data: session } = useSession();
   const [notificationClicked, setNotificationClicked] = useState(false);
   const [bookingClicked, setBookingClicked] = useState(false);
 
@@ -60,35 +63,34 @@ const Navbar = () => {
         </div>
       </div>
       <div className="flex items-center">
-        <div
-          className="mr-12 mt-1 flex cursor-pointer items-center"
-          onClick={handleNotificationClick}
-        >
-          <Link href={"/notifications/host/"}>
-            {notificationClicked ? (
-              <Image
-                src="/notification_toggle.svg"
-                width={40}
-                height={40}
-                alt="notification"
-              />
-            ) : (
+        <div className="relative mr-12 mt-1 flex items-center">
+          <div className="relative" onClick={handleNotificationClick}>
+            {session && session.user && (
+              <>
+                <Image
+                  src={
+                    notificationClicked
+                      ? "/notification_toggle.svg"
+                      : "/notification2.svg"
+                  }
+                  width={37}
+                  height={37}
+                  alt="notification"
+                />
+                <button className="absolute left-0 top-0 h-0 w-0 cursor-pointer ">
+                  <Notification_Button />
+                </button>
+              </>
+            )}
+            {!session && (
               <Image
                 src="/notification2.svg"
-                width={40}
-                height={40}
+                width={37}
+                height={37}
                 alt="notification"
               />
             )}
-          </Link>
-          {/* เหลือเช็คว่า เป็น host หรือ traveler ก็ไปหน้า notification นั้นๆ
-          <Link href={"/notifications/traveler/"}>
-            {notificationClicked ? (
-              <Image src="/notification_toggle.svg" width={40} height={40} alt="notification" />
-            ) : (
-              <Image src="/notification2.svg" width={40} height={40} alt="notification" />
-            )}
-          </Link> */}
+          </div>
         </div>
         <div
           className="mr-12 flex cursor-pointer items-center"
@@ -98,12 +100,12 @@ const Navbar = () => {
             {bookingClicked ? (
               <Image
                 src="/booking_toggle.svg"
-                width={40}
-                height={40}
+                width={37}
+                height={37}
                 alt="booking"
               />
             ) : (
-              <Image src="/booking.svg" width={40} height={40} alt="booking" />
+              <Image src="/booking.svg" width={37} height={37} alt="booking" />
             )}
           </Link>
         </div>
@@ -122,7 +124,6 @@ const Navbar = () => {
             </PopoverContent>
           </Popover>
         </div>
-        {/* <SigninButton /> */}
       </div>
     </nav>
   );

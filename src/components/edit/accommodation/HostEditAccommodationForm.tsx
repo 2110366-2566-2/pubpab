@@ -339,12 +339,12 @@ function HostEditAccommodationForm({
                   )}
                 />
               </div>
-              <button
+              <Button
                 onClick={handleAddRoomClick}
                 className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
               >
                 Add New Room
-              </button>
+              </Button>
               <div className="px-4 py-4">
                 {propertyData.map((property, index) => (
                   <div key={index} className="mb-4">

@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
-import Host_Notification from "../host/host_noti";
+import Host_Notification from "../box/HostNotificationBox";
 
 export default function HostNotifications() {
   const { data: session } = useSession();
@@ -49,8 +49,7 @@ export default function HostNotifications() {
               totalAmount={
                 notification.reserve?.payment?.amount?.toString() ?? ""
               }
-              //   isReserved={notification.notification_type ?? ""}
-              isReserved={true}
+              noti_type={notification.notification_type ?? ""}
             />
           </div>
         ))}
