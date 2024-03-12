@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 
 const formSchema = z
@@ -205,22 +206,25 @@ function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
 
 export default function TravelerEditForm() {
   const { data: session } = useSession();
-  if (session) {
-    const hostDataQuery = trpc.traveler.profile.find.useQuery({
-      traveler_id: session?.user?.id,
-    });
-    if (hostDataQuery.status === "loading") {
-      return <div>Loading...</div>;
-    }
+  const hostDataQuery = trpc.traveler.profile.find.useQuery({
+    traveler_id: session?.user?.id,
+  });
+  if (hostDataQuery.status === "loading") {
+    // return <div>Loading...</div>;
     return (
-      <TravelerProfileForm
-        travelerData={{
-          email: hostDataQuery.data?.users?.email,
-          first_name: hostDataQuery.data?.users?.first_name ?? "",
-          last_name: hostDataQuery.data?.users?.last_name ?? "",
-          phone_no: hostDataQuery.data?.users?.phone_no ?? "",
-        }}
-      />
+      <div>
+        <LoadingScreen />
+      </div>
     );
   }
+  return (
+    <TravelerProfileForm
+      travelerData={{
+        email: hostDataQuery.data?.users?.email,
+        first_name: hostDataQuery.data?.users?.first_name ?? "",
+        last_name: hostDataQuery.data?.users?.last_name ?? "",
+        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+      }}
+    />
+  );
 }

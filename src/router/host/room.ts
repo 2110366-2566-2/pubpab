@@ -5,24 +5,71 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const roomRouter = router({
-  findMany: publicProcedure
-    .input(z.object({ room_id: z.string() }))
+  find: publicProcedure
+    .input(
+      z.object({
+        room_id: z.string(),
+      }),
+    )
     .query(async ({ input }) => {
-      const getRoom = await prisma.room.findMany({
-        where: { room_id: input.room_id },
+      const getAccomodation = await prisma.room.findUnique({
+        where: {
+          room_id: input.room_id,
+        },
+        select: {
+          room_name: true,
+          price: true,
+          floor: true,
+          is_reserve: true,
+          room_no: true,
+          smoking: true,
+          noise: true,
+          pet: true,
+          washing_machine: true,
+          bed_type: true,
+          restroom: true,
+          wifi_available: true,
+          accommodation_id: true,
+          max_adult: true,
+          max_children: true,
+        },
       });
-      if (!getRoom) {
+      if (!getAccomodation) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "room not found",
+          message: "Accommodation not found",
         });
       }
-      return getRoom;
+      return getAccomodation;
+    }),
+  findMany: publicProcedure
+    .input(z.object({ accommodation_id: z.string() }))
+    .query(async ({ input }) => {
+      const getAccomodation = await prisma.accommodation.findMany({
+        where: { accommodation_id: input.accommodation_id },
+        select: {
+          room: {
+            select: {
+              room_id: true,
+              is_reserve: true,
+              room_name: true,
+              banner: true,
+            },
+          },
+        },
+      });
+      if (!getAccomodation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Accommodation not found",
+        });
+      }
+      return getAccomodation;
     }),
   create: publicProcedure
     .input(
       z.object({
-        accomodation_id: z.string(),
+        accommodation_id: z.string(),
         room_name: z.string(),
         price: z.number(),
         floor: z.number(),
@@ -35,14 +82,15 @@ export const roomRouter = router({
         bed_type: z.enum(["KING", "QUEEN"]),
         restroom: z.boolean(),
         wifi_available: z.boolean(),
-        max_resident_no: z.number(),
+        max_adult: z.number(),
+        max_children: z.number(),
       }),
     )
     .mutation(async ({ input }) => {
       try {
         const room = await prisma.room.create({
           data: {
-            accommodation_id: input.accomodation_id,
+            accommodation_id: input.accommodation_id,
             room_name: input.room_name,
             price: input.price,
             floor: input.floor,
@@ -55,7 +103,8 @@ export const roomRouter = router({
             bed_type: input.bed_type,
             restroom: input.restroom,
             wifi_available: input.wifi_available,
-            max_resident_no: input.max_resident_no,
+            max_adult: input.max_adult,
+            max_children: input.max_children,
           },
         });
         return room;
@@ -82,27 +131,30 @@ export const roomRouter = router({
         bed_type: z.enum(["KING", "QUEEN"]).optional(),
         restroom: z.boolean().optional(),
         wifi_available: z.boolean().optional(),
-        max_resident_no: z.number().optional(),
+        max_adult: z.number().optional(),
+        max_children: z.number().optional(),
       }),
     )
     .mutation(async ({ input }) => {
+      const RoomUpdateData = {
+        room_name: input.room_name,
+        price: input.price,
+        floor: input.floor,
+        is_reserve: input.is_reserve,
+        room_no: input.room_no,
+        smoking: input.smoking,
+        noise: input.noise,
+        pet: input.pet,
+        washing_machine: input.washing_machine,
+        bed_type: input.bed_type,
+        restroom: input.restroom,
+        wifi_available: input.wifi_available,
+        max_adult: input.max_adult,
+        max_children: input.max_children,
+      };
       const room_newIssue = await prisma.room.update({
         where: { room_id: input.room_id },
-        data: {
-          room_name: input.room_name,
-          price: input.price,
-          floor: input.floor,
-          is_reserve: input.is_reserve,
-          room_no: input.room_no,
-          smoking: input.smoking,
-          noise: input.noise,
-          pet: input.pet,
-          washing_machine: input.washing_machine,
-          bed_type: input.bed_type,
-          restroom: input.restroom,
-          wifi_available: input.wifi_available,
-          max_resident_no: input.max_resident_no,
-        },
+        data: RoomUpdateData,
       });
       if (!room_newIssue) {
         throw new TRPCError({

@@ -33,12 +33,10 @@ export const verificationRouter = router({
   getHost: publicProcedure
     .input(z.object({ host_id: z.string().optional() }))
     .query(async ({ input }) => {
-      const getHostWithUser = await prisma.host.findMany({
-        where: input.host_id
-          ? {
-              host_id: input.host_id,
-            }
-          : undefined, // Conditionally add where clause for findUnique
+      const getHostWithUser = await prisma.host.findUnique({
+        where: {
+          host_id: input.host_id,
+        },
         select: {
           bank_account: true,
           users: {

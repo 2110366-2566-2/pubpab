@@ -19,6 +19,7 @@ import {
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 
+import GoogleMapView from "../GoogleMapView";
 import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -73,7 +74,7 @@ const formSchema = z
     accommodation_ggmap_link: z
       .string()
       .regex(
-        /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+        /^https?:\/\/www\.google\.com\/maps\/search\/\?api=1&query=[\d.-]+,[\d.-]+$/,
       ),
   })
   .refine((data) => data.password === data.confirm_password, {
@@ -435,6 +436,10 @@ export default function HostRegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Google Map Link</FormLabel>
+              <GoogleMapView
+                onMapMarker={field.value}
+                onMapClick={field.onChange}
+              />
               <FormControl>
                 <Input {...field} />
               </FormControl>

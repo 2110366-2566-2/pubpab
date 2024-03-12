@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc/client";
 
@@ -74,6 +75,7 @@ type HostData = {
   bank_account?: string;
   email?: string;
   phone_no?: string;
+  host_id?: string;
 };
 
 function HostProfileForm({ hostData }: { hostData: HostData }) {
@@ -90,6 +92,11 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
       phone_no: hostData.phone_no,
     },
   });
+
+  const handleAddPropertyClick = () => {
+    router.push("../../add/accommodation");
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     if (session) {
@@ -284,6 +291,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                   <Button
                     type="submit"
                     className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                    onClick={handleAddPropertyClick}
                   >
                     Add Property
                   </Button>
@@ -310,7 +318,11 @@ export default function HostEditForm() {
       host_id: session?.user?.id,
     });
     if (hostDataQuery.status === "loading") {
-      return <div>Loading...</div>;
+      return (
+        <div>
+          <LoadingScreen />
+        </div>
+      );
     }
     return (
       <HostProfileForm

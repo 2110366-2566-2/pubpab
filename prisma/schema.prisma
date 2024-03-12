@@ -11,7 +11,7 @@ datasource db {
 model accommodation {
   accommodation_id     String     @id @default(uuid()) @db.VarChar(36)
   host_id              String     @db.VarChar(36)
-  qr_code              String
+  qr_code              String?
   name_a               String     @db.VarChar(64)
   description_a        String
   price                Int
@@ -21,20 +21,19 @@ model accommodation {
   province             String     @db.VarChar(64)
   distinct_a           String     @db.VarChar(64)
   postal_code          String     @db.Char(5)
-  ggmap_link           String
+  ggmap_link           String?
   rating               Float      @default(0)
   accommodation_status a_status   @default(CLOSE)
   host                 host       @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
   feedback             feedback[]
-  reserve              reserve[]
   room                 room[]
 }
 
 model admin {
   admin_id   String     @id @db.VarChar(36)
   admin_type admintypes
+  users      users      @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
   host       host[]
-  users      users   @relation(fields: [admin_id], references: [user_id], onDelete: Cascade)
 }
 
 model attachment {
@@ -67,16 +66,16 @@ model feedback {
   feedback_id      String        @id @default(uuid()) @db.VarChar(36)
   traveler_id      String        @db.VarChar(36)
   accommodation_id String        @db.VarChar(36)
-  picture          String
+  picture          String?
   timestamp        DateTime      @default(now()) @db.Timestamp(6)
-  text             String
-  score            Float
+  text             String?
+  score            Float?
   accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
   traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
 }
 
 model host {
-  host_id       String          @id @db.VarChar(36) 
+  host_id       String          @id @db.VarChar(36)
   admin_id      String?         @db.VarChar(36)
   bank_account  String?         @db.VarChar(255)
   accommodation accommodation[]
@@ -97,21 +96,31 @@ model messages {
   @@id([message_id, chatroom_id])
 }
 
+model notification {
+  notification_id   String   @id @default(uuid()) @db.VarChar(36)
+  user_id           String   @db.VarChar(36)
+  reservation_id    String   @db.VarChar(36)
+  timestamp         DateTime @default(now()) @db.Timestamp(6)
+  notification_type n_type
+  users             users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  reserve           reserve  @relation(fields: [reservation_id], references: [reservation_id], onDelete: Cascade)
+}
+
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payment {
-  payment_id            String    @id @db.VarChar(36)
+  payment_id            String    @id @default(uuid()) @db.VarChar(36)
   timestamp             DateTime  @default(now()) @db.Timestamp(6)
-  amount                Float?
+  amount                Float
   host_bank_account     String    @db.VarChar(36)
-  traveler_bank_account String    @db.VarChar(36)
-  payment_status        pm_status
-  qrcode_payment        String
+  payment_status        pm_status @default(Waiting)
+  qrcode_payment        String?
+  reserve               reserve[]
 }
 
 model problem {
   problem_id     String        @id @default(uuid()) @db.VarChar(36)
   user_id        String        @db.VarChar(36)
-  text           String
+  text           String?
   topic          String
   timestamp      DateTime      @default(now()) @db.Timestamp(6)
   problem_status problemstatus
@@ -119,25 +128,26 @@ model problem {
 }
 
 model reserve {
-  reservation_id   String        @default(uuid()) @db.VarChar(36)
-  accommodation_id String        @db.VarChar(36)
-  traveler_id      String        @db.VarChar(36)
-  payment_id       String        @db.VarChar(36)
-  timestamp        DateTime      @default(now()) @db.Timestamp(6)
-  start_date       DateTime      @db.Date
-  end_date         DateTime      @db.Date
-  check_in_status  Boolean
-  accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
-  traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  reservation_id  String         @id @default(uuid()) @db.VarChar(36)
+  room_id         String         @db.VarChar(36)
+  traveler_id     String         @db.VarChar(36)
+  payment_id      String         @db.VarChar(36)
+  timestamp       DateTime       @default(now()) @db.Timestamp(6)
+  start_date      DateTime       @db.Date
+  end_date        DateTime       @db.Date
+  check_in_status cn_status      @default(Not_checkin)
+  room            room           @relation(fields: [room_id], references: [room_id], onDelete: Cascade)
+  traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  payment         payment        @relation(fields: [payment_id], references: [payment_id], onDelete: Cascade)
+  notification    notification[]
 
-  @@id([reservation_id, accommodation_id, traveler_id])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String         @id @default(uuid()) @db.VarChar(36)
+  room_id          String        @id @default(uuid()) @db.VarChar(36)
   accommodation_id String        @db.VarChar(36)
-  room_name        String         @db.VarChar(64)
+  room_name        String        @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -149,8 +159,10 @@ model room {
   bed_type         b_type
   restroom         Boolean
   wifi_available   Boolean
-  max_resident_no  Int
+  max_adult         Int
+  max_children     Int
   banner           String?
+  reserve          reserve[]
   accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
 }
 
@@ -172,22 +184,23 @@ model traveler {
 }
 
 model users {
-  user_id       String     @id @default(uuid()) @db.VarChar(36)
-  citizen_id    String?     @unique @db.Char(13)
-  first_name    String?     @db.VarChar(64)
-  last_name     String?     @db.VarChar(64)
-  email         String     @unique
-  password_hash String     @db.VarChar(255)
-  birth_date    DateTime?   @db.Date
+  user_id       String         @id @default(uuid()) @db.VarChar(36)
+  citizen_id    String?        @unique @db.Char(13)
+  first_name    String?        @db.VarChar(64)
+  last_name     String?        @db.VarChar(64)
+  email         String         @unique
+  password_hash String         @db.VarChar(255)
+  birth_date    DateTime?      @db.Date
   age           Int?
   user_type     users_type
-  phone_no      String?     @db.Char(10)
+  phone_no      String?        @db.Char(10)
   gender        genders?
   banner        String?
-  host          host?
   admin         admin?
+  host          host?
   messages      messages[]
   problem       problem[]
+  notification  notification[]
   traveler      traveler?
 }
 
@@ -206,6 +219,12 @@ enum b_type {
   QUEEN
 }
 
+enum n_type {
+  Reminder
+  Cancellaion
+  Reservation
+}
+
 enum genders {
   M
   F
@@ -221,6 +240,12 @@ enum pm_status {
 enum problemstatus {
   Pending
   Solved
+}
+
+enum cn_status {
+  Not_checkin
+  Checkin
+  Cancel
 }
 
 enum users_type {
