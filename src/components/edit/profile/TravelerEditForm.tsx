@@ -194,7 +194,10 @@ function TravelerProfileForm({ travelerData }: { travelerData: TravelerData }) {
               )}
             />
 
-            <Button type="submit" className="mt-10">
+            <Button
+              type="submit"
+              className="text-grey-800 mt-15 mb-4 w-40 border bg-[#F4EDEA] hover:text-white"
+            >
               Save changes
             </Button>
           </form>

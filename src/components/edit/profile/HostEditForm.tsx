@@ -258,7 +258,7 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
                         />
                         <Button
                           type="submit"
-                          className="text-grey-800 mt-10 border border-black bg-[#F4EDEA] hover:text-white"
+                          className="text-grey-800 mt-10 border bg-[#F4EDEA] hover:text-white"
                         >
                           Save changes
                         </Button>
