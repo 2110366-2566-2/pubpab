@@ -38,7 +38,7 @@ export default function TravelerBookings() {
               child={booking.room.max_children.toString() ?? ""}
               price={booking.payment.amount.toString() ?? ""}
               accomName={booking.room.accommodation?.name_a ?? ""}
-              id={"your id"}
+              id={booking.reservation_id}
             />
           </div>
         ))}

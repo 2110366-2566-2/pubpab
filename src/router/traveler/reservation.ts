@@ -22,6 +22,7 @@ export const travelerReservationRouter = router({
         select: {
           start_date: true,
           end_date: true,
+          reservation_id: true,
           room: {
             select: {
               room_name: true,
