@@ -5,7 +5,22 @@ import PropertyListCard from "@/components/card/PropertyList";
 import Link from "next/link";
 import { trpc } from "@/lib/trpc/client";
 
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+
+import React from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+
 const SearchProps = () => {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [date2, setDate2] = React.useState<Date | undefined>(new Date());
   // const Property = [
   //   {
   //     name: "Your mom",
@@ -80,20 +95,57 @@ const SearchProps = () => {
             </div>
           </div>
           <span className="isolate inline-flex rounded-md shadow-sm">
-            <button
-              type="button"
-              className="relative inline-flex items-center gap-x-1.5 rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-            >
-              <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-              23 Feb 2024
-            </button>
-            <button
-              type="button"
-              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-            >
-              <LogOutIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-              24 Feb 2024
-            </button>
+            <Popover>
+              <PopoverTrigger
+                asChild
+                className="relative inline-flex items-center gap-x-1.5 rounded-none bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+              >
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-40 justify-start rounded-l-md text-left font-normal",
+                    !date && "text-muted-foreground",
+                  )}
+                >
+                  <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger
+                asChild
+                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-none bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+              >
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-40 justify-start rounded-r-md text-left font-normal",
+                    !date2 && "text-muted-foreground",
+                  )}
+                >
+                  <LogOutIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+                  {date2 ? format(date2, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  fromDate={date}
+                  mode="single"
+                  selected={date2}
+                  onSelect={setDate2}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </span>
         </header>
       </section>
