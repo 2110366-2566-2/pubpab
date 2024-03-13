@@ -64,8 +64,10 @@ export default function ReserveRoom() {
             // adult="2"
             // child="1"
             // user="John Doe"
-            checkInDate="2024/02/17"
-            checkOutDate="2024/02/19"
+            checkInDate="2024-02-17"
+            checkOutDate="2024-02-19"
+            room_id={room_id || ""}
+            host_id={accomData.host_id || ""}
           />
         </div>
       </div>
