@@ -1,10 +1,16 @@
+"use client";
+
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
+import { trpc } from "@/lib/trpc/client";
+import { useSession } from "next-auth/react";
 
 const ReserveBookingCard = ({
+  host_id,
   accomName,
+  room_id,
   roomName,
   price,
   //   adult,
@@ -13,15 +19,53 @@ const ReserveBookingCard = ({
   checkInDate,
   checkOutDate,
 }: {
+  host_id: string;
   accomName: string;
+  room_id: string;
   roomName: string;
-  price: string;
+  price: number;
   //   adult: string;
   //   child: string;
   location: string;
   checkInDate: string;
   checkOutDate: string;
 }) => {
+  const { data: session } = useSession();
+
+  const createPayment = trpc.payment.create.useMutation();
+  const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
+  const createTravelerNotification =
+    trpc.traveler.notification.create.useMutation();
+  const createHostNotification = trpc.host.notification.create.useMutation();
+
+  const traveler_id = session?.user?.id || "";
+
+  async function onContinuePayment() {
+    const payment = await createPayment.mutateAsync({
+      amount: price,
+      host_bank_account: "11111111",
+    });
+
+    const travelerReserve = await createTravelerReserve.mutateAsync({
+      room_id: room_id,
+      traveler_id: traveler_id,
+      payment_id: payment.newPayment.payment_id,
+      start_date: new Date(checkInDate),
+      end_date: new Date(checkOutDate),
+    });
+
+    await createTravelerNotification.mutateAsync({
+      user_id: traveler_id,
+      reservation_id: travelerReserve.reservation_id,
+      notification_type: "Reservation",
+    });
+
+    await createHostNotification.mutateAsync({
+      user_id: host_id,
+      reservation_id: travelerReserve.reservation_id,
+      notification_type: "Reservation",
+    });
+  }
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <div className="flex w-full flex-col p-4">
@@ -62,8 +106,12 @@ const ReserveBookingCard = ({
             </div>
           </span> */}
           <span className="flex items-end justify-end p-4 text-center">
-            <button className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600">
-              Continue payemnt
+            <button
+              type="submit"
+              onClick={onContinuePayment}
+              className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
+            >
+              Continue payment
             </button>
           </span>
         </div>

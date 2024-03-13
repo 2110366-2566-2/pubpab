@@ -81,6 +81,7 @@ export const accomodationRouter = router({
           accommodation_id: input.accommodation_id,
         },
         select: {
+          host_id: true,
           name_a: true,
           description_a: true,
           qr_code: true,
