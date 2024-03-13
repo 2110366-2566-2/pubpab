@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
-import CancelReservationButton from "../booking/cancelButton";
+import CancelReservationButton from "../booking/CancelButton";
 
 const TravelerBookingCard = ({
   accomName,
