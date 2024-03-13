@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import LoadingScreen from "@/components/ui/loading-screen";
 
 const SearchProps = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -47,7 +48,11 @@ const SearchProps = () => {
   }
 
   if (findProperty.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   const propertyData = findProperty.data;

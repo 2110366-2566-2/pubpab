@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import LoadingScreen from "@/components/ui/loading-screen";
 
 const PropInfo = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -65,13 +66,18 @@ const PropInfo = () => {
   }
 
   if (findRooms.isLoading || findAccommodation.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   const roomsData = findRooms.data;
   const accomData = findAccommodation.data;
   const Info = roomsData.flatMap((entry) =>
     entry.room.map((room) => ({
+      room_id: room.room_id,
       accomName: accomData.name_a,
       roomName: room.room_name,
       price: room.price,
@@ -183,6 +189,7 @@ const PropInfo = () => {
             <h2 className="text-xl font-bold text-gray-900">Rooms</h2>
             {Info.flatMap(
               (items: {
+                room_id: string | null;
                 accomName: string | null;
                 roomName: string | null;
                 price: number | null;
@@ -201,7 +208,8 @@ const PropInfo = () => {
                   bed={items.bed ? items.bed : ""}
                   adult={items.adult ? items.adult : 0}
                   children={items.children ? items.children : 0}
-                  id={"your id"}
+                  room_id={items.room_id ? items.room_id : ""}
+                  accom_id={accom_id ? accom_id : ""}
                 />
               ),
             )}

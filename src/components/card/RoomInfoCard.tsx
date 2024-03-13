@@ -13,7 +13,8 @@ const RoomInfoCard = ({
   price,
   adult,
   children,
-  id,
+  room_id,
+  accom_id,
 }: {
   accomName: string;
   roomName: string;
@@ -23,7 +24,8 @@ const RoomInfoCard = ({
   price: number;
   adult: number;
   children: number;
-  id: string;
+  room_id: string;
+  accom_id: string;
 }) => {
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
@@ -87,9 +89,10 @@ const RoomInfoCard = ({
           <span className="flex items-end justify-end p-4 text-center">
             <Link
               href={{
-                pathname: "/edit/host/accommodation",
+                pathname: "/reserve",
                 query: {
-                  room_id: id,
+                  room_id: room_id,
+                  accom_id: accom_id,
                 },
               }}
             >

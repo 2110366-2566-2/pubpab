@@ -15,7 +15,7 @@ const ReserveBookingCard = ({
 }: {
   accomName: string;
   roomName: string;
-  price: string;
+  price: number;
   //   adult: string;
   //   child: string;
   location: string;
@@ -63,7 +63,7 @@ const ReserveBookingCard = ({
           </span> */}
           <span className="flex items-end justify-end p-4 text-center">
             <button className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600">
-              Continue payemnt
+              Continue payment
             </button>
           </span>
         </div>
