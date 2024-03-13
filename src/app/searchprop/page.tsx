@@ -1,26 +1,51 @@
+"use client";
+
 import { LogInIcon, LogOutIcon, SearchIcon } from "lucide-react";
 import PropertyListCard from "@/components/card/PropertyList";
 import Link from "next/link";
+import { trpc } from "@/lib/trpc/client";
 
-const SearchProps = async () => {
-  const Property = [
-    {
-      name: "Your mom",
-      location: "Ur mom's house",
-      description: "mama",
-      stars: 1.5,
-      price: 1000,
-      href: "/searchprop/PropInfo",
-    },
-    {
-      name: "Your dad",
-      location: "Ur dad's house",
-      description: "dada",
-      stars: 5.0,
-      price: 3000,
-      href: "/searchprop/PropInfo",
-    },
-  ];
+const SearchProps = () => {
+  // const Property = [
+  //   {
+  //     name: "Your mom",
+  //     location: "Ur mom's house",
+  //     description: "mama",
+  //     stars: 1.5,
+  //     price: 1000,
+  //     href: "/searchprop/PropInfo",
+  //   },
+  //   {
+  //     name: "Your dad",
+  //     location: "Ur dad's house",
+  //     description: "dada",
+  //     stars: 5.0,
+  //     price: 3000,
+  //     href: "/searchprop/PropInfo",
+  //   },
+  // ];
+
+  const findProperty = trpc.host.accomodation.findAll.useQuery();
+
+  if (findProperty.error) {
+    return <div>Error: {findProperty.error.message}</div>;
+  }
+
+  if (findProperty.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const propertyData = findProperty.data;
+  console.log(propertyData);
+
+  const Property = propertyData?.flatMap((entry) => ({
+    name: entry.name_a,
+    location: entry.distinct_a,
+    description: entry.description_a,
+    stars: entry.rating,
+    price: entry.price,
+    href: entry.ggmap_link,
+  }));
 
   return (
     <>
@@ -66,8 +91,8 @@ const SearchProps = async () => {
           role="list"
           className="mt-3 grid w-full max-w-5xl grid-cols-1 gap-5"
         >
-          {Property.map((desc) => (
-            <Link href={desc.href}>
+          {Property?.flatMap((desc) => (
+            <Link href="searchprop/PropInfo">
               <li className="col-span-1 rounded-md shadow-sm">
                 <PropertyListCard
                   name={desc.name}
