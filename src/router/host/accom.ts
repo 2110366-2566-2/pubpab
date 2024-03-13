@@ -69,6 +69,39 @@ export const accomodationRouter = router({
       }
       return getAccomodation;
     }),
+  findUnique: publicProcedure
+    .input(
+      z.object({
+        accommodation_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const getAccomodation = await prisma.accommodation.findUnique({
+        where: {
+          accommodation_id: input.accommodation_id,
+        },
+        select: {
+          name_a: true,
+          description_a: true,
+          qr_code: true,
+          address_a: true,
+          city: true,
+          province: true,
+          distinct_a: true,
+          postal_code: true,
+          ggmap_link: true,
+          accommodation_status: true,
+          rating: true,
+        },
+      });
+      if (!getAccomodation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Accommodation not found",
+        });
+      }
+      return getAccomodation;
+    }),
   findMany: publicProcedure
     .input(
       z.object({

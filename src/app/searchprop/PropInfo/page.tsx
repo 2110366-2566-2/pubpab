@@ -10,8 +10,11 @@ import { trpc } from "@/lib/trpc/client";
 
 const PropInfo = () => {
   const queryParameters = new URLSearchParams(window.location.search);
-  const accom_name = queryParameters.get("accom_name");
   const accom_id = queryParameters.get("accom_id");
+
+  const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
+    accommodation_id: accom_id ? accom_id : "",
+  });
   // const Info = [
   //   {
   //     accomName: "Your mom",
@@ -43,14 +46,19 @@ const PropInfo = () => {
     return <div>Error: {findRooms.error.message}</div>;
   }
 
-  if (findRooms.isLoading) {
+  if (findAccommodation.error) {
+    return <div>Error: {findAccommodation.error.message}</div>;
+  }
+
+  if (findRooms.isLoading || findAccommodation.isLoading) {
     return <div>Loading...</div>;
   }
 
   const roomsData = findRooms.data;
+  const accomData = findAccommodation.data;
   const Info = roomsData.flatMap((entry) =>
     entry.room.map((room) => ({
-      accomName: accom_name,
+      accomName: accomData.name_a,
       roomName: room.room_name,
       price: room.price,
       room: room.room_no,
@@ -100,12 +108,17 @@ const PropInfo = () => {
           <Image src={EastHotelImage} alt="" className="h-64 object-cover" />
           <div className="flex flex-row gap-8 px-8 pb-4 pt-8">
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900">Name</h2>
-              <p className="text-base font-normal text-gray-900">Location</p>
+              <h2 className="text-xl font-bold text-gray-900">
+                Name: {accomData.name_a}
+              </h2>
+              <p className="text-base font-normal text-gray-900">
+                Location: {accomData.address_a} {accomData.distinct_a}{" "}
+                {accomData.city} {accomData.province} {accomData.postal_code}
+              </p>
               <div className="mt-4">
                 <span className="flex min-h-60 flex-col rounded-xl border border-blue-300 p-2 px-4 text-blue-300">
                   <h1>Description:</h1>
-                  <p>your mom</p>
+                  <p>{accomData.description_a}</p>
                 </span>
               </div>
             </div>

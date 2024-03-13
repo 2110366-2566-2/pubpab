@@ -107,7 +107,6 @@ const SearchProps = () => {
               href={{
                 pathname: "searchprop/PropInfo",
                 query: {
-                  accom_name: desc.name,
                   accom_id: desc.accom_id,
                 },
               }}
