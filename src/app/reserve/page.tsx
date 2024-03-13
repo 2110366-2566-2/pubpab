@@ -10,7 +10,6 @@ export default function Host_Booking() {
         >
           Back
         </button>
-        {/* <h1 className="mb-4 w-full text-3xl font-semibold">Reserved Room</h1> */}
         <div className="flex w-full flex-col gap-4">
           <ReserveBookingCard
             accomName="Siam Kempinski Hotel Bangkok"

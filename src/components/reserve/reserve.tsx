@@ -1,3 +1,4 @@
+import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
@@ -43,8 +44,14 @@ const ReserveBookingCard = ({
             <h2 className="mb-2  text-xl">Total</h2>
             {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
             <p className="pb-4 text-2xl font-bold">฿{price} </p>
-            <h1 className="pb-1 font-semibold">{checkInDate}</h1>
-            <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
+            <div className="flex flex-row justify-between">
+              <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+            </div>
+            <div className="flex flex-row justify-between">
+              <LogOutIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              <h1 className="pb-1 font-semibold"> {checkOutDate}</h1>
+            </div>
           </span>
         </div>
         <div className="flex h-full flex-row justify-between pt-4">
