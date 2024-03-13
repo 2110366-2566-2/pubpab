@@ -15,9 +15,9 @@ export const travelerReservationRouter = router({
       const reserves = await prisma.reserve.findMany({
         where: {
           traveler_id: input.traveler_id,
-          // check_in_status: {
-          //   not: "Cancel",
-          // },
+          check_in_status: {
+            not: "Cancel",
+          },
         },
         select: {
           start_date: true,
