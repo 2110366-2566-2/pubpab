@@ -6,6 +6,7 @@ import Image from "next/image";
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
+import { differenceInDays } from "date-fns";
 
 const ReserveBookingCard = ({
   host_id,
@@ -40,9 +41,14 @@ const ReserveBookingCard = ({
 
   const traveler_id = session?.user?.id || "";
 
+  const startDate = new Date(checkInDate);
+  const endDate = new Date(checkOutDate);
+
+  const durations = differenceInDays(endDate, startDate);
+
   async function onContinuePayment() {
     const payment = await createPayment.mutateAsync({
-      amount: price,
+      amount: price * durations,
       host_bank_account: "11111111",
     });
 
@@ -87,7 +93,7 @@ const ReserveBookingCard = ({
           <span>
             <h2 className="mb-2  text-xl">Total</h2>
             {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
-            <p className="pb-4 text-2xl font-bold">฿{price} </p>
+            <p className="pb-4 text-2xl font-bold">฿{price * durations} </p>
             <div className="flex flex-row justify-between">
               <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>
