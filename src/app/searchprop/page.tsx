@@ -116,14 +116,14 @@ const SearchProps = () => {
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              {/* <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
                   selected={date}
                   onSelect={setDate}
                   initialFocus
                 />
-              </PopoverContent>
+              </PopoverContent> */}
             </Popover>
             <Popover>
               <PopoverTrigger
@@ -141,7 +141,7 @@ const SearchProps = () => {
                   {date2 ? format(date2, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              {/* <PopoverContent className="w-auto p-0">
                 <Calendar
                   fromDate={date}
                   mode="single"
@@ -149,7 +149,7 @@ const SearchProps = () => {
                   onSelect={setDate2}
                   initialFocus
                 />
-              </PopoverContent>
+              </PopoverContent> */}
             </Popover>
           </span>
         </header>
