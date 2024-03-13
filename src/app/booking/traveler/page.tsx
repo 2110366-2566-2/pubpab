@@ -1,4 +1,4 @@
-import TravelerBookingCard from "@/components/booking/traveler/traveler_booking";
+import TravelerBookings from "@/components/booking/books/TravelerBooking";
 
 export default function Traveler_Booking() {
   return (
@@ -8,15 +8,7 @@ export default function Traveler_Booking() {
           Your accommodation booking
         </h1>
         <div className="flex w-full flex-col gap-4">
-          <TravelerBookingCard
-            accomName="The Base"
-            roomName="Room 1"
-            price="100"
-            adult="2"
-            child="1"
-            checkInDate="2024/02/17"
-            checkOutDate="2024/02/19"
-          />
+          <TravelerBookings />
         </div>
       </div>
     </div>
