@@ -5,11 +5,47 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const accomodationRouter = router({
-  findAll: publicProcedure
-    .query(async () => {
-      const getAccomodation = await prisma.accommodation.findMany({
+  findAll: publicProcedure.query(async () => {
+    const getAccomodation = await prisma.accommodation.findMany({
+      where: {
+        accommodation_id: undefined,
+      },
+      select: {
+        accommodation_id: true,
+        name_a: true,
+        description_a: true,
+        qr_code: true,
+        address_a: true,
+        city: true,
+        province: true,
+        distinct_a: true,
+        postal_code: true,
+        ggmap_link: true,
+        accommodation_status: true,
+        rating: true,
+        price: true,
+      },
+    });
+    if (!getAccomodation) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Accommodation not found",
+      });
+    }
+    return getAccomodation;
+  }),
+  find: publicProcedure
+    .input(
+      z.object({
+        host_id: z.string(),
+        accommodation_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const getAccomodation = await prisma.accommodation.findUnique({
         where: {
-          accommodation_id: undefined,
+          accommodation_id: input.accommodation_id,
+          host_id: input.host_id,
         },
         select: {
           name_a: true,
@@ -23,9 +59,8 @@ export const accomodationRouter = router({
           ggmap_link: true,
           accommodation_status: true,
           rating: true,
-          price: true,
-        }
-      })
+        },
+      });
       if (!getAccomodation) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -34,10 +69,9 @@ export const accomodationRouter = router({
       }
       return getAccomodation;
     }),
-  find: publicProcedure
+  findUnique: publicProcedure
     .input(
       z.object({
-        host_id: z.string(),
         accommodation_id: z.string(),
       }),
     )
@@ -45,7 +79,6 @@ export const accomodationRouter = router({
       const getAccomodation = await prisma.accommodation.findUnique({
         where: {
           accommodation_id: input.accommodation_id,
-          host_id: input.host_id,
         },
         select: {
           name_a: true,

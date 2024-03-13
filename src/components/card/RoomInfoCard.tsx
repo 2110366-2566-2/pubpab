@@ -2,8 +2,9 @@ import Image from "next/image";
 import { StarIcon, CheckIcon } from "lucide-react";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
+import Link from "next/link";
 
-const PropertyInfoCard = ({
+const RoomInfoCard = ({
   accomName,
   roomName,
   floor,
@@ -12,15 +13,17 @@ const PropertyInfoCard = ({
   price,
   adult,
   children,
+  id,
 }: {
   accomName: string;
   roomName: string;
   floor: number;
-  room: number;
+  room: string;
   bed: string;
   price: number;
   adult: number;
   children: number;
+  id: string;
 }) => {
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
@@ -82,13 +85,22 @@ const PropertyInfoCard = ({
             </div>
           </span>
           <span className="flex items-end justify-end p-4 text-center">
-            <button className="h-10 rounded-lg bg-gray-200 px-12 hover:bg-gray-300">
-              Reserve
-            </button>
+            <Link
+              href={{
+                pathname: "/edit/host/accommodation",
+                query: {
+                  room_id: id,
+                },
+              }}
+            >
+              <button className="h-10 rounded-lg bg-gray-200 px-12 hover:bg-gray-300">
+                Reserve
+              </button>
+            </Link>
           </span>
         </div>
       </div>
     </div>
   );
 };
-export default PropertyInfoCard;
+export default RoomInfoCard;

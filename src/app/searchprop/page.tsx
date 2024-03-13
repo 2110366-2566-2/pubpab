@@ -38,14 +38,25 @@ const SearchProps = () => {
   const propertyData = findProperty.data;
   console.log(propertyData);
 
-  const Property = propertyData?.flatMap((entry) => ({
-    name: entry.name_a,
-    location: entry.distinct_a,
-    description: entry.description_a,
-    stars: entry.rating,
-    price: entry.price,
-    href: entry.ggmap_link,
-  }));
+  const Property = propertyData?.flatMap(
+    (entry: {
+      name_a: any;
+      distinct_a: any;
+      description_a: any;
+      rating: any;
+      price: any;
+      ggmap_link: any;
+      accommodation_id: any;
+    }) => ({
+      name: entry.name_a,
+      location: entry.distinct_a,
+      description: entry.description_a,
+      stars: entry.rating,
+      price: entry.price,
+      href: entry.ggmap_link,
+      accom_id: entry.accommodation_id,
+    }),
+  );
 
   return (
     <>
@@ -92,7 +103,14 @@ const SearchProps = () => {
           className="mt-3 grid w-full max-w-5xl grid-cols-1 gap-5"
         >
           {Property?.flatMap((desc) => (
-            <Link href="searchprop/PropInfo">
+            <Link
+              href={{
+                pathname: "searchprop/PropInfo",
+                query: {
+                  accom_id: desc.accom_id,
+                },
+              }}
+            >
               <li className="col-span-1 rounded-md shadow-sm">
                 <PropertyListCard
                   name={desc.name}
