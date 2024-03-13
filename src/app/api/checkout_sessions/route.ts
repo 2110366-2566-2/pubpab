@@ -1,55 +1,48 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const stripeSecretKey = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY;
+
 if (!stripeSecretKey) {
   throw new Error("Stripe secret key is not defined");
 }
+
 const stripe = new Stripe(stripeSecretKey);
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    try {
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        // payment_method_types: ["card"],
-        // line_items: req?.body?.items ?? [],
-        line_items: [
-          {
-            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-            price: "price_1Otoj8AUCR58YXE60ouYQFlV",
-            quantity: 1,
-          },
-        ],
-        // success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        // cancel_url: `${req.headers.origin}/cart`,
-        success_url: `${req.headers.origin}/?success=true`,
-        cancel_url: `${req.headers.origin}/?canceled=true`,
-      });
+export async function POST(req: NextRequest) {
+  if (req.method !== "POST") {
+    // Handle non-POST requests (e.g., return a 405 Method Not Allowed error)
+    return NextResponse.json({
+      statusCode: 405,
+      message: "Method Not Allowed",
+    });
+  }
 
-      res.status(200).json(session);
-    } catch (err) {
-      const errorResponse = new Response(
-        JSON.stringify({
-          statusCode: 500,
-          message: "Error creating checkout session",
-        }),
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment", // Payment mode
+      payment_method_types: ["card"], // Accepted payment methods (e.g., card)
+      line_items: [
         {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          price: "price_1Otoj8AUCR58YXE60ouYQFlV",
+          quantity: 1,
         },
-      );
-      return errorResponse;
-    }
-  } else {
-    res.setHeader("Allow", "POST");
-    const errorResponse = new Response(
-      JSON.stringify({ statusCode: 405, message: "Method Not Allowed" }),
-      {
-        status: 405,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-    return errorResponse;
+      ], // Dynamically set line items from request body
+      success_url:
+        process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL ||
+        "http://localhost:3000/register/host", // Set success URL dynamicaler (consider environment variables)
+      cancel_url:
+        process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ||
+        "http://localhost:3000/register/traveler", // Set cancel URL dynamically (consider environment variables)
+    });
+    console.log(session);
+    return NextResponse.redirect(session.url as string);
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return NextResponse.json({
+      statusCode: 500,
+      message: "Error creating checkout session",
+    });
   }
 }
