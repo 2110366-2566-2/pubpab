@@ -3,6 +3,8 @@
 import { LogInIcon, LogOutIcon, SearchIcon } from "lucide-react";
 import PropertyListCard from "@/components/card/PropertyList";
 import Link from "next/link";
+import { trpc } from "@/lib/trpc/client";
+
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -19,25 +21,57 @@ import { format } from "date-fns";
 const SearchProps = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [date2, setDate2] = React.useState<Date | undefined>(new Date());
+  // const Property = [
+  //   {
+  //     name: "Your mom",
+  //     location: "Ur mom's house",
+  //     description: "mama",
+  //     stars: 1.5,
+  //     price: 1000,
+  //     href: "/searchprop/PropInfo",
+  //   },
+  //   {
+  //     name: "Your dad",
+  //     location: "Ur dad's house",
+  //     description: "dada",
+  //     stars: 5.0,
+  //     price: 3000,
+  //     href: "/searchprop/PropInfo",
+  //   },
+  // ];
 
-  const Property = [
-    {
-      name: "Your mom",
-      location: "Ur mom's house",
-      description: "mama",
-      stars: 1.5,
-      price: 1000,
-      href: "/searchprop/PropInfo",
-    },
-    {
-      name: "Your dad",
-      location: "Ur dad's house",
-      description: "dada",
-      stars: 5.0,
-      price: 3000,
-      href: "/searchprop/PropInfo",
-    },
-  ];
+  const findProperty = trpc.host.accomodation.findAll.useQuery();
+
+  if (findProperty.error) {
+    return <div>Error: {findProperty.error.message}</div>;
+  }
+
+  if (findProperty.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const propertyData = findProperty.data;
+  console.log(propertyData);
+
+  const Property = propertyData?.flatMap(
+    (entry: {
+      name_a: any;
+      distinct_a: any;
+      description_a: any;
+      rating: any;
+      price: any;
+      ggmap_link: any;
+      accommodation_id: any;
+    }) => ({
+      name: entry.name_a,
+      location: entry.distinct_a,
+      description: entry.description_a,
+      stars: entry.rating,
+      price: entry.price,
+      href: entry.ggmap_link,
+      accom_id: entry.accommodation_id,
+    }),
+  );
 
   return (
     <>
@@ -120,8 +154,15 @@ const SearchProps = () => {
           role="list"
           className="mt-3 grid w-full max-w-5xl grid-cols-1 gap-5"
         >
-          {Property.map((desc) => (
-            <Link href={desc.href}>
+          {Property?.flatMap((desc) => (
+            <Link
+              href={{
+                pathname: "searchprop/PropInfo",
+                query: {
+                  accom_id: desc.accom_id,
+                },
+              }}
+            >
               <li className="col-span-1 rounded-md shadow-sm">
                 <PropertyListCard
                   name={desc.name}

@@ -1,4 +1,4 @@
-import Host_Notification from "@/components/notification/host/host_noti";
+import HostNotifications from "@/components/notification/noti/HostNotifications";
 
 export default function Host_Notifications() {
   return (
@@ -6,42 +6,7 @@ export default function Host_Notifications() {
       <div className="p-4">
         <h1 className="mb-4 w-full text-3xl font-semibold">Notifications</h1>
         <div className="flex w-full flex-col gap-4">
-          <Host_Notification
-            sentDate="2024-02-17"
-            sentTime="12:00 PM"
-            firstName="Chef"
-            lastName="Smart"
-            roomName="Loli Room"
-            accommodationName="Loli Hotel"
-            checkInDate="2024/02/17"
-            checkOutDate="2024/02/19"
-            totalAmount="฿6,969"
-            isReserved={true}
-          />
-          <Host_Notification
-            sentDate="2024-02-19"
-            sentTime="17:30 PM"
-            firstName="Pizza"
-            lastName="Company"
-            roomName="Deluxe Room"
-            accommodationName="Hawaiian Hotel"
-            checkInDate="2024/02/19"
-            checkOutDate="2024/02/20"
-            totalAmount="฿1,112"
-            isReserved={false}
-          />
-          <Host_Notification
-            sentDate="2024-02-23"
-            sentTime="1:00 PM"
-            firstName="Kentucky"
-            lastName="Fried Chicken"
-            roomName="Superior Room"
-            accommodationName="Hot&Spicy Hotel"
-            checkInDate="2024/02/23"
-            checkOutDate="2024/02/27"
-            totalAmount="฿1,150"
-            isReserved={true}
-          />
+          <HostNotifications />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import HostEditAccommodationForm from "@/components/edit/accommodation/HostEditAccommodationForm";
 
-export default async function HostEditAccomodationPage({
+export default async function HostEditAccommodationPage({
   searchParams,
 }: {
   searchParams: {

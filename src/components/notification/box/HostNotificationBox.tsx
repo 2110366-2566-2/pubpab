@@ -12,7 +12,7 @@ const Host_Notification = ({
   checkInDate,
   checkOutDate,
   totalAmount,
-  isReserved,
+  noti_type,
 }: {
   firstName: string;
   lastName: string;
@@ -23,13 +23,13 @@ const Host_Notification = ({
   checkInDate: string;
   checkOutDate: string;
   totalAmount: string;
-  isReserved: boolean;
+  noti_type: string;
 }) => {
   return (
     <Card className="w-full p-3">
       <div className="flex justify-between">
         <div>
-          {isReserved ? (
+          {noti_type === "Reservation" && (
             <div>
               <p className="text-xs">
                 {sentDate} {sentTime}
@@ -57,7 +57,8 @@ const Host_Notification = ({
                 </div>
               </div>
             </div>
-          ) : (
+          )}
+          {noti_type === "Cancellation" && (
             <div>
               <span className="text-[#701414]">
                 <p className="text-xs">

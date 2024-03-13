@@ -159,7 +159,7 @@ model room {
   bed_type         b_type
   restroom         Boolean
   wifi_available   Boolean
-  max_adult         Int
+  max_adult        Int
   max_children     Int
   banner           String?
   reserve          reserve[]
