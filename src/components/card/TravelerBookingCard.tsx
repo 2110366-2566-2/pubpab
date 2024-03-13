@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
+import CancelReservationButton from "../booking/cancelButton";
 
 const TravelerBookingCard = ({
   accomName,
@@ -8,7 +9,7 @@ const TravelerBookingCard = ({
   price,
   adult,
   child,
-
+  id,
   checkInDate,
   checkOutDate,
 }: {
@@ -19,6 +20,7 @@ const TravelerBookingCard = ({
   child: string;
   checkInDate: string;
   checkOutDate: string;
+  id: string;
 }) => {
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
@@ -49,9 +51,7 @@ const TravelerBookingCard = ({
             </div>
           </span>
           <span className="flex items-end justify-end p-4 text-center">
-            <button className="h-10 rounded-lg bg-red-500 px-12 text-white hover:bg-red-600">
-              Cancel
-            </button>
+            <CancelReservationButton id={id} />
           </span>
         </div>
       </div>
