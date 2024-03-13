@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LogInIcon, LogOutIcon, StarIcon, CheckIcon } from "lucide-react";
-import PropertyInfoCard from "@/components/card/PropertyInfo";
+import RoomInfoCard from "@/components/card/RoomInfoCard";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 
@@ -86,7 +86,7 @@ const PropInfo = async () => {
           <div className="flex flex-col gap-4 px-8 py-4">
             <h2 className="text-xl font-bold text-gray-900">Rooms</h2>
             {Info.map((items) => (
-              <PropertyInfoCard
+              <RoomInfoCard
                 accomName={items.accomName}
                 roomName={items.roomName}
                 price={items.price}
@@ -95,6 +95,7 @@ const PropInfo = async () => {
                 bed={items.bed}
                 adult={items.adult}
                 children={items.children}
+                id={"your id"}
               />
             ))}
             {/* <PropertyInfoCard accomName="mom" roomName="mom" price={100} floor={1} room={1} bed="mom" adult={1} children={1} /> */}
