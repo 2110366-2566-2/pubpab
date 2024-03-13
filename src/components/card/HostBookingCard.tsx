@@ -67,9 +67,9 @@ const HostBookingCard = ({
             </div>
           </span>
           <span className="flex items-end justify-end p-4 text-center">
-            <button className="h-10 rounded-lg bg-red-500 px-12 text-white hover:bg-red-600">
+            {/* <button className="h-10 rounded-lg bg-red-500 px-12 text-white hover:bg-red-600">
               Cancel
-            </button>
+            </button> */}
           </span>
         </div>
       </div>

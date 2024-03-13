@@ -1,4 +1,4 @@
-import TravelerBookings from "@/components/booking/books/TravelerBooking";
+import TravelerBookings from "@/components/booking/books/TravelerBookings";
 
 export default function Traveler_Booking() {
   return (
