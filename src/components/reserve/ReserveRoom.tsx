@@ -8,6 +8,8 @@ export default function ReserveRoom() {
   const queryParameters = new URLSearchParams(window.location.search);
   const accom_id = queryParameters.get("accom_id");
   const room_id = queryParameters.get("room_id");
+  const CheckInDate = queryParameters.get("CheckInDate");
+  const CheckOutDate = queryParameters.get("CheckOutDate");
 
   const findRoom = trpc.host.room.find.useQuery({
     room_id: room_id ? room_id : "",
@@ -64,8 +66,8 @@ export default function ReserveRoom() {
             // adult="2"
             // child="1"
             // user="John Doe"
-            checkInDate="2024-02-17"
-            checkOutDate="2024-02-19"
+            checkInDate={CheckInDate || ""}
+            checkOutDate={CheckOutDate || ""}
             room_id={room_id || ""}
             host_id={accomData.host_id || ""}
           />
