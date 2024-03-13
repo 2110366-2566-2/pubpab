@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import UserImage from "@/../../public/User.png";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 
 const HostBookingCard = ({
   accomName,
@@ -60,16 +61,13 @@ const HostBookingCard = ({
         </div>
 
         <div className="flex h-full flex-row justify-between pt-4">
-          <span className="flex w-3/4 flex-row gap-16">
-            <div className="flex flex-row gap-5  ">
+          <span className="flex w-3/4 flex-row items-center gap-16">
+            <div className="flex flex-row items-center gap-5">
+              <LogInIcon size={24} />
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+              <LogOutIcon size={24} />
               <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
             </div>
-          </span>
-          <span className="flex items-end justify-end p-4 text-center">
-            {/* <button className="h-10 rounded-lg bg-red-500 px-12 text-white hover:bg-red-600">
-              Cancel
-            </button> */}
           </span>
         </div>
       </div>

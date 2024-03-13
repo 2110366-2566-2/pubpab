@@ -42,8 +42,16 @@ const CancelReservationButton = ({
   };
 
   if (session && session.user) {
-    if (session.user.role == "Hosts") {
-      return <Button variant={"link"} onClick={handleCancelClick}></Button>;
+    if (session.user.role == "Travelers") {
+      return (
+        <Button
+          variant={"link"}
+          onClick={handleCancelClick}
+          className="h-10 bg-[#701414] px-12 text-white hover:bg-red-600"
+        >
+          Cancel
+        </Button>
+      );
     }
   }
 
