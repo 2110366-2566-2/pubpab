@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { StarIcon, CheckIcon } from "lucide-react";
+import { StarIcon, CheckIcon, XIcon } from "lucide-react";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import Link from "next/link";
@@ -15,6 +15,12 @@ const RoomInfoCard = ({
   children,
   room_id,
   accom_id,
+  smoking,
+  noise,
+  pet,
+  washing_machine,
+  restroom,
+  wifi_available,
 }: {
   accomName: string;
   roomName: string;
@@ -26,7 +32,17 @@ const RoomInfoCard = ({
   children: number;
   room_id: string;
   accom_id: string;
+  smoking: boolean;
+  noise: boolean;
+  pet: boolean;
+  washing_machine: boolean;
+  restroom: boolean;
+  wifi_available: boolean;
 }) => {
+  function checkValid(b: boolean) {
+    if (b) return <CheckIcon />;
+    return <XIcon />;
+  }
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <Image
@@ -58,30 +74,30 @@ const RoomInfoCard = ({
             <div className="flex flex-col">
               <h1 className="pb-1 font-semibold">Allow</h1>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(pet)}
                 Pet
               </p>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(noise)}
                 Noise
               </p>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(smoking)}
                 Smoking
               </p>
             </div>
             <div className="flex flex-col">
               <h1 className="pb-1 font-semibold">Facility</h1>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(wifi_available)}
                 Wifi
               </p>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(restroom)}
                 Restroom
               </p>
               <p className="flex flex-row gap-1">
-                <CheckIcon />
+                {checkValid(washing_machine)}
                 Washing Machine
               </p>
             </div>

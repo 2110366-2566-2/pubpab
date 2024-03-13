@@ -86,6 +86,12 @@ const PropInfo = () => {
       bed: room.bed_type,
       adult: room.max_adult,
       children: room.max_children,
+      smoking: room.smoking,
+      noise: room.noise,
+      pet: room.pet,
+      wifi_available: room.wifi_available,
+      washing_machine: room.washing_machine,
+      restroom: room.restroom,
     })),
   );
 
@@ -158,7 +164,7 @@ const PropInfo = () => {
           </a>
           <span className="inline-flex items-center gap-x-1.5 rounded-md bg-blue-900 px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-green-600/20">
             <StarIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-            4.9
+            {accomData.rating}
           </span>
         </div>
         <div className="w-full overflow-hidden rounded-lg border-2 border-gray-100 bg-white shadow">
@@ -189,6 +195,12 @@ const PropInfo = () => {
             <h2 className="text-xl font-bold text-gray-900">Rooms</h2>
             {Info.flatMap(
               (items: {
+                noise: boolean;
+                pet: boolean;
+                washing_machine: boolean;
+                restroom: boolean;
+                wifi_available: boolean;
+                smoking: boolean;
                 room_id: string | null;
                 accomName: string | null;
                 roomName: string | null;
@@ -210,6 +222,12 @@ const PropInfo = () => {
                   children={items.children ? items.children : 0}
                   room_id={items.room_id ? items.room_id : ""}
                   accom_id={accom_id ? accom_id : ""}
+                  smoking={items.smoking || false}
+                  noise={items.noise || false}
+                  pet={items.pet || false}
+                  washing_machine={items.washing_machine || false}
+                  restroom={items.restroom || false}
+                  wifi_available={items.wifi_available || false}
                 />
               ),
             )}
