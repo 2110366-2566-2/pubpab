@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default async function HostRegisterPage() {
   return (
-    <div className="ietms-center my-12 flex min-h-screen justify-center px-4 py-12">
+    <div className="my-12 flex min-h-screen items-center justify-center px-4 py-12">
       <div className="inline-block">
         <Link href="/register/" className="pr-10">
           <Button

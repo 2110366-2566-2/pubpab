@@ -50,7 +50,7 @@ const Navbar = () => {
           </Link>
           <Link
             className="pr-8 text-gray-800 transition-colors hover:text-sky-400"
-            href={"/"}
+            href={"/searchprop"}
           >
             Search
           </Link>
