@@ -1,6 +1,6 @@
 import ReserveBookingCard from "@/components/reserve/reserve";
 
-export default function Host_Booking() {
+export default function ReserveRoom() {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="p-4">
