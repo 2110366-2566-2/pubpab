@@ -9,7 +9,9 @@ const TravelerBookingCard = ({
   price,
   adult,
   child,
-  id,
+  reservation_id,
+  host_id,
+  traveler_id,
   checkInDate,
   checkOutDate,
 }: {
@@ -20,7 +22,9 @@ const TravelerBookingCard = ({
   child: string;
   checkInDate: string;
   checkOutDate: string;
-  id: string;
+  reservation_id: string;
+  host_id: string;
+  traveler_id: string;
 }) => {
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
@@ -51,7 +55,11 @@ const TravelerBookingCard = ({
             </div>
           </span>
           <span className="flex items-end justify-end p-4 text-center">
-            <CancelReservationButton id={id} />
+            <CancelReservationButton
+              reservation_id={reservation_id}
+              host_id={host_id}
+              traveler_id={traveler_id}
+            />
           </span>
         </div>
       </div>
