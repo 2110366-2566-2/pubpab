@@ -47,7 +47,7 @@ export const roomRouter = router({
     .query(async ({ input }) => {
       const getAccomodation = await prisma.accommodation.findMany({
         where: {
-          accommodation_id: input.accommodation_id
+          accommodation_id: input.accommodation_id,
         },
         select: {
           room: {

@@ -5,36 +5,35 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const accomodationRouter = router({
-  findAll: publicProcedure
-    .query(async () => {
-      const getAccomodation = await prisma.accommodation.findMany({
-        where: {
-          accommodation_id: undefined,
-        },
-        select: {
-          accommodation_id: true,
-          name_a: true,
-          description_a: true,
-          qr_code: true,
-          address_a: true,
-          city: true,
-          province: true,
-          distinct_a: true,
-          postal_code: true,
-          ggmap_link: true,
-          accommodation_status: true,
-          rating: true,
-          price: true,
-        }
-      })
-      if (!getAccomodation) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Accommodation not found",
-        });
-      }
-      return getAccomodation;
-    }),
+  findAll: publicProcedure.query(async () => {
+    const getAccomodation = await prisma.accommodation.findMany({
+      where: {
+        accommodation_id: undefined,
+      },
+      select: {
+        accommodation_id: true,
+        name_a: true,
+        description_a: true,
+        qr_code: true,
+        address_a: true,
+        city: true,
+        province: true,
+        distinct_a: true,
+        postal_code: true,
+        ggmap_link: true,
+        accommodation_status: true,
+        rating: true,
+        price: true,
+      },
+    });
+    if (!getAccomodation) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Accommodation not found",
+      });
+    }
+    return getAccomodation;
+  }),
   find: publicProcedure
     .input(
       z.object({
