@@ -43,22 +43,19 @@ const ReserveBookingCard = ({
             <h2 className="mb-2  text-xl">Total</h2>
             {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
             <p className="pb-4 text-2xl font-bold">฿{price} </p>
-          </span>
-          <span className="flex flex-col text-right">
-            {/* <p className="pb-4 text-2xl font-bold">฿{price} </p> */}
-            {/* <p>{adult} Adults</p>
-            <p>{child} Children</p> */}
+            <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+            <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
           </span>
         </div>
         <div className="flex h-full flex-row justify-between pt-4">
-          <span className="flex w-3/4 flex-row gap-16">
+          {/* <span className="flex w-3/4 flex-row gap-16">
             <div className="flex flex-row gap-5  ">
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>
               <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
             </div>
-          </span>
+          </span> */}
           <span className="flex items-end justify-end p-4 text-center">
-            <button className="h-15 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600">
+            <button className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600">
               Continue payemnt
             </button>
           </span>

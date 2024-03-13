@@ -13,9 +13,9 @@ export default function Host_Booking() {
         {/* <h1 className="mb-4 w-full text-3xl font-semibold">Reserved Room</h1> */}
         <div className="flex w-full flex-col gap-4">
           <ReserveBookingCard
-            accomName="The Base"
-            roomName="Room 1"
-            price="100"
+            accomName="Siam Kempinski Hotel Bangkok"
+            roomName="Presidential Suite room"
+            price="1,380"
             location="Bangkok"
             // adult="2"
             // child="1"
