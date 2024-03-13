@@ -12,6 +12,7 @@ export const accomodationRouter = router({
           accommodation_id: undefined,
         },
         select: {
+          accommodation_id: true,
           name_a: true,
           description_a: true,
           qr_code: true,

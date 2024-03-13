@@ -18,7 +18,7 @@ const RoomInfoCard = ({
   accomName: string;
   roomName: string;
   floor: number;
-  room: number;
+  room: string;
   bed: string;
   price: number;
   adult: number;

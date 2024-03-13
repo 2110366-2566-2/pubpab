@@ -46,13 +46,28 @@ export const roomRouter = router({
     .input(z.object({ accommodation_id: z.string() }))
     .query(async ({ input }) => {
       const getAccomodation = await prisma.accommodation.findMany({
-        where: { accommodation_id: input.accommodation_id },
+        where: {
+          accommodation_id: input.accommodation_id
+        },
         select: {
           room: {
             select: {
-              room_id: true,
-              is_reserve: true,
               room_name: true,
+              room_id: true,
+              price: true,
+              floor: true,
+              is_reserve: true,
+              room_no: true,
+              smoking: true,
+              noise: true,
+              pet: true,
+              washing_machine: true,
+              bed_type: true,
+              restroom: true,
+              wifi_available: true,
+              accommodation_id: true,
+              max_adult: true,
+              max_children: true,
               banner: true,
             },
           },
