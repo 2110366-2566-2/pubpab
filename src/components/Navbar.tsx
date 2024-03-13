@@ -96,18 +96,29 @@ const Navbar = () => {
           className="mr-12 flex cursor-pointer items-center"
           onClick={handleBookingClick}
         >
-          <Link href={"/booking/host/"}>
-            {bookingClicked ? (
+          {session && session.user && session.user.role === "Hosts" && (
+            <Link href={"/booking/host/"}>
               <Image
-                src="/booking_toggle.svg"
+                src={bookingClicked ? "/booking_toggle.svg" : "/booking.svg"}
                 width={37}
                 height={37}
                 alt="booking"
               />
-            ) : (
-              <Image src="/booking.svg" width={37} height={37} alt="booking" />
-            )}
-          </Link>
+            </Link>
+          )}
+          {session && session.user && session.user.role === "Travelers" && (
+            <Link href={"/booking/traveler/"}>
+              <Image
+                src={bookingClicked ? "/booking_toggle.svg" : "/booking.svg"}
+                width={37}
+                height={37}
+                alt="booking"
+              />
+            </Link>
+          )}
+          {!session && (
+            <Image src="/booking.svg" width={37} height={37} alt="booking" />
+          )}
         </div>
         <div className="mr-7 mt-1.5 flex cursor-pointer items-center">
           <Popover>
