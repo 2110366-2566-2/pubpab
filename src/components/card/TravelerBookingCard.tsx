@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import CancelReservationButton from "../booking/CancelButton";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 
 const TravelerBookingCard = ({
   accomName,
@@ -9,7 +10,9 @@ const TravelerBookingCard = ({
   price,
   adult,
   child,
-  id,
+  reservation_id,
+  host_id,
+  traveler_id,
   checkInDate,
   checkOutDate,
 }: {
@@ -20,7 +23,9 @@ const TravelerBookingCard = ({
   child: string;
   checkInDate: string;
   checkOutDate: string;
-  id: string;
+  reservation_id: string;
+  host_id: string;
+  traveler_id: string;
 }) => {
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
@@ -43,15 +48,21 @@ const TravelerBookingCard = ({
           </span>
         </div>
 
-        <div className="flex h-full flex-row justify-between pt-4">
-          <span className="flex w-3/4 flex-row gap-16">
-            <div className="flex flex-row gap-5  ">
+        <div className="mb-0 flex flex-row justify-between pb-0 pt-4">
+          <span className="flex h-auto w-3/4 flex-row items-center gap-16">
+            <div className="flex flex-row items-center gap-5">
+              <LogInIcon size={24} />
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+              <LogOutIcon size={24} />
               <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
             </div>
           </span>
           <span className="flex items-end justify-end p-4 text-center">
-            <CancelReservationButton id={id} />
+            <CancelReservationButton
+              reservation_id={reservation_id}
+              host_id={host_id}
+              traveler_id={traveler_id}
+            />
           </span>
         </div>
       </div>

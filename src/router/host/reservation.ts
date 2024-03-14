@@ -19,6 +19,9 @@ export const hostReservationRouter = router({
               host_id: input.host_id,
             },
           },
+          check_in_status: {
+            not: "Cancel",
+          },
         },
         select: {
           start_date: true,

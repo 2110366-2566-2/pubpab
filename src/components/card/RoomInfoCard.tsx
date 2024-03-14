@@ -21,6 +21,8 @@ const RoomInfoCard = ({
   washing_machine,
   restroom,
   wifi_available,
+  checkInDate,
+  checkOutDate,
 }: {
   accomName: string;
   roomName: string;
@@ -38,6 +40,8 @@ const RoomInfoCard = ({
   washing_machine: boolean;
   restroom: boolean;
   wifi_available: boolean;
+  checkInDate: string;
+  checkOutDate: string;
 }) => {
   function checkValid(b: boolean) {
     if (b) return <CheckIcon />;
@@ -107,6 +111,8 @@ const RoomInfoCard = ({
               href={{
                 pathname: "/reserve",
                 query: {
+                  checkInDate: checkInDate.toString(),
+                  checkOutDate: checkOutDate.toString(),
                   room_id: room_id,
                   accom_id: accom_id,
                 },

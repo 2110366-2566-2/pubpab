@@ -92,6 +92,7 @@ const PropInfo = () => {
       wifi_available: room.wifi_available,
       washing_machine: room.washing_machine,
       restroom: room.restroom,
+      googlemap_linke: accomData.ggmap_link,
     })),
   );
 
@@ -228,6 +229,8 @@ const PropInfo = () => {
                   washing_machine={items.washing_machine || false}
                   restroom={items.restroom || false}
                   wifi_available={items.wifi_available || false}
+                  checkInDate={date?.toDateString() || ""}
+                  checkOutDate={date2?.toDateString() || ""}
                 />
               ),
             )}

@@ -3,11 +3,16 @@
 import ReserveBookingCard from "@/components/reserve/reserve";
 import { trpc } from "@/lib/trpc/client";
 import LoadingScreen from "@/components/ui/loading-screen";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 export default function ReserveRoom() {
+  const router = useRouter();
   const queryParameters = new URLSearchParams(window.location.search);
   const accom_id = queryParameters.get("accom_id");
   const room_id = queryParameters.get("room_id");
+  const CheckInDate = queryParameters.get("checkInDate");
+  const CheckOutDate = queryParameters.get("checkOutDate");
 
   const findRoom = trpc.host.room.find.useQuery({
     room_id: room_id ? room_id : "",
@@ -33,6 +38,10 @@ export default function ReserveRoom() {
     );
   }
 
+  const handleBackClick = () => {
+    router.back();
+  };
+
   const roomData = findRoom.data;
   const accomData = findAccom.data;
 
@@ -49,12 +58,13 @@ export default function ReserveRoom() {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="p-4">
-        <button
+        <Button
+          onClick={handleBackClick}
           type="button"
-          className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
         >
           Back
-        </button>
+        </Button>
         <div className="flex w-full flex-col gap-4">
           <ReserveBookingCard
             accomName={accomData.name_a}
@@ -64,8 +74,8 @@ export default function ReserveRoom() {
             // adult="2"
             // child="1"
             // user="John Doe"
-            checkInDate="2024-02-17"
-            checkOutDate="2024-02-19"
+            checkInDate={CheckInDate || ""}
+            checkOutDate={CheckOutDate || ""}
             room_id={room_id || ""}
             host_id={accomData.host_id || ""}
           />
