@@ -38,6 +38,7 @@
     "@trpc/server": "^10.45.1",
     "@types/bcrypt": "^5.0.2",
     "@types/qrcode": "^1.5.5",
+    "aws-sdk": "^2.1578.0",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
