@@ -116,6 +116,48 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
 
   console.log(roomData.accommodation_id);
 
+  function onBack() {
+    router.back();
+  }
+
+  async function OpenTheRoom() {
+    await mutation.mutateAsync({
+      room_id: roomData.room_id ? roomData.room_id : "",
+      is_reserve: false,
+    });
+    await router.back();
+  }
+
+  async function CloseTheRoom() {
+    await mutation.mutateAsync({
+      room_id: roomData.room_id ? roomData.room_id : "",
+      is_reserve: true,
+    });
+    await router.back();
+  }
+
+  function getOpenOrClose() {
+    if (roomData.is_reserve) {
+      return (
+        <Button
+          className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          onClick={OpenTheRoom}
+        >
+          Open this room
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          onClick={CloseTheRoom}
+        >
+          Close this room
+        </Button>
+      );
+    }
+  }
+
   function DeleteHandle() {
     deleteRoom.mutate({
       room_id: roomData.room_id ? roomData.room_id : "",
@@ -131,11 +173,12 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   }
   return (
     <div>
-      <Link href="/edit/host/accomodation">
-        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Back
-        </Button>
-      </Link>
+      <Button
+        className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+        onClick={onBack}
+      >
+        Back
+      </Button>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Room Information</CardTitle>
@@ -145,7 +188,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
           <PropertyRoomCard
             title="Suite"
             imageUrl={"/room1.jpeg"}
-            status="Available"
+            status={roomData.is_reserve ? "Unavailable" : "Available"}
           />
           <Form {...form}>
             <form
@@ -382,7 +425,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                   )}
                 />
               </div>
-
+              {getOpenOrClose()}
               <div>
                 <Button
                   type="submit"
@@ -419,6 +462,7 @@ export default function RoomEditForm({ room_id }: { room_id: string }) {
   if (roomDataQuery.status === "loading") {
     return <div>Loading...</div>;
   }
+  console.log("call this first");
   return (
     <HostEditRoomForm
       roomData={{
