@@ -19,6 +19,8 @@
     ]
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.536.0",
+    "@aws-sdk/s3-request-presigner": "^3.536.0",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^3.3.4",
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -38,11 +40,13 @@
     "@trpc/server": "^10.45.1",
     "@types/bcrypt": "^5.0.2",
     "@types/qrcode": "^1.5.5",
+    "aws": "0.0.3-2",
     "aws-sdk": "^2.1578.0",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
+    "dotenv": "^16.4.5",
     "lucide-react": "^0.325.0",
     "next": "14.1.0",
     "next-auth": "^4.24.5",

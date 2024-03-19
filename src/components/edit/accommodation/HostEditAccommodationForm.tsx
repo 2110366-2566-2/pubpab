@@ -29,6 +29,8 @@ import {
 import { Input } from "@/components/ui/input";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   name_a: z
@@ -74,6 +76,7 @@ type AccommodationData = {
   ggmap_link?: string;
   accommodation_status?: "OPEN" | "CLOSE";
   rating?: number;
+  banner?: string;
 };
 
 function HostEditAccommodationForm({
@@ -99,6 +102,23 @@ function HostEditAccommodationForm({
   });
   const router = useRouter();
   const onInvalid = (errors: unknown) => console.error(errors);
+  const [url, setUrl] = useState("");
+  let filePath = "";
+  if (accommodationData.banner !== "null") {
+    filePath =
+      "accommodation/" +
+      accommodationData.accommodation_id +
+      "/" +
+      accommodationData.banner;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(filePath);
+      setUrl(b);
+    };
+    fetchData();
+  });
 
   const deleteAccom = trpc.host.accomodation.delete.useMutation();
   const mutation = trpc.host.accomodation.update.useMutation();
@@ -119,6 +139,7 @@ function HostEditAccommodationForm({
 
   const propertyData = rooms.flatMap((entry) =>
     entry.room.map((room) => ({
+      link: room.banner,
       image: "/room1.png",
       title: room.room_name,
       status: room.is_reserve,
@@ -168,7 +189,7 @@ function HostEditAccommodationForm({
             status="Opened"
           /> */}
           <PropertyAccomCard
-            imageUrl="/defaultAccommodation.webp"
+            imageUrl={url}
             title={accommodationData.name_a || ""}
             status={accommodationData.accommodation_status || ""}
             id={accommodationData.accommodation_id || ""}
@@ -358,7 +379,14 @@ function HostEditAccommodationForm({
                     >
                       <PropertyRoomCard
                         title={property.title}
-                        imageUrl={property.image}
+                        imageUrl={
+                          "accommodation/" +
+                          accommodationData.accommodation_id +
+                          "/" +
+                          property.id +
+                          "/" +
+                          property.link
+                        }
                         status={property.status ? "Available" : "Unavailable"}
                       />
                     </Link>
@@ -418,6 +446,7 @@ export default function AccommodationEditForm({
         ggmap_link: accommodationDataQuery.data?.ggmap_link,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
         rating: accommodationDataQuery.data?.rating,
+        banner: accommodationDataQuery.data?.banner,
       }}
     />
   );

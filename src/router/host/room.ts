@@ -18,6 +18,7 @@ export const roomRouter = router({
         },
         select: {
           room_name: true,
+          banner: true,
           price: true,
           floor: true,
           is_reserve: true,

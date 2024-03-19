@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useEffect, useState } from "react";
 
 // const allow = [
 //   { id: "pet", label: "Pet" },
@@ -41,6 +43,7 @@ import { trpc } from "@/lib/trpc/client";
 type RoomData = {
   room_id?: string;
   room_name?: string;
+  banner?: string;
   price?: number;
   floor?: number;
   is_reserve?: boolean;
@@ -62,6 +65,7 @@ const formSchema = z.object({
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
+  banner: z.string(),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
   is_reserve: z.boolean(),
   max_adult: z.coerce
@@ -113,8 +117,28 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   const deleteRoom = trpc.host.room.delete.useMutation();
   const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
+  const [url, setUrl] = useState("");
 
-  console.log(roomData.accommodation_id);
+  let filePath = "";
+  if (roomData.banner !== "null") {
+    filePath =
+      "accommodation/" +
+      roomData.accommodation_id +
+      "/" +
+      roomData.room_id +
+      "/" +
+      roomData.banner;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(filePath);
+      setUrl(b);
+    };
+    fetchData();
+  });
+
+  //const url = getImageUrlFromS3(filePath);
 
   function onBack() {
     router.back();
@@ -187,7 +211,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
         <div className="mx-4">
           <PropertyRoomCard
             title="Suite"
-            imageUrl={"/room1.jpeg"}
+            imageUrl={url}
             status={roomData.is_reserve ? "Unavailable" : "Available"}
           />
           <Form {...form}>
@@ -462,13 +486,14 @@ export default function RoomEditForm({ room_id }: { room_id: string }) {
   if (roomDataQuery.status === "loading") {
     return <div>Loading...</div>;
   }
-  console.log("call this first");
+
   return (
     <HostEditRoomForm
       roomData={{
         room_id: room_id,
         accommodation_id: roomDataQuery.data?.accommodation_id,
         room_name: roomDataQuery.data?.room_name,
+        banner: roomDataQuery.data?.banner,
         price: roomDataQuery.data?.price,
         floor: roomDataQuery.data?.floor,
         is_reserve: roomDataQuery.data?.is_reserve,

@@ -1,26 +1,38 @@
-import AWS from "aws-sdk";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const s3 = new AWS.S3({
-  accessKeyId: "AKIA47CR2YSPLUEAUXE2",
-  secretAccessKey: "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",
+const s3Client = new S3Client({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.NEXT_PUBLIC_S3_SECRET_KEY as string,
+  },
 });
 
-async function uploadImageToS3(folderName: string, file: { type: string }) {
+console.log(s3Client);
+
+export async function uploadImageToS3(
+  folderName: string,
+  file: { type: string },
+) {
   const key = `${Date.now()}.${file.type.split("/").pop()}`;
   const params = {
-    Bucket: "pubpab-database",
+    Bucket: "pubpub-database",
     Key: key,
     Body: folderName + "/" + file,
-    ContentType: file.type,
+    ContentType: "image/png",
   };
-
-  try {
-    const data = await s3.upload(params).promise();
-    return data.Location; // URL of the uploaded image
-  } catch (error) {
-    console.error("Error uploading image to S3:", error);
-    throw error;
-  }
+  return null;
 }
 
-export { uploadImageToS3 };
+export async function getImageUrlFromS3(imageKey: string) {
+  const params = new GetObjectCommand({
+    Bucket: "pubpub-database",
+    Key: imageKey,
+  });
+
+  const url = await getSignedUrl(s3Client, params);
+  return url;
+}
+
+//export { uploadImageToS3, getImageUrlFromS3 };

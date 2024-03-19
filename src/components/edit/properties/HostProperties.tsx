@@ -32,7 +32,7 @@ export default function HostProperties() {
     const propertyData = accommodations.flatMap((entry) =>
       entry.accommodation.map((accommodation) => ({
         title: accommodation.name_a,
-        banner: "/defaultAccommodation.webp",
+        banner: accommodation.banner,
         status: accommodation.accommodation_status,
         id: accommodation.accommodation_id,
       })),
@@ -59,7 +59,9 @@ export default function HostProperties() {
             >
               <PropertyAccomCard
                 title={property.title}
-                imageUrl={property.banner}
+                imageUrl={
+                  "accommodation/" + property.id + "/" + property.banner
+                }
                 status={property.status}
                 id={property.id}
               />

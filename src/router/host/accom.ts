@@ -50,6 +50,7 @@ export const accomodationRouter = router({
         select: {
           name_a: true,
           description_a: true,
+          banner: true,
           qr_code: true,
           address_a: true,
           city: true,
