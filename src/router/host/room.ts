@@ -18,6 +18,7 @@ export const roomRouter = router({
         },
         select: {
           room_name: true,
+          banner: true,
           price: true,
           floor: true,
           is_reserve: true,
@@ -135,6 +136,7 @@ export const roomRouter = router({
       z.object({
         room_id: z.string(),
         room_name: z.string().optional(),
+        banner: z.string().optional(),
         price: z.number().optional(),
         floor: z.number().optional(),
         is_reserve: z.boolean().optional(),
@@ -153,6 +155,7 @@ export const roomRouter = router({
     .mutation(async ({ input }) => {
       const RoomUpdateData = {
         room_name: input.room_name,
+        banner: input.banner,
         price: input.price,
         floor: input.floor,
         is_reserve: input.is_reserve,

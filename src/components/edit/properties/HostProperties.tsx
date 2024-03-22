@@ -32,18 +32,11 @@ export default function HostProperties() {
     const propertyData = accommodations.flatMap((entry) =>
       entry.accommodation.map((accommodation) => ({
         title: accommodation.name_a,
-        banner: "/defaultAccommodation.webp",
+        banner: accommodation.banner,
         status: accommodation.accommodation_status,
         id: accommodation.accommodation_id,
       })),
     );
-    console.log(propertyData);
-    // const propertyData = [
-    //    { title: "Menorca Hotel", imageUrl: "/Menorca.webp", status: "Opened" },
-    //    { title: "Bellagio Hotel", imageUrl: "/Bellagio.webp", status: "Closed" },
-    //    { title: "East Hotel", imageUrl: "/easthotel.jpeg", status: "Opened" }
-    //    // Add more property data as needed
-    //  ];
 
     return (
       <div className="px-4 py-4">
@@ -59,7 +52,9 @@ export default function HostProperties() {
             >
               <PropertyAccomCard
                 title={property.title}
-                imageUrl={property.banner}
+                imageUrl={
+                  "accommodation/" + property.id + "/" + property.banner
+                }
                 status={property.status}
                 id={property.id}
               />
