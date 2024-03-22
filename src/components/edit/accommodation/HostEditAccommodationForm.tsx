@@ -31,6 +31,7 @@ import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
 import { getImageUrlFromS3 } from "@/lib/s3";
 import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   name_a: z
@@ -118,6 +119,7 @@ function HostEditAccommodationForm({
       setUrl(b);
     };
     fetchData();
+    console.log(url);
   });
 
   const deleteAccom = trpc.host.accomodation.delete.useMutation();
@@ -194,6 +196,10 @@ function HostEditAccommodationForm({
             status={accommodationData.accommodation_status || ""}
             id={accommodationData.accommodation_id || ""}
           />
+        </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="picture">Picture</Label>
+          <Input id="picture" type="file" />
         </div>
         <div className="mx-auto">
           <Form {...form}>
