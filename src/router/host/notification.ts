@@ -65,6 +65,7 @@ export const hostNotificationRouter = router({
             },
           },
         },
+        orderBy: { timestamp: "desc" },
       });
       if (!notis) {
         throw new TRPCError({
