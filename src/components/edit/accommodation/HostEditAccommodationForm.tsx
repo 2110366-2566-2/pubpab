@@ -193,6 +193,7 @@ function HostEditAccommodationForm({
         : "",
       banner: isImageChange ? selectedImage : accommodationData.banner,
     });
+    setSelectedImage("");
   }
   return (
     <div>

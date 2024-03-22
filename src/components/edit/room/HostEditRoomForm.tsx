@@ -25,8 +25,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
-import { getImageUrlFromS3 } from "@/lib/s3";
+import {
+  deleteObjectInS3,
+  getImageUrlFromS3,
+  moveObjectInS3,
+  uploadImageToS3Tmp,
+} from "@/lib/s3";
 import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 // const allow = [
 //   { id: "pet", label: "Pet" },
@@ -65,7 +71,7 @@ const formSchema = z.object({
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
-  banner: z.string(),
+  banner: z.string().optional(),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
   is_reserve: z.boolean(),
   max_adult: z.coerce
@@ -83,7 +89,6 @@ const formSchema = z.object({
   restroom: z.boolean().default(false).optional(),
   wifi_available: z.boolean().default(false).optional(),
   bed_type: z.enum(["KING", "QUEEN"]),
-  accommodation_id: z.string(),
   // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
   //   message: "You have to select at least one item.",
   // }),
@@ -118,6 +123,8 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
 
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
   let filePath = "";
   if (roomData.banner !== "null") {
     filePath =
@@ -128,10 +135,21 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
       "/" +
       roomData.banner;
   }
+  console.log(filePath);
 
   function onBack() {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      deleteObjectInS3("temp/" + selectedImage);
+    }
     router.back();
   }
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    await uploadImageToS3Tmp(file);
+    setSelectedImage(file.name);
+  };
 
   async function OpenTheRoom() {
     await mutation.mutateAsync({
@@ -179,10 +197,24 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      const newFilePath =
+        "accommodation/" +
+        roomData.accommodation_id +
+        "/" +
+        roomData.room_id +
+        "/" +
+        selectedImage;
+      moveObjectInS3("temp/" + selectedImage, newFilePath);
+      deleteObjectInS3(filePath);
+    }
     mutation.mutate({
       ...values,
       room_id: roomData.room_id ? roomData.room_id : "",
+      banner: isImageChange ? selectedImage : roomData.banner,
     });
+    setSelectedImage("");
   }
   return (
     <div>
@@ -200,9 +232,18 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
         <div className="mx-4">
           <PropertyRoomCard
             title="Suite"
-            imageUrl={filePath}
+            imageUrl={selectedImage === "" ? filePath : "temp/" + selectedImage}
             status={roomData.is_reserve ? "Unavailable" : "Available"}
           />
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="picture">Picture</Label>
+            <Input
+              id="picture"
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+          </div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit, onInvalid)}
