@@ -37,13 +37,6 @@ export default function HostProperties() {
         id: accommodation.accommodation_id,
       })),
     );
-    console.log(propertyData);
-    // const propertyData = [
-    //    { title: "Menorca Hotel", imageUrl: "/Menorca.webp", status: "Opened" },
-    //    { title: "Bellagio Hotel", imageUrl: "/Bellagio.webp", status: "Closed" },
-    //    { title: "East Hotel", imageUrl: "/easthotel.jpeg", status: "Opened" }
-    //    // Add more property data as needed
-    //  ];
 
     return (
       <div className="px-4 py-4">

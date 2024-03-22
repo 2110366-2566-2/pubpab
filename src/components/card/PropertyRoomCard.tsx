@@ -21,7 +21,6 @@ const PropertyRoomCard = ({
     };
     fetchData();
   });
-
   return (
     <div className="relative rounded-lg bg-white shadow-md">
       <Image

@@ -191,6 +191,7 @@ export const accomodationRouter = router({
         distinct_a: z.string().optional(),
         postal_code: z.string().optional(),
         ggmap_link: z.string().optional(),
+        banner: z.string().optional(),
         accommodation_status: z.enum(["OPEN", "CLOSE"]).optional(),
         qr_code: z.string().optional(),
         rating: z.number().optional(),
@@ -200,6 +201,7 @@ export const accomodationRouter = router({
       const AccommodationUpdateData = {
         name_a: input.name_a,
         description_a: input.description_a,
+        banner: input.banner,
         address_a: input.address_a,
         city: input.city,
         province: input.province,

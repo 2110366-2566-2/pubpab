@@ -12,10 +12,19 @@ const PropertyAccomCard = ({
   status: string;
   id: string;
 }) => {
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageUrl);
+      setUrl(b);
+    };
+    fetchData();
+  });
   return (
     <div className="relative rounded-lg bg-white shadow-md">
       <Image
-        src={imageUrl}
+        src={url}
         alt={title}
         width={1000}
         height={100}

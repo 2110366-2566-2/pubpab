@@ -117,7 +117,6 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   const deleteRoom = trpc.host.room.delete.useMutation();
   const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
-  const [url, setUrl] = useState("");
 
   let filePath = "";
   if (roomData.banner !== "null") {
@@ -129,16 +128,6 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
       "/" +
       roomData.banner;
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const b = await getImageUrlFromS3(filePath);
-      setUrl(b);
-    };
-    fetchData();
-  });
-
-  //const url = getImageUrlFromS3(filePath);
 
   function onBack() {
     router.back();
@@ -211,7 +200,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
         <div className="mx-4">
           <PropertyRoomCard
             title="Suite"
-            imageUrl={url}
+            imageUrl={filePath}
             status={roomData.is_reserve ? "Unavailable" : "Available"}
           />
           <Form {...form}>
