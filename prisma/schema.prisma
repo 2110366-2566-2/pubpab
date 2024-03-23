@@ -62,8 +62,8 @@ model chatroom {
   traveler_id   String   @db.VarChar(36)
   host          host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
   traveler      traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @default(now()) @db.Timestamp(6)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
