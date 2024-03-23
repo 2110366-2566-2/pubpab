@@ -63,7 +63,7 @@ const PropInfo = () => {
       </div>
     );
   }
-  const reviewData = fetchReviews.data;
+  const reviewsData = fetchReviews.data;
   const roomsData = findRooms.data;
   const accomData = findAccommodation.data;
   const Info = roomsData.flatMap((entry) =>
@@ -86,6 +86,39 @@ const PropInfo = () => {
       googlemap_linke: accomData.ggmap_link,
     })),
   );
+
+  // let reviewData;
+  // if (reviewsData != null) {
+  //   reviewData = reviewsData.map((review) =>
+  //     review.accommodation.room.map((room) => ({
+  //       accomName: review.accommodation.name_a,
+  //       location: review.accommodation.address_a,
+  //       roomName: room.room_name,
+  //       imageURL: review.picture,
+  //       rating: review.score,
+  //       reviewDescription: review.text,
+  //       reviewDate: review.timestamp,
+  //     })),
+  //   );
+  // } else {
+  //   reviewData = {};
+  // }
+  const reviewData = reviewsData ? (
+    <>
+      {reviewsData.accommodation.room.map((room) => (
+        <ReadReviewCard
+          // key={room.room_id}
+          accomName={reviewsData.accommodation.name_a}
+          roomName={room.room_name}
+          location={reviewsData.accommodation.address_a}
+          imageURL={reviewsData.picture}
+          rating={reviewsData.score || 0}
+          reviewDescription={reviewsData.text || "no Review"}
+          reviewDate={reviewsData.timestamp?.toDateString() || ""}
+        />
+      ))}
+    </>
+  ) : null;
 
   return (
     <>
@@ -229,7 +262,7 @@ const PropInfo = () => {
           </div>
           <div className="flex flex-col gap-4 px-8 py-4">
             <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
-            {reviewData.flatMap((review) => (
+            {/* {reviewData.flatMap((review) => (
               <ReadReviewCard
                 accomName={review.accommodation.name_a}
                 roomName={review.accommodation.room.room_name}
@@ -241,7 +274,8 @@ const PropInfo = () => {
                 reviewDescription={review.text}
                 reviewDate={review.timestamp}
               />
-            ))}
+            ))} */}
+            <>{reviewData}</>
           </div>
         </div>
       </section>

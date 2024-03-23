@@ -76,7 +76,7 @@ export const feedbackRouter = router({
     )
     .query(async ({ input }) => {
       try {
-        const reviewsWithRooms = await prisma.feedback.findMany({
+        const reviewsWithRooms = await prisma.feedback.findFirst({
           where: {
             accommodation_id: input.accommodation_id,
           },
@@ -84,16 +84,16 @@ export const feedbackRouter = router({
             picture: true,
             text: true,
             score: true,
+            timestamp: true,
             accommodation: {
               select: {
                 accommodation_id: true,
                 name_a: true,
+                address_a: true,
                 room: {
-                  room_name: true,
-                },
-                reserve: {
-                  start_date: true,
-                  end_date: true,
+                  select: {
+                    room_name: true,
+                  },
                 },
               },
             },
