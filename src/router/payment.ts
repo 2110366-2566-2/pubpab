@@ -22,7 +22,7 @@ export const paymentRouter = router({
           qrcode_payment: input.qrcode_payment,
         },
       });
-      return {newPayment};
+      return { newPayment };
     }),
   updateStatus: publicProcedure
     .input(

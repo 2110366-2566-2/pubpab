@@ -17,20 +17,6 @@ const s3Client = new S3Client({
 
 console.log(s3Client);
 
-export async function uploadImageToS3(
-  folderName: string,
-  file: { type: string },
-) {
-  const key = `${Date.now()}.${file.type.split("/").pop()}`;
-  const params = {
-    Bucket: "pubpub-database",
-    Key: key,
-    Body: folderName + "/" + file,
-    ContentType: "image/png",
-  };
-  return null;
-}
-
 export async function getImageUrlFromS3(imageKey: string) {
   const params = new GetObjectCommand({
     Bucket: "pubpub-database",
