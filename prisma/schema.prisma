@@ -36,29 +36,32 @@ model admin {
   host       host[]
 }
 
-model attachment {
-  message_id  String   @db.VarChar(36)
-  chatroom_id String   @db.VarChar(36)
-  picture     Bytes
-  messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
+// model attachment {
+//   message_id  String   @db.VarChar(36)
+//   chatroom_id String   @db.VarChar(36)
+//   picture     Bytes
+//   messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
 
-  @@id([message_id, chatroom_id])
-}
+//   @@id([message_id, chatroom_id])
+// }
 
-model chat {
-  host_id     String   @db.VarChar(36)
-  traveler_id String   @db.VarChar(36)
-  chatroom_id String   @db.VarChar(36)
-  chatroom    chatroom @relation(fields: [chatroom_id], references: [chatroom_id], onDelete: Cascade)
-  host        host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
-  traveler    traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+// model chat {
+//   host_id     String   @db.VarChar(36)
+//   traveler_id String   @db.VarChar(36)
+//   chatroom_id String   @db.VarChar(36)
+//   chatroom    chatroom @relation(fields: [chatroom_id], references: [chatroom_id], onDelete: Cascade)
+//   host        host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
+//   traveler    traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
 
-  @@id([host_id, traveler_id, chatroom_id])
-}
+//   @@id([host_id, traveler_id, chatroom_id])
+// }
 
 model chatroom {
-  chatroom_id String @id @default(uuid()) @db.VarChar(36)
-  chat        chat[]
+  chatroom_id String   @id @default(uuid()) @db.VarChar(36)
+  host_id     String   @db.VarChar(36)
+  traveler_id String   @db.VarChar(36)
+  host        host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
+  traveler    traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -79,7 +82,7 @@ model host {
   admin_id      String?         @db.VarChar(36)
   bank_account  String?         @db.VarChar(255)
   accommodation accommodation[]
-  chat          chat[]
+  chat          chatroom[]
   admin         admin?          @relation(fields: [admin_id], references: [admin_id], onDelete: NoAction, onUpdate: NoAction)
   users         users           @relation(fields: [host_id], references: [user_id], onDelete: Cascade)
 }
@@ -89,9 +92,10 @@ model messages {
   chatroom_id String      @db.VarChar(36)
   sender_id   String      @db.VarChar(36)
   timestamp   DateTime    @default(now()) @db.Timestamp(6)
-  attachment  attachment?
+  text        String  
+  // attachment  attachment?
   users       users       @relation(fields: [sender_id], references: [user_id], onDelete: Cascade)
-  text        text?
+  // text        text?
 
   @@id([message_id, chatroom_id])
 }
@@ -108,13 +112,13 @@ model notification {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payment {
-  payment_id            String    @id @default(uuid()) @db.VarChar(36)
-  timestamp             DateTime  @default(now()) @db.Timestamp(6)
-  amount                Float
-  host_bank_account     String    @db.VarChar(36)
-  payment_status        pm_status @default(Waiting)
-  qrcode_payment        String?
-  reserve               reserve[]
+  payment_id        String    @id @default(uuid()) @db.VarChar(36)
+  timestamp         DateTime  @default(now()) @db.Timestamp(6)
+  amount            Float
+  host_bank_account String    @db.VarChar(36)
+  payment_status    pm_status @default(Waiting)
+  qrcode_payment    String?
+  reserve           reserve[]
 }
 
 model problem {
@@ -140,14 +144,13 @@ model reserve {
   traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
   payment         payment        @relation(fields: [payment_id], references: [payment_id], onDelete: Cascade)
   notification    notification[]
-
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String        @id @default(uuid()) @db.VarChar(36)
-  accommodation_id String        @db.VarChar(36)
-  room_name        String        @db.VarChar(64)
+  room_id          String         @id @default(uuid()) @db.VarChar(36)
+  accommodation_id String         @db.VarChar(36)
+  room_name        String         @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -166,18 +169,18 @@ model room {
   accommodation    accommodation? @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
 }
 
-model text {
-  message_id  String   @db.VarChar(36)
-  chatroom_id String   @db.VarChar(36)
-  text        String
-  messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
+// model text {
+//   message_id  String   @db.VarChar(36)
+//   chatroom_id String   @db.VarChar(36)
+//   text        String  
+//   messages    messages @relation(fields: [message_id, chatroom_id], references: [message_id, chatroom_id], onDelete: Cascade)
 
-  @@id([message_id, chatroom_id])
-}
+//   @@id([message_id, chatroom_id])
+// }
 
 model traveler {
   traveler_id String     @id @db.VarChar(36)
-  chat        chat[]
+  chat        chatroom[]
   feedback    feedback[]
   reserve     reserve[]
   users       users      @relation(fields: [traveler_id], references: [user_id], onDelete: Cascade)
