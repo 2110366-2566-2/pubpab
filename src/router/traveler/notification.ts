@@ -40,6 +40,7 @@ export const travelerNotificationRouter = router({
         select: {
           notification_type: true,
           timestamp: true,
+
           users: {
             select: {
               first_name: true,
@@ -48,6 +49,8 @@ export const travelerNotificationRouter = router({
           },
           reserve: {
             select: {
+              traveler_id: true,
+              reservation_id: true,
               payment_id: true,
               room_id: true,
               start_date: true,
@@ -63,6 +66,7 @@ export const travelerNotificationRouter = router({
                   accommodation: {
                     select: {
                       name_a: true,
+                      accommodation_id: true,
                     },
                   },
                 },
