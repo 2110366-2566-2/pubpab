@@ -108,13 +108,13 @@ model notification {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payment {
-  payment_id            String    @id @default(uuid()) @db.VarChar(36)
-  timestamp             DateTime  @default(now()) @db.Timestamp(6)
-  amount                Float
-  host_bank_account     String    @db.VarChar(36)
-  payment_status        pm_status @default(Waiting)
-  qrcode_payment        String?
-  reserve               reserve[]
+  payment_id        String    @id @default(uuid()) @db.VarChar(36)
+  timestamp         DateTime  @default(now()) @db.Timestamp(6)
+  amount            Float
+  host_bank_account String    @db.VarChar(36)
+  payment_status    pm_status @default(Waiting)
+  qrcode_payment    String?
+  reserve           reserve[]
 }
 
 model problem {
@@ -140,14 +140,13 @@ model reserve {
   traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
   payment         payment        @relation(fields: [payment_id], references: [payment_id], onDelete: Cascade)
   notification    notification[]
-
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model room {
-  room_id          String        @id @default(uuid()) @db.VarChar(36)
-  accommodation_id String        @db.VarChar(36)
-  room_name        String        @db.VarChar(64)
+  room_id          String         @id @default(uuid()) @db.VarChar(36)
+  accommodation_id String         @db.VarChar(36)
+  room_name        String         @db.VarChar(64)
   price            Int
   floor            Int
   is_reserve       Boolean
@@ -252,4 +251,11 @@ enum users_type {
   Admins
   Travelers
   Hosts
+}
+
+// run pnpm prisma generate to get er-digram
+generator erd {
+  provider = "prisma-erd-generator"
+  theme    = "forest"
+  // output   = "../ERD.svg"
 }
