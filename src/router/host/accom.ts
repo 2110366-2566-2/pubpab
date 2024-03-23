@@ -5,6 +5,35 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const accomodationRouter = router({
+  findAll: publicProcedure.query(async () => {
+    const getAccomodation = await prisma.accommodation.findMany({
+      where: {
+        accommodation_id: undefined,
+      },
+      select: {
+        accommodation_id: true,
+        name_a: true,
+        description_a: true,
+        qr_code: true,
+        address_a: true,
+        city: true,
+        province: true,
+        distinct_a: true,
+        postal_code: true,
+        ggmap_link: true,
+        accommodation_status: true,
+        rating: true,
+        price: true,
+      },
+    });
+    if (!getAccomodation) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Accommodation not found",
+      });
+    }
+    return getAccomodation;
+  }),
   find: publicProcedure
     .input(
       z.object({
@@ -19,6 +48,41 @@ export const accomodationRouter = router({
           host_id: input.host_id,
         },
         select: {
+          name_a: true,
+          description_a: true,
+          banner: true,
+          qr_code: true,
+          address_a: true,
+          city: true,
+          province: true,
+          distinct_a: true,
+          postal_code: true,
+          ggmap_link: true,
+          accommodation_status: true,
+          rating: true,
+        },
+      });
+      if (!getAccomodation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Accommodation not found",
+        });
+      }
+      return getAccomodation;
+    }),
+  findUnique: publicProcedure
+    .input(
+      z.object({
+        accommodation_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const getAccomodation = await prisma.accommodation.findUnique({
+        where: {
+          accommodation_id: input.accommodation_id,
+        },
+        select: {
+          host_id: true,
           name_a: true,
           description_a: true,
           qr_code: true,
@@ -127,6 +191,7 @@ export const accomodationRouter = router({
         distinct_a: z.string().optional(),
         postal_code: z.string().optional(),
         ggmap_link: z.string().optional(),
+        banner: z.string().optional(),
         accommodation_status: z.enum(["OPEN", "CLOSE"]).optional(),
         qr_code: z.string().optional(),
         rating: z.number().optional(),
@@ -136,6 +201,7 @@ export const accomodationRouter = router({
       const AccommodationUpdateData = {
         name_a: input.name_a,
         description_a: input.description_a,
+        banner: input.banner,
         address_a: input.address_a,
         city: input.city,
         province: input.province,

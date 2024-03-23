@@ -1,8 +1,6 @@
-import { getImageUrlFromS3 } from "@/lib/s3";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 
-const PropertyAccomCard = ({
+const PropertyRoomCard = ({
   title,
   imageUrl,
   status,
@@ -10,34 +8,26 @@ const PropertyAccomCard = ({
   title: string;
   imageUrl: string;
   status: string;
-  id: string;
 }) => {
-  const [url, setUrl] = useState("");
+  // const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const b = await getImageUrlFromS3(imageUrl);
-      setUrl(b);
-    };
-    fetchData();
-  });
   return (
     <div className="relative rounded-lg bg-white shadow-md">
       <Image
-        src={url}
+        src={imageUrl}
         alt={title}
         width={1000}
         height={100}
         className="rounded-t-lg object-cover"
       />
-      {status === "OPEN" && (
+      {status === "Available" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-green-500 px-2 py-1 text-white">
-          Opened
+          Available
         </span>
       )}
-      {status !== "OPEN" && (
+      {status !== "Available" && (
         <span className="absolute right-0 top-0 rounded-tr-lg bg-red-500 px-2 py-1 text-white">
-          Closed
+          Unavailable
         </span>
       )}
       <div className="p-4">
@@ -47,4 +37,4 @@ const PropertyAccomCard = ({
     </div>
   );
 };
-export default PropertyAccomCard;
+export default PropertyRoomCard;

@@ -29,6 +29,14 @@ import {
 import { Input } from "@/components/ui/input";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { trpc } from "@/lib/trpc/client";
+import {
+  deleteObjectInS3,
+  getImageUrlFromS3,
+  moveObjectInS3,
+  uploadImageToS3Tmp,
+} from "@/lib/s3";
+import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   name_a: z
@@ -74,6 +82,7 @@ type AccommodationData = {
   ggmap_link?: string;
   accommodation_status?: "OPEN" | "CLOSE";
   rating?: number;
+  banner?: string;
 };
 
 function HostEditAccommodationForm({
@@ -99,6 +108,16 @@ function HostEditAccommodationForm({
   });
   const router = useRouter();
   const onInvalid = (errors: unknown) => console.error(errors);
+  let filePath = "";
+  if (accommodationData.banner !== "null") {
+    filePath =
+      "accommodation/" +
+      accommodationData.accommodation_id +
+      "/" +
+      accommodationData.banner;
+  }
+
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   const deleteAccom = trpc.host.accomodation.delete.useMutation();
   const mutation = trpc.host.accomodation.update.useMutation();
@@ -119,6 +138,7 @@ function HostEditAccommodationForm({
 
   const propertyData = rooms.flatMap((entry) =>
     entry.room.map((room) => ({
+      link: room.banner,
       image: "/room1.png",
       title: room.room_name,
       status: room.is_reserve,
@@ -141,37 +161,68 @@ function HostEditAccommodationForm({
     router.back();
   };
 
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    await uploadImageToS3Tmp(file);
+    setSelectedImage(file.name);
+  };
+
+  function onBack() {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      deleteObjectInS3("temp/" + selectedImage);
+    }
+    router.back();
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      const newFilePath =
+        "accommodation/" +
+        accommodationData.accommodation_id +
+        "/" +
+        selectedImage;
+      moveObjectInS3("temp/" + selectedImage, newFilePath);
+      deleteObjectInS3(filePath);
+    }
     mutation.mutateAsync({
       ...values,
       accommodation_id: accommodationData.accommodation_id
         ? accommodationData.accommodation_id
         : "",
+      banner: isImageChange ? selectedImage : accommodationData.banner,
     });
+    setSelectedImage("");
   }
   return (
     <div>
-      <Link href="/edit/host/profile">
-        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Back
-        </Button>
-      </Link>
+      <Button
+        className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+        onClick={onBack}
+      >
+        Back
+      </Button>
       <Card className="my-4 max-w-2xl flex-wrap gap-4 px-4 py-4">
         <CardHeader>
           <CardTitle>Property Information</CardTitle>
           <CardDescription>Make changes to property here.</CardDescription>
         </CardHeader>
         <div className="mb-4">
-          {/* <PropertyAccomCard
-            imageUrl="/Menorca.webp"
-            title="Menorca Hotel"
-            status="Opened"
-          /> */}
           <PropertyAccomCard
-            imageUrl="/defaultAccommodation.webp"
+            imageUrl={selectedImage === "" ? filePath : "temp/" + selectedImage}
             title={accommodationData.name_a || ""}
             status={accommodationData.accommodation_status || ""}
             id={accommodationData.accommodation_id || ""}
+          />
+        </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="picture">Picture</Label>
+          <Input
+            id="picture"
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
           />
         </div>
         <div className="mx-auto">
@@ -358,7 +409,14 @@ function HostEditAccommodationForm({
                     >
                       <PropertyRoomCard
                         title={property.title}
-                        imageUrl={property.image}
+                        imageUrl={
+                          "accommodation/" +
+                          accommodationData.accommodation_id +
+                          "/" +
+                          property.id +
+                          "/" +
+                          property.link
+                        }
                         status={property.status ? "Available" : "Unavailable"}
                       />
                     </Link>
@@ -418,6 +476,7 @@ export default function AccommodationEditForm({
         ggmap_link: accommodationDataQuery.data?.ggmap_link,
         accommodation_status: accommodationDataQuery.data?.accommodation_status,
         rating: accommodationDataQuery.data?.rating,
+        banner: accommodationDataQuery.data?.banner,
       }}
     />
   );

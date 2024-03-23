@@ -25,6 +25,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc/client";
+import {
+  deleteObjectInS3,
+  getImageUrlFromS3,
+  moveObjectInS3,
+  uploadImageToS3Tmp,
+} from "@/lib/s3";
+import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 
 // const allow = [
 //   { id: "pet", label: "Pet" },
@@ -41,6 +49,7 @@ import { trpc } from "@/lib/trpc/client";
 type RoomData = {
   room_id?: string;
   room_name?: string;
+  banner?: string;
   price?: number;
   floor?: number;
   is_reserve?: boolean;
@@ -62,6 +71,7 @@ const formSchema = z.object({
   // description: z
   //   .string()
   //   .max(64, "Description must be less than 64 characters long."),
+  banner: z.string().optional(),
   price: z.coerce.number().min(0, "Price must not be less than 0."),
   is_reserve: z.boolean(),
   max_adult: z.coerce
@@ -79,7 +89,6 @@ const formSchema = z.object({
   restroom: z.boolean().default(false).optional(),
   wifi_available: z.boolean().default(false).optional(),
   bed_type: z.enum(["KING", "QUEEN"]),
-  accommodation_id: z.string(),
   // allow: z.array(z.string()).refine((value) => value.some((item) => item), {
   //   message: "You have to select at least one item.",
   // }),
@@ -114,7 +123,71 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   const mutation = trpc.host.room.update.useMutation();
   const onInvalid = (errors: unknown) => console.error(errors);
 
-  console.log(roomData.accommodation_id);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
+  let filePath = "";
+  if (roomData.banner !== "null") {
+    filePath =
+      "accommodation/" +
+      roomData.accommodation_id +
+      "/" +
+      roomData.room_id +
+      "/" +
+      roomData.banner;
+  }
+  console.log(filePath);
+
+  function onBack() {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      deleteObjectInS3("temp/" + selectedImage);
+    }
+    router.back();
+  }
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    await uploadImageToS3Tmp(file);
+    setSelectedImage(file.name);
+  };
+
+  async function OpenTheRoom() {
+    await mutation.mutateAsync({
+      room_id: roomData.room_id ? roomData.room_id : "",
+      is_reserve: false,
+    });
+    await router.back();
+  }
+
+  async function CloseTheRoom() {
+    await mutation.mutateAsync({
+      room_id: roomData.room_id ? roomData.room_id : "",
+      is_reserve: true,
+    });
+    await router.back();
+  }
+
+  function getOpenOrClose() {
+    if (roomData.is_reserve) {
+      return (
+        <Button
+          className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          onClick={OpenTheRoom}
+        >
+          Open this room
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          className="text-grey-800 mt-15 mr-7 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+          onClick={CloseTheRoom}
+        >
+          Close this room
+        </Button>
+      );
+    }
+  }
 
   function DeleteHandle() {
     deleteRoom.mutate({
@@ -124,18 +197,33 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const isImageChange = selectedImage !== "";
+    if (isImageChange) {
+      const newFilePath =
+        "accommodation/" +
+        roomData.accommodation_id +
+        "/" +
+        roomData.room_id +
+        "/" +
+        selectedImage;
+      moveObjectInS3("temp/" + selectedImage, newFilePath);
+      deleteObjectInS3(filePath);
+    }
     mutation.mutate({
       ...values,
       room_id: roomData.room_id ? roomData.room_id : "",
+      banner: isImageChange ? selectedImage : roomData.banner,
     });
+    setSelectedImage("");
   }
   return (
     <div>
-      <Link href="/edit/host/accomodation">
-        <Button className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white">
-          Back
-        </Button>
-      </Link>
+      <Button
+        className="text-grey-800 mt-15 mb-4 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+        onClick={onBack}
+      >
+        Back
+      </Button>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Room Information</CardTitle>
@@ -144,9 +232,18 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
         <div className="mx-4">
           <PropertyRoomCard
             title="Suite"
-            imageUrl={"/room1.jpeg"}
-            status="Available"
+            imageUrl={selectedImage === "" ? filePath : "temp/" + selectedImage}
+            status={roomData.is_reserve ? "Unavailable" : "Available"}
           />
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="picture">Picture</Label>
+            <Input
+              id="picture"
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+          </div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit, onInvalid)}
@@ -382,7 +479,7 @@ function HostEditRoomForm({ roomData }: { roomData: RoomData }) {
                   )}
                 />
               </div>
-
+              {getOpenOrClose()}
               <div>
                 <Button
                   type="submit"
@@ -419,12 +516,14 @@ export default function RoomEditForm({ room_id }: { room_id: string }) {
   if (roomDataQuery.status === "loading") {
     return <div>Loading...</div>;
   }
+
   return (
     <HostEditRoomForm
       roomData={{
         room_id: room_id,
         accommodation_id: roomDataQuery.data?.accommodation_id,
         room_name: roomDataQuery.data?.room_name,
+        banner: roomDataQuery.data?.banner,
         price: roomDataQuery.data?.price,
         floor: roomDataQuery.data?.floor,
         is_reserve: roomDataQuery.data?.is_reserve,

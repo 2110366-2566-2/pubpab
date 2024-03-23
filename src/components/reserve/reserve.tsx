@@ -1,0 +1,128 @@
+"use client";
+
+import { LogInIcon, LogOutIcon } from "lucide-react";
+import Image from "next/image";
+
+import EastHotelImage from "@/../../public/easthotel.jpeg";
+import { trpc } from "@/lib/trpc/client";
+import { useSession } from "next-auth/react";
+import { differenceInDays } from "date-fns";
+
+const ReserveBookingCard = ({
+  host_id,
+  accomName,
+  room_id,
+  roomName,
+  price,
+  //   adult,
+  //   child,
+  location,
+  checkInDate,
+  checkOutDate,
+}: {
+  host_id: string;
+  accomName: string;
+  room_id: string;
+  roomName: string;
+  price: number;
+  //   adult: string;
+  //   child: string;
+  location: string;
+  checkInDate: string;
+  checkOutDate: string;
+}) => {
+  const { data: session } = useSession();
+
+  const createPayment = trpc.payment.create.useMutation();
+  const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
+  const createTravelerNotification =
+    trpc.traveler.notification.create.useMutation();
+  const createHostNotification = trpc.host.notification.create.useMutation();
+
+  const traveler_id = session?.user?.id || "";
+
+  const startDate = new Date(checkInDate);
+  const endDate = new Date(checkOutDate);
+
+  const durations = differenceInDays(endDate, startDate);
+
+  async function onContinuePayment() {
+    const payment = await createPayment.mutateAsync({
+      amount: price * durations,
+      host_bank_account: "11111111",
+    });
+
+    const travelerReserve = await createTravelerReserve.mutateAsync({
+      room_id: room_id,
+      traveler_id: traveler_id,
+      payment_id: payment.newPayment.payment_id,
+      start_date: new Date(checkInDate),
+      end_date: new Date(checkOutDate),
+    });
+
+    await createTravelerNotification.mutateAsync({
+      user_id: traveler_id,
+      reservation_id: travelerReserve.reservation_id,
+      notification_type: "Reservation",
+    });
+
+    await createHostNotification.mutateAsync({
+      user_id: host_id,
+      reservation_id: travelerReserve.reservation_id,
+      notification_type: "Reservation",
+    });
+  }
+  return (
+    <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
+      <div className="flex w-full flex-col p-4">
+        <div className="flex flex-row justify-between">
+          <span>
+            <h2 className="mb-2  text-xl">{accomName}</h2>
+            <h1 className="mb-2 text-2xl font-semibold">{roomName}</h1>
+            <h4 className="mb-2  text-xl">{location}</h4>
+            <Image
+              src={EastHotelImage}
+              alt="hotel"
+              className="max-w-md rounded-lg object-scale-down"
+            />
+          </span>
+        </div>
+      </div>
+      <div className="flex w-full flex-col p-4">
+        <div className="flex flex-row justify-between">
+          <span>
+            <h2 className="mb-2  text-xl">Total</h2>
+            {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
+            <p className="pb-4 text-2xl font-bold">฿{price * durations} </p>
+            <div className="flex flex-row justify-between">
+              <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+            </div>
+            <div className="flex flex-row justify-between">
+              <LogOutIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+              <h1 className="pb-1 font-semibold"> {checkOutDate}</h1>
+            </div>
+          </span>
+        </div>
+        <div className="flex h-full flex-row justify-between pt-4">
+          {/* <span className="flex w-3/4 flex-row gap-16">
+            <div className="flex flex-row gap-5  ">
+              <h1 className="pb-1 font-semibold">{checkInDate}</h1>
+              <h1 className="pb-1 font-semibold">{checkOutDate}</h1>
+            </div>
+          </span> */}
+          <span className="flex items-end justify-end p-4 text-center">
+            <button
+              type="submit"
+              onClick={onContinuePayment}
+              className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
+            >
+              Continue payment
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default ReserveBookingCard;

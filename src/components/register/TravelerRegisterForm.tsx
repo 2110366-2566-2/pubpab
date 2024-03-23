@@ -65,15 +65,25 @@ const formSchema = z
   });
 
 export default function TravelerRegisterForm() {
-  const mutation = trpc.traveler.profile.create.useMutation();
+  const createTraveler = trpc.traveler.profile.create.useMutation();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate({ ...values, user_type: "Travelers" });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await createTraveler.mutateAsync({
+      citizen_id: values.citizen_id,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      email: values.email,
+      password: values.password,
+      phone_no: values.phone_no,
+      birth_date: values.birth_date,
+      gender: values.gender,
+      user_type: "Travelers",
+    });
     router.push("/");
   }
   return (

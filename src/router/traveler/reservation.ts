@@ -15,10 +15,15 @@ export const travelerReservationRouter = router({
       const reserves = await prisma.reserve.findMany({
         where: {
           traveler_id: input.traveler_id,
+          check_in_status: {
+            not: "Cancel",
+          },
         },
         select: {
           start_date: true,
           end_date: true,
+          reservation_id: true,
+          traveler_id: true,
           room: {
             select: {
               room_name: true,
@@ -27,6 +32,7 @@ export const travelerReservationRouter = router({
               accommodation: {
                 select: {
                   name_a: true,
+                  host_id: true,
                 },
               },
             },

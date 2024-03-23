@@ -1,4 +1,7 @@
+import { getImageUrlFromS3 } from "@/lib/s3";
 import Image from "next/image";
+import { title } from "process";
+import { useState, useEffect } from "react";
 
 const PropertyRoomCard = ({
   title,
@@ -9,12 +12,19 @@ const PropertyRoomCard = ({
   imageUrl: string;
   status: string;
 }) => {
-  // const destinationRoute = title === "Menorca Hotel" ? "/menorca" : "/other";
+  const [url, setUrl] = useState("");
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageUrl);
+      setUrl(b);
+    };
+    fetchData();
+  });
   return (
     <div className="relative rounded-lg bg-white shadow-md">
       <Image
-        src={imageUrl}
+        src={url}
         alt={title}
         width={1000}
         height={100}
