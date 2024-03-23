@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import LoadingScreen from "@/components/ui/loading-screen";
+import ReadReviewCard from "@/components/review/readReview";
 
 const PropInfo = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -153,7 +154,7 @@ const PropInfo = () => {
           </Popover>
         </span>
       </header>
-      <section className="mx-auto max-w-7xl px-4">
+      <section className="mx-auto mb-4 max-w-7xl px-4">
         <div className="flex w-full items-center justify-between py-4">
           <a href="/searchprop">
             <button
@@ -235,6 +236,20 @@ const PropInfo = () => {
               ),
             )}
             {/* <PropertyInfoCard accomName="mom" roomName="mom" price={100} floor={1} room={1} bed="mom" adult={1} children={1} /> */}
+          </div>
+          <div className="flex flex-col gap-4 px-8 py-4">
+            <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
+            <ReadReviewCard
+              accomName="Chef Smart's Hotel"
+              roomName="Loli Suite"
+              location="1000 Bangkok Christian, Kiraragz"
+              imageURL={EastHotelImage}
+              checkInDate="2024-04-01"
+              checkOutDate="2024-04-05"
+              rating={3}
+              reviewDescription="As a chef accustomed to the highest standards of hospitality, I can confidently say that my stay at Luxury Haven Hotel exceeded all expectations."
+              reviewDate="2023-04-06"
+            />
           </div>
         </div>
       </section>
