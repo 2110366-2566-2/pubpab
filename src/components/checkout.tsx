@@ -1,29 +1,22 @@
 "use client";
-import axios from "axios";
-// import Head from "next/head";
-// import Image from "next/image";
-// import Link from "next/link";
-import { useState } from "react";
 
+import { useState } from "react";
+import { trpc } from "@/lib/trpc/client";
 import getStripe from "@/lib/get-stripe";
 
 const CheckoutButton = () => {
+  const createCheckout = trpc.payment.createCheckout.useMutation();
   const [redirecting] = useState(false);
 
   const redirectToCheckout = async () => {
     // Create Stripe checkout
-    const {
-      data: { id },
-    } = await axios.post("/api/checkout_sessions", {
-      items: { price: "price_1Otoj8AUCR58YXE60ouYQFlV" },
-    });
-
+    const response = await createCheckout.mutateAsync();
     // Redirect to checkout
     const stripe = await getStripe();
     if (!stripe) {
       throw new Error("none stripe check id again");
     }
-    await stripe.redirectToCheckout({ sessionId: id });
+    await stripe.redirectToCheckout({ sessionId: response.id });
   };
 
   return (

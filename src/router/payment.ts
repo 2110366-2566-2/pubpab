@@ -1,7 +1,15 @@
+import Stripe from "stripe";
 import { z } from "zod";
 
 import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
+
+export const stripe = new Stripe(
+  process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string,
+  {
+    apiVersion: "2023-10-16",
+  },
+);
 
 export const paymentRouter = router({
   create: publicProcedure
@@ -24,6 +32,26 @@ export const paymentRouter = router({
       });
       return { newPayment };
     }),
+
+  createCheckout: publicProcedure.mutation(async () => {
+    return stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card", "promptpay"],
+      line_items: [
+        {
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          price: "price_1Otoj8AUCR58YXE60ouYQFlV",
+          quantity: 1,
+        },
+      ],
+      success_url:
+        process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL ||
+        "http://localhost:3000/register/host", // Set success URL dynamicaler (consider environment variables)
+      cancel_url:
+        process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ||
+        "http://localhost:3000/register/traveler", // Set cancel URL dynamically (consider environment variables)
+    });
+  }),
   updateStatus: publicProcedure
     .input(
       z.object({

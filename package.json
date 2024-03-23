@@ -40,7 +40,6 @@
     "@trpc/react-query": "^10.45.1",
     "@trpc/server": "^10.45.1",
     "@types/bcrypt": "^5.0.2",
-    "axios": "^1.6.7",
     "@types/qrcode": "^1.5.5",
     "aws": "0.0.3-2",
     "aws-sdk": "^2.1578.0",
