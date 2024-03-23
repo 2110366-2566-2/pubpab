@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc/client";
 import getStripe from "@/lib/get-stripe";
+import { useRouter } from "next/navigation";
 
 const CheckoutButton = () => {
   const createCheckout = trpc.payment.createCheckout.useMutation();
   const [redirecting] = useState(false);
+  const router = useRouter();
 
   const redirectToCheckout = async () => {
     // Create Stripe checkout
@@ -16,7 +18,17 @@ const CheckoutButton = () => {
     if (!stripe) {
       throw new Error("none stripe check id again");
     }
-    await stripe.redirectToCheckout({ sessionId: response.id });
+    const elements = stripe.elements({
+      clientSecret: response?.client_secret || "",
+      loader: "auto",
+    });
+    const payEl = elements?.create("payment", { layout: { type: "tabs" } });
+    payEl.mount("#payment-element");
+    return (
+      <div id="payment-element">
+        {/* This is where the payment element will be mounted */}
+      </div>
+    );
   };
 
   return (

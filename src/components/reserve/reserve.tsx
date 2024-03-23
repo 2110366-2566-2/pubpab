@@ -2,11 +2,11 @@
 
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
-
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
 import { differenceInDays } from "date-fns";
+import Link from "next/link";
 
 const ReserveBookingCard = ({
   host_id,
@@ -31,47 +31,49 @@ const ReserveBookingCard = ({
   checkInDate: string;
   checkOutDate: string;
 }) => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-  const createPayment = trpc.payment.create.useMutation();
-  const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
-  const createTravelerNotification =
-    trpc.traveler.notification.create.useMutation();
-  const createHostNotification = trpc.host.notification.create.useMutation();
+  // const createPayment = trpc.payment.create.useMutation();
+  // const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
+  // const createTravelerNotification = trpc.traveler.notification.create.useMutation();
+  // const createHostNotification = trpc.host.notification.create.useMutation();
 
-  const traveler_id = session?.user?.id || "";
+  // const traveler_id = session?.user?.id || "";
 
   const startDate = new Date(checkInDate);
   const endDate = new Date(checkOutDate);
 
   const durations = differenceInDays(endDate, startDate);
+  const totalPrice = price * durations;
+  // async function onContinuePayment() {
+  //   const payment = await createPayment.mutateAsync({
+  //     amount: totalPrice,
+  //     host_bank_account: "11111111",
+  //   });
+  //   router.push({
+  //     pathname: '/payment',
+  //     query: { payment_id: payment.newPayment.payment_id },
+  //   })
+  // const travelerReserve = await createTravelerReserve.mutateAsync({
+  //   room_id: room_id,
+  //   traveler_id: traveler_id,
+  //   payment_id: payment.newPayment.payment_id,
+  //   start_date: new Date(checkInDate),
+  //   end_date: new Date(checkOutDate),
+  // });
 
-  async function onContinuePayment() {
-    const payment = await createPayment.mutateAsync({
-      amount: price * durations,
-      host_bank_account: "11111111",
-    });
+  // await createTravelerNotification.mutateAsync({
+  //   user_id: traveler_id,
+  //   reservation_id: travelerReserve.reservation_id,
+  //   notification_type: "Reservation",
+  // });
 
-    const travelerReserve = await createTravelerReserve.mutateAsync({
-      room_id: room_id,
-      traveler_id: traveler_id,
-      payment_id: payment.newPayment.payment_id,
-      start_date: new Date(checkInDate),
-      end_date: new Date(checkOutDate),
-    });
-
-    await createTravelerNotification.mutateAsync({
-      user_id: traveler_id,
-      reservation_id: travelerReserve.reservation_id,
-      notification_type: "Reservation",
-    });
-
-    await createHostNotification.mutateAsync({
-      user_id: host_id,
-      reservation_id: travelerReserve.reservation_id,
-      notification_type: "Reservation",
-    });
-  }
+  // await createHostNotification.mutateAsync({
+  //   user_id: host_id,
+  //   reservation_id: travelerReserve.reservation_id,
+  //   notification_type: "Reservation",
+  // });
+  // }
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <div className="flex w-full flex-col p-4">
@@ -93,7 +95,7 @@ const ReserveBookingCard = ({
           <span>
             <h2 className="mb-2  text-xl">Total</h2>
             {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
-            <p className="pb-4 text-2xl font-bold">฿{price * durations} </p>
+            <p className="pb-4 text-2xl font-bold">฿{totalPrice} </p>
             <div className="flex flex-row justify-between">
               <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>
@@ -112,13 +114,26 @@ const ReserveBookingCard = ({
             </div>
           </span> */}
           <span className="flex items-end justify-end p-4 text-center">
-            <button
-              type="submit"
-              onClick={onContinuePayment}
-              className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
+            <Link
+              href={{
+                pathname: "/checkout",
+                query: {
+                  checkInDate: checkInDate.toString(),
+                  checkOutDate: checkOutDate.toString(),
+                  room_id: room_id,
+                  host_id: host_id,
+                  price: totalPrice.toString(),
+                },
+              }}
             >
-              Continue payment
-            </button>
+              <button
+                // type="submit"
+                // onClick={onContinuePayment}
+                className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
+              >
+                Continue payment
+              </button>
+            </Link>
           </span>
         </div>
       </div>

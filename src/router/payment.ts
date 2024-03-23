@@ -33,25 +33,23 @@ export const paymentRouter = router({
       return { newPayment };
     }),
 
-  createCheckout: publicProcedure.mutation(async () => {
-    return stripe.checkout.sessions.create({
-      mode: "payment",
-      payment_method_types: ["card", "promptpay"],
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          price: "price_1Otoj8AUCR58YXE60ouYQFlV",
-          quantity: 1,
-        },
-      ],
-      success_url:
-        process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL ||
-        "http://localhost:3000/register/host", // Set success URL dynamicaler (consider environment variables)
-      cancel_url:
-        process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ||
-        "http://localhost:3000/register/traveler", // Set cancel URL dynamically (consider environment variables)
-    });
-  }),
+  createCheckout: publicProcedure
+    .input(
+      z.object({
+        amount: z.number(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      if (input.amount < 10) {
+        throw new Error("Amount must be at least ฿10.00 thb");
+      }
+      return stripe.paymentIntents.create({
+        payment_method_types: ["card", "promptpay"],
+        amount: input.amount,
+        currency: "thb",
+      });
+    }),
+
   updateStatus: publicProcedure
     .input(
       z.object({
