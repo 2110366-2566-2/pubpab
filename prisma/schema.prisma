@@ -88,13 +88,13 @@ model host {
 }
 
 model messages {
-  message_id  String      @default(uuid()) @db.VarChar(36)
-  chatroom_id String      @db.VarChar(36)
-  sender_id   String      @db.VarChar(36)
-  timestamp   DateTime    @default(now()) @db.Timestamp(6)
-  text        String  
+  message_id  String   @default(uuid()) @db.VarChar(36)
+  chatroom_id String   @db.VarChar(36)
+  sender_id   String   @db.VarChar(36)
+  timestamp   DateTime @default(now()) @db.Timestamp(6)
+  text        String
   // attachment  attachment?
-  users       users       @relation(fields: [sender_id], references: [user_id], onDelete: Cascade)
+  users       users    @relation(fields: [sender_id], references: [user_id], onDelete: Cascade)
   // text        text?
 
   @@id([message_id, chatroom_id])
@@ -226,6 +226,7 @@ enum n_type {
   Reminder
   Cancellation
   Reservation
+  Review
 }
 
 enum genders {

@@ -5,6 +5,7 @@ import { hostReservationRouter } from "@/router/host/reservation";
 import { roomRouter } from "@/router/host/room";
 import { paymentRouter } from "@/router/payment";
 import { promptpayRouter } from "@/router/promptpay";
+import { feedbackRouter } from "@/router/review";
 import { travelerNotificationRouter } from "@/router/traveler/notification";
 import { travelerProfileRouter } from "@/router/traveler/profile";
 import { travelerReservationRouter } from "@/router/traveler/reservation";
@@ -30,6 +31,7 @@ export const appRouter = router({
   user: userRouter,
   verification: verificationRouter,
   promptpay: promptpayRouter,
+  review: feedbackRouter,
 });
 
 export type AppRouter = typeof appRouter;
