@@ -13,7 +13,7 @@ export default async function HostEditProfilePage() {
   }
   return (
     <div className="mx-auto my-12 flex max-w-3xl justify-center">
-      <HostEditForm />
+      <HostEditForm id={session.user.id} />
     </div>
   );
 }

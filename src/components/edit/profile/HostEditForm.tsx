@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -70,6 +69,7 @@ const formSchema = z
   });
 
 type HostData = {
+  id: string;
   first_name?: string;
   last_name?: string;
   bank_account?: string;
@@ -79,17 +79,18 @@ type HostData = {
 };
 
 function HostProfileForm({ hostData }: { hostData: HostData }) {
-  const { data: session } = useSession();
   const router = useRouter();
   const mutation = trpc.host.profile.update.useMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      bank_account: hostData.bank_account,
-      email: hostData.email,
-      first_name: hostData.first_name,
-      last_name: hostData.last_name,
-      phone_no: hostData.phone_no,
+    values: {
+      bank_account: hostData.bank_account ?? "",
+      email: hostData.email ?? "",
+      first_name: hostData.first_name ?? "",
+      last_name: hostData.last_name ?? "",
+      phone_no: hostData.phone_no ?? "",
+      password: undefined,
+      confirmed_password: undefined,
     },
   });
 
@@ -99,10 +100,8 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    if (session) {
-      mutation.mutate({ ...values, host_id: session?.user.id });
-      router.push("/");
-    }
+    mutation.mutate({ ...values, host_id: hostData.id });
+    router.push("/");
   }
   return (
     <main className="mt-4 min-h-screen px-4">
@@ -311,29 +310,27 @@ function HostProfileForm({ hostData }: { hostData: HostData }) {
   );
 }
 
-export default function HostEditForm() {
-  const { data: session } = useSession();
-  if (session) {
-    const hostDataQuery = trpc.host.profile.find.useQuery({
-      host_id: session?.user?.id,
-    });
-    if (hostDataQuery.status === "loading") {
-      return (
-        <div>
-          <LoadingScreen />
-        </div>
-      );
-    }
+export default function HostEditForm({ id }: { id: string }) {
+  const hostDataQuery = trpc.host.profile.find.useQuery({
+    host_id: id,
+  });
+  if (hostDataQuery.status === "loading") {
     return (
-      <HostProfileForm
-        hostData={{
-          bank_account: hostDataQuery.data?.bank_account ?? "",
-          email: hostDataQuery.data?.users?.email,
-          first_name: hostDataQuery.data?.users?.first_name ?? "",
-          last_name: hostDataQuery.data?.users?.last_name ?? "",
-          phone_no: hostDataQuery.data?.users?.phone_no ?? "",
-        }}
-      />
+      <div>
+        <LoadingScreen />
+      </div>
     );
   }
+  return (
+    <HostProfileForm
+      hostData={{
+        id: id,
+        bank_account: hostDataQuery.data?.bank_account ?? "",
+        email: hostDataQuery.data?.users?.email,
+        first_name: hostDataQuery.data?.users?.first_name ?? "",
+        last_name: hostDataQuery.data?.users?.last_name ?? "",
+        phone_no: hostDataQuery.data?.users?.phone_no ?? "",
+      }}
+    />
+  );
 }
