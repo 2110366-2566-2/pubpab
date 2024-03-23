@@ -57,11 +57,13 @@ model admin {
 // }
 
 model chatroom {
-  chatroom_id String   @id @default(uuid()) @db.VarChar(36)
-  host_id     String   @db.VarChar(36)
-  traveler_id String   @db.VarChar(36)
-  host        host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
-  traveler    traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  chatroom_id   String   @id @default(uuid()) @db.VarChar(36)
+  host_id       String   @db.VarChar(36)
+  traveler_id   String   @db.VarChar(36)
+  host          host     @relation(fields: [host_id], references: [host_id], onDelete: Cascade)
+  traveler      traveler @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
