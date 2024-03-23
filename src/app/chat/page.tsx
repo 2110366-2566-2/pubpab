@@ -12,10 +12,10 @@ export default async function ChatPage() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex" style={{ width: "100%" }}>
-        <div style={{ flex: "70%", paddingRight: "1rem" }}>
+        <div style={{ flex: "30%", paddingRight: "1rem" }}>
           <UserList onChatIdChange={handleChatIdChange} />
         </div>
-        <div style={{ flex: "30%", paddingLeft: "1rem" }}>
+        <div style={{ flex: "70%", paddingLeft: "1rem" }}>
           <MessageArea chat_id={chatId} />
         </div>
       </div>
