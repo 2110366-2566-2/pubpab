@@ -3,10 +3,13 @@ import { StarIcon, CheckIcon, XIcon } from "lucide-react";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import Link from "next/link";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useState, useEffect } from "react";
 
 const RoomInfoCard = ({
   accomName,
   roomName,
+  banner,
   floor,
   room,
   bed,
@@ -26,6 +29,7 @@ const RoomInfoCard = ({
 }: {
   accomName: string;
   roomName: string;
+  banner: string;
   floor: number;
   room: string;
   bed: string;
@@ -43,6 +47,17 @@ const RoomInfoCard = ({
   checkInDate: string;
   checkOutDate: string;
 }) => {
+  const imageUrl = "accommodation/" + accom_id + "/" + room_id + "/" + banner;
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageUrl);
+      setUrl(b);
+    };
+    fetchData();
+  });
+
   function checkValid(b: boolean) {
     if (b) return <CheckIcon />;
     return <XIcon />;
@@ -50,8 +65,10 @@ const RoomInfoCard = ({
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <Image
-        src={EastHotelImage}
+        src={url}
         alt="hotel"
+        width="1920"
+        height="1080"
         className="max-w-md rounded-lg object-scale-down"
       />
       <div className="flex w-full flex-col p-4">

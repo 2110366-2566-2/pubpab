@@ -2,25 +2,41 @@ import Image from "next/image";
 import { StarIcon } from "lucide-react";
 
 import EastHotelImage from "@/../../public/easthotel.jpeg";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useState, useEffect } from "react";
 
 const PropertyListCard = ({
   name,
   location,
   description,
+  imageUrl,
   stars,
   price,
 }: {
   name: string;
   location: string;
   description: string;
+  imageUrl: string;
   stars: number;
   price: number;
 }) => {
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageUrl);
+      setUrl(b);
+    };
+    fetchData();
+    console.log(url);
+  });
   return (
     <div className="relative flex flex-row rounded-lg bg-white shadow-md">
       <Image
-        src={EastHotelImage}
+        src={url}
         alt="hotel"
+        width="1050"
+        height="800"
         className="max-w-xs rounded-l-lg object-scale-down"
       />
       <div className="flex w-full flex-col p-4">
