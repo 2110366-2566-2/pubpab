@@ -7,6 +7,8 @@ import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
 import { differenceInDays } from "date-fns";
 import Link from "next/link";
+import getStripe from "@/lib/get-stripe"; // Import the getStripe function
+import { useRouter } from "next/navigation";
 
 const ReserveBookingCard = ({
   host_id,
@@ -33,11 +35,9 @@ const ReserveBookingCard = ({
 }) => {
   // const { data: session } = useSession();
 
-  // const createPayment = trpc.payment.create.useMutation();
-  // const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
-  // const createTravelerNotification = trpc.traveler.notification.create.useMutation();
-  // const createHostNotification = trpc.host.notification.create.useMutation();
-
+  const createPayment = trpc.payment.create.useMutation();
+  const createCheckout = trpc.payment.createCheckout.useMutation();
+  const router = useRouter();
   // const traveler_id = session?.user?.id || "";
 
   const startDate = new Date(checkInDate);
@@ -45,7 +45,36 @@ const ReserveBookingCard = ({
 
   const durations = differenceInDays(endDate, startDate);
   const totalPrice = price * durations;
-  // async function onContinuePayment() {
+  async function onContinuePayment() {
+    const response = await createCheckout.mutateAsync({
+      amount: totalPrice * 100,
+    });
+    const payment = await createPayment.mutateAsync({
+      amount: totalPrice,
+      host_bank_account: "11111111",
+    });
+    const stripe = await getStripe();
+    if (stripe) {
+      const elements = stripe.elements({
+        clientSecret: response?.client_secret || "",
+        loader: "auto",
+      });
+      const paymentElement = elements?.create("payment", {
+        layout: { type: "tabs" },
+      });
+      // paymentElement.mount("#payment-element");
+    } else {
+      throw new Error("none stripe check id again");
+    }
+    await router.push(`/checkout?
+    checkInDate=${checkInDate.toString()}&
+    checkOutDate=${checkOutDate.toString()}&
+    room_id=${room_id}&
+    host_id=${host_id}&
+    price=${price.toString()}&
+    paymentId=${payment.newPayment.payment_id}
+    `);
+  }
   //   const payment = await createPayment.mutateAsync({
   //     amount: totalPrice,
   //     host_bank_account: "11111111",
@@ -114,7 +143,7 @@ const ReserveBookingCard = ({
             </div>
           </span> */}
           <span className="flex items-end justify-end p-4 text-center">
-            <Link
+            {/* <Link
               href={{
                 pathname: "/checkout",
                 query: {
@@ -125,15 +154,15 @@ const ReserveBookingCard = ({
                   price: totalPrice.toString(),
                 },
               }}
+            > */}
+            <button
+              // type="submit"
+              onClick={onContinuePayment}
+              className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
             >
-              <button
-                // type="submit"
-                // onClick={onContinuePayment}
-                className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
-              >
-                Continue payment
-              </button>
-            </Link>
+              Continue payment
+            </button>
+            {/* </Link> */}
           </span>
         </div>
       </div>

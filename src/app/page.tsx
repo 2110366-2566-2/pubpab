@@ -4,7 +4,7 @@ import hero from "@/../public/hero.jpg";
 import ladprao from "@/../public/ladprao.png";
 import pattaya from "@/../public/pattaya.png";
 import phuket from "@/../public/phuket.png";
-import CheckoutButton from "@/components/checkout";
+import CheckoutButton from "@/components/checkout/checkout";
 
 export default function Home() {
   return (

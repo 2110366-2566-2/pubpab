@@ -36,17 +36,32 @@ export const paymentRouter = router({
   createCheckout: publicProcedure
     .input(
       z.object({
+        room_id: z.string(),
+        room_name: z.string(),
         amount: z.number(),
       }),
     )
     .mutation(async ({ input }) => {
-      if (input.amount < 10) {
+      const totalAmount = input.amount * 100;
+      if (totalAmount < 10) {
         throw new Error("Amount must be at least ฿10.00 thb");
       }
-      return stripe.paymentIntents.create({
+      return stripe.checkout.sessions.create({
+        mode: "payment",
         payment_method_types: ["card", "promptpay"],
-        amount: input.amount,
-        currency: "thb",
+        line_items: [
+          {
+            price_data: {
+              unit_amount: totalAmount,
+              currency: "thb",
+              product: input.room_id,
+              product_data: {
+                name: input.room_name,
+              },
+            },
+            quantity: 1,
+          },
+        ],
       });
     }),
 
