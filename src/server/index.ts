@@ -4,7 +4,6 @@ import { hostProfileRouter } from "@/router/host/profile";
 import { hostReservationRouter } from "@/router/host/reservation";
 import { roomRouter } from "@/router/host/room";
 import { paymentRouter } from "@/router/payment";
-import { promptpayRouter } from "@/router/promptpay";
 import { feedbackRouter } from "@/router/review";
 import { travelerNotificationRouter } from "@/router/traveler/notification";
 import { travelerProfileRouter } from "@/router/traveler/profile";
@@ -30,7 +29,6 @@ export const appRouter = router({
   payment: paymentRouter,
   user: userRouter,
   verification: verificationRouter,
-  promptpay: promptpayRouter,
   review: feedbackRouter,
 });
 
