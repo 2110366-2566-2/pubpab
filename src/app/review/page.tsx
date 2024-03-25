@@ -2,6 +2,7 @@
 
 import WriteReviewCard from "@/components/review/writeReview";
 import bellagio from "@/../public/Bellagio.webp";
+import { useState } from "react";
 
 export default function WriteReviewCardPage() {
   // need to send query parameter
@@ -9,6 +10,10 @@ export default function WriteReviewCardPage() {
   const reservation_id = queryParameters.get("reservation_id");
   const accom_id = queryParameters.get("accom_id");
   const traveler_id = queryParameters.get("traveler_id");
+  const [rating, setRating] = useState(0);
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+  };
 
   return (
     <div className="flex justify-center">
@@ -20,7 +25,8 @@ export default function WriteReviewCardPage() {
         roomName="Loli Suite"
         location="1000 Bangkok Christian, Kiraragz"
         imageURL={bellagio}
-        rating={3}
+        rating={rating}
+        onRatingChange={handleRatingChange}
       />
     </div>
   );
