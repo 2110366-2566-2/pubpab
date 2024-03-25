@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   review: z
@@ -34,6 +35,7 @@ const WriteReviewCard = ({
   location,
   imageURL,
   rating,
+  onRatingChange,
 }: {
   reservationId: string;
   accommodationId: string;
@@ -43,31 +45,32 @@ const WriteReviewCard = ({
   location: string;
   imageURL: any;
   rating: number;
+  onRatingChange: (rating: number) => void;
 }) => {
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+
   const renderStars = () => {
     const starImages = [];
     for (let i = 0; i < 5; i++) {
-      if (i < rating) {
-        starImages.push(
-          <Image
-            key={i}
-            src={starFill}
-            alt="Filled Star"
-            className="h-6 w-6"
-          />,
-        );
-      } else {
-        starImages.push(
-          <Image
-            key={i}
-            src={starNotFill}
-            alt="Filled Star"
-            className="h-6 w-6"
-          />,
-        );
-      }
+      const starNumber = i + 1;
+      starImages.push(
+        <Image
+          key={i}
+          src={
+            starNumber <= (selectedRating ?? rating) ? starFill : starNotFill
+          }
+          alt="Star"
+          className="h-6 w-6 cursor-pointer"
+          onClick={() => handleStarClick(starNumber)}
+        />,
+      );
     }
     return starImages;
+  };
+
+  const handleStarClick = (starNumber: number) => {
+    setSelectedRating(starNumber);
+    onRatingChange(starNumber);
   };
 
   const {
