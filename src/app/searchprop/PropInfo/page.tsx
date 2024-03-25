@@ -10,7 +10,7 @@ import { trpc } from "@/lib/trpc/client";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -36,28 +36,6 @@ const PropInfo = () => {
   const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
     accommodation_id: accom_id ? accom_id : "",
   });
-  // const Info = [
-  //   {
-  //     accomName: "Your mom",
-  //     roomName: "Mom's Room",
-  //     price: 100,
-  //     floor: 69,
-  //     room: 69,
-  //     bed: "mom",
-  //     adult: 1,
-  //     children: 69,
-  //   },
-  //   {
-  //     accomName: "Your dad",
-  //     roomName: "Dad's Room",
-  //     price: 100,
-  //     floor: 1,
-  //     room: 1,
-  //     bed: "dad",
-  //     adult: 1,
-  //     children: 1,
-  //   },
-  // ];
 
   const findRooms = trpc.host.room.findMany.useQuery({
     accommodation_id: accom_id || "",
@@ -67,18 +45,30 @@ const PropInfo = () => {
     return <div>Error: {findRooms.error.message}</div>;
   }
 
+  const fetchReviews = trpc.review.accommodationReviews.useQuery({
+    accommodation_id: accom_id || "",
+  });
+
+  if (fetchReviews.error) {
+    return <div>Error: {fetchReviews.error.message}</div>;
+  }
+
   if (findAccommodation.error) {
     return <div>Error: {findAccommodation.error.message}</div>;
   }
 
-  if (findRooms.isLoading || findAccommodation.isLoading) {
+  if (
+    findRooms.isLoading ||
+    findAccommodation.isLoading ||
+    fetchReviews.isLoading
+  ) {
     return (
       <div>
         <LoadingScreen />
       </div>
     );
   }
-
+  const reviewsData = fetchReviews.data;
   const roomsData = findRooms.data;
   const accomData = findAccommodation.data;
   const Info = roomsData.flatMap((entry) =>
@@ -101,6 +91,39 @@ const PropInfo = () => {
       googlemap_linke: accomData.ggmap_link,
     })),
   );
+
+  // let reviewData;
+  // if (reviewsData != null) {
+  //   reviewData = reviewsData.map((review) =>
+  //     review.accommodation.room.map((room) => ({
+  //       accomName: review.accommodation.name_a,
+  //       location: review.accommodation.address_a,
+  //       roomName: room.room_name,
+  //       imageURL: review.picture,
+  //       rating: review.score,
+  //       reviewDescription: review.text,
+  //       reviewDate: review.timestamp,
+  //     })),
+  //   );
+  // } else {
+  //   reviewData = {};
+  // }
+  const reviewData = reviewsData ? (
+    <>
+      {reviewsData.accommodation.room.map((room) => (
+        <ReadReviewCard
+          // key={room.room_id}
+          accomName={reviewsData.accommodation.name_a}
+          roomName={room.room_name}
+          location={reviewsData.accommodation.address_a}
+          imageURL={reviewsData.picture}
+          rating={reviewsData.score || 0}
+          reviewDescription={reviewsData.text || "no Review"}
+          reviewDate={reviewsData.timestamp?.toDateString() || ""}
+        />
+      ))}
+    </>
+  ) : null;
 
   return (
     <>
@@ -244,17 +267,20 @@ const PropInfo = () => {
           </div>
           <div className="flex flex-col gap-4 px-8 py-4">
             <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
-            <ReadReviewCard
-              accomName="Chef Smart's Hotel"
-              roomName="Loli Suite"
-              location="1000 Bangkok Christian, Kiraragz"
-              imageURL={EastHotelImage}
-              checkInDate="2024-04-01"
-              checkOutDate="2024-04-05"
-              rating={3}
-              reviewDescription="As a chef accustomed to the highest standards of hospitality, I can confidently say that my stay at Luxury Haven Hotel exceeded all expectations."
-              reviewDate="2023-04-06"
-            />
+            {/* {reviewData.flatMap((review) => (
+              <ReadReviewCard
+                accomName={review.accommodation.name_a}
+                roomName={review.accommodation.room.room_name}
+                location={review.accommodation.address_a}
+                imageURL={review.picture}
+                checkInDate={review.accommodation.reserve.start_date}
+                checkOutDate={review.accommodation.reserve.end_date}
+                rating={review.score}
+                reviewDescription={review.text}
+                reviewDate={review.timestamp}
+              />
+            ))} */}
+            <>{reviewData}</>
           </div>
         </div>
       </section>
