@@ -132,6 +132,31 @@ export const accomodationRouter = router({
       }
       return getAccomodation;
     }),
+  filter: publicProcedure
+    .input(
+      z.object({
+        accom_name: z.string().optional(),
+        rating: z.number().optional(),
+        price: z.number().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const filteredAccommodation = await prisma.accommodation.findMany({
+        where: {
+          name_a: {
+            contains: input.accom_name,
+            mode: "insensitive",
+          },
+          rating: {
+            gte: input.rating,
+          },
+          price: {
+            lte: input.price,
+          },
+        },
+      });
+      return filteredAccommodation;
+    }),
   create: publicProcedure
     .input(
       z.object({
