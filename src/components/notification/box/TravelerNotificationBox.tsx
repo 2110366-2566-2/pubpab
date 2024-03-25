@@ -14,6 +14,7 @@ const Traveler_Notification = ({
   noti_type,
   traveler_id,
   accommodation_id,
+  reservation_id,
 }: {
   sentDate: string;
   sentTime: string;
@@ -25,6 +26,7 @@ const Traveler_Notification = ({
   noti_type: string;
   traveler_id: string;
   accommodation_id: string;
+  reservation_id: string;
 }) => {
   // const goToReview = () => {
   //   router.back();
@@ -139,6 +141,7 @@ const Traveler_Notification = ({
           query: {
             traveler_id: traveler_id,
             accom_id: accommodation_id,
+            reservation_id: reservation_id
           },
         }}
       /> */}

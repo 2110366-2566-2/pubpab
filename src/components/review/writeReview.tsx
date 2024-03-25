@@ -26,6 +26,7 @@ const formSchema = z.object({
 });
 
 const WriteReviewCard = ({
+  reservationId,
   accommodationId,
   userId,
   accommodationName,
@@ -34,6 +35,7 @@ const WriteReviewCard = ({
   imageURL,
   rating,
 }: {
+  reservationId: string;
   accommodationId: string;
   userId: string;
   accommodationName: string;
@@ -85,6 +87,7 @@ const WriteReviewCard = ({
   const onSubmit = async (data: any) => {
     try {
       await createReview.mutateAsync({
+        reservation_id: reservationId,
         traveler_id: userId,
         accommodation_id: accommodationId,
         picture: "", // Set the picture if needed

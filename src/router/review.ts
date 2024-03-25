@@ -10,6 +10,7 @@ export const feedbackRouter = router({
       z.object({
         traveler_id: z.string(),
         accommodation_id: z.string(),
+        reservation_id: z.string(),
         picture: z.string().optional(),
         text: z.string().optional(),
         score: z.number().min(1).max(5),
@@ -20,6 +21,7 @@ export const feedbackRouter = router({
         // Create the review if all conditions are met
         const newFeedback = await prisma.feedback.create({
           data: {
+            reservation_id: input.reservation_id,
             traveler_id: input.traveler_id,
             accommodation_id: input.accommodation_id,
             picture: input.picture,

@@ -52,6 +52,7 @@ export default function TravelerNotifications() {
               accommodation_id={
                 notification.reserve.room.accommodation?.accommodation_id ?? ""
               }
+              reservation_id={notification.reserve.reservation_id ?? ""}
             />
           </div>
         ))}
