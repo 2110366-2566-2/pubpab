@@ -48,6 +48,11 @@ export default function TravelerNotifications() {
                 notification.reserve?.payment?.amount?.toString() ?? ""
               }
               noti_type={notification.notification_type ?? ""}
+              traveler_id={notification.reserve.traveler_id}
+              accommodation_id={
+                notification.reserve.room.accommodation?.accommodation_id ?? ""
+              }
+              reservation_id={notification.reserve.reservation_id ?? ""}
             />
           </div>
         ))}

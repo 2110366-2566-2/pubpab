@@ -23,16 +23,25 @@ import LoadingScreen from "@/components/ui/loading-screen";
 import ReadReviewCard from "@/components/review/readReview";
 
 const PropInfo = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const queryParameters = new URLSearchParams(window.location.search);
+  const accom_id = queryParameters.get("accom_id");
+  const checkInDate = queryParameters.get("checkInDate");
+  const checkOutDate = queryParameters.get("checkOutDate");
+  const [date, setDate] = React.useState<Date | undefined>(() => {
+    if (checkInDate) {
+      return new Date(checkInDate);
+    }
+    return new Date();
+  });
   const [date2, setDate2] = React.useState<Date | undefined>(() => {
+    if (checkOutDate) {
+      return new Date(checkOutDate);
+    }
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1); // Adding one day
     return tomorrow;
   });
-  const queryParameters = new URLSearchParams(window.location.search);
-  const accom_id = queryParameters.get("accom_id");
-
   const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
     accommodation_id: accom_id ? accom_id : "",
   });

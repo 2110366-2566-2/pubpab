@@ -5,6 +5,7 @@ import starNotFill from "@/../public/Star.svg";
 import starFill from "@/../public/StarFill.svg";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc/client";
 import {
   Form,
   FormField,
@@ -25,12 +26,18 @@ const formSchema = z.object({
 });
 
 const WriteReviewCard = ({
+  reservationId,
+  accommodationId,
+  userId,
   accommodationName,
   roomName,
   location,
   imageURL,
   rating,
 }: {
+  reservationId: string;
+  accommodationId: string;
+  userId: string;
   accommodationName: string;
   roomName: string;
   location: string;
@@ -71,13 +78,33 @@ const WriteReviewCard = ({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const createReview = trpc.review.writeReview.useMutation();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await createReview.mutateAsync({
+        reservation_id: reservationId,
+        traveler_id: userId,
+        accommodation_id: accommodationId,
+        picture: "", // Set the picture if needed
+        text: data.review,
+        score: rating, // Assuming 'rating' is passed from props
+      });
+      console.log("Review submitted successfully");
+      console.log(userId);
+      console.log(accommodationId);
+      // You can add logic here to redirect or show a success message
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      console.log(userId);
+      console.log(accommodationId);
+      // Handle error (e.g., show error message)
+    }
+  };
 
   return (
     <Card className="relative m-4 w-2/3 p-5">

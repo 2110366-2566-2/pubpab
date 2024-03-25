@@ -69,12 +69,14 @@ model feedback {
   feedback_id      String        @id @default(uuid()) @db.VarChar(36)
   traveler_id      String        @db.VarChar(36)
   accommodation_id String        @db.VarChar(36)
+  reservation_id       String        @db.VarChar(36)
   picture          String?
   timestamp        DateTime      @default(now()) @db.Timestamp(6)
   text             String?
   score            Float?
   accommodation    accommodation @relation(fields: [accommodation_id], references: [accommodation_id], onDelete: Cascade)
   traveler         traveler      @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
+  reserve          reserve       @relation(fields: [reservation_id], references: [reservation_id], onDelete: Cascade)
 }
 
 model host {
@@ -144,6 +146,7 @@ model reserve {
   traveler        traveler       @relation(fields: [traveler_id], references: [traveler_id], onDelete: Cascade)
   payment         payment        @relation(fields: [payment_id], references: [payment_id], onDelete: Cascade)
   notification    notification[]
+  feedback        feedback[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
