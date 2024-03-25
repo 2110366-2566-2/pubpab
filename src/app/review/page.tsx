@@ -2,6 +2,7 @@ import WriteReviewCard from "@/components/review/writeReview";
 import bellagio from "@/../public/Bellagio.webp";
 
 export default function WriteReviewCardPage() {
+  // need to send query parameter
   const queryParameters = new URLSearchParams(window.location.search);
   const accom_id = queryParameters.get("accom_id");
   const traveler_id = queryParameters.get("traveler_id");
@@ -9,6 +10,8 @@ export default function WriteReviewCardPage() {
   return (
     <div className="flex justify-center">
       <WriteReviewCard
+        accommodationId={accom_id || ""}
+        userId={traveler_id || ""}
         accommodationName="Loli Hotel"
         roomName="Loli Suite"
         location="1000 Bangkok Christian, Kiraragz"

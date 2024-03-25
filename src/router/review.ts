@@ -17,39 +17,11 @@ export const feedbackRouter = router({
     )
     .mutation(async ({ input }) => {
       try {
-        const { traveler_id, accommodation_id } = input;
-
-        // Check if the traveler has a reservation for the specified accommodation
-        const reservation = await prisma.reserve.findFirst({
-          where: {
-            traveler_id,
-            room: {
-              accommodation: {
-                accommodation_id,
-              },
-            },
-            end_date: {
-              lte: new Date(), // Ensure current time is after end_date
-            },
-          },
-          include: {
-            room: true, // Include the room information in the result
-          },
-        });
-
-        if (!reservation) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message:
-              "Traveler has not reserved this accommodation or it is not yet checkout time.",
-          });
-        }
-
         // Create the review if all conditions are met
         const newFeedback = await prisma.feedback.create({
           data: {
-            traveler_id,
-            accommodation_id,
+            traveler_id: input.traveler_id,
+            accommodation_id: input.accommodation_id,
             picture: input.picture,
             text: input.text,
             score: input.score,

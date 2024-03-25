@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 const Traveler_Notification = ({
   sentDate,
@@ -11,6 +12,8 @@ const Traveler_Notification = ({
   checkOutDate,
   totalAmount,
   noti_type,
+  traveler_id,
+  accommodation_id,
 }: {
   sentDate: string;
   sentTime: string;
@@ -20,7 +23,14 @@ const Traveler_Notification = ({
   checkOutDate: string;
   totalAmount: string;
   noti_type: string;
+  traveler_id: string;
+  accommodation_id: string;
 }) => {
+  // const goToReview = () => {
+  //   router.back();
+  // };
+  // need link to page review
+
   return (
     <Card className="w-full p-3">
       <div className="flex justify-between">
@@ -122,6 +132,16 @@ const Traveler_Notification = ({
           )}
         </div>
       </div>
+      {/* for page review on click use don't delete
+      <Link
+        href={{
+          pathname: "/review",
+          query: {
+            traveler_id: traveler_id,
+            accom_id: accommodation_id,
+          },
+        }}
+      /> */}
     </Card>
   );
 };
