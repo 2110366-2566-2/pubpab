@@ -4,16 +4,14 @@ import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
-import { useSession } from "next-auth/react";
 import { differenceInDays } from "date-fns";
-import Link from "next/link";
-import getStripe from "@/lib/get-stripe"; // Import the getStripe function
-import { useRouter } from "next/navigation";
+import getStripe from "@/lib/get-stripe";
 
 const ReserveBookingCard = ({
   host_id,
-  accomName,
   room_id,
+  accom_id,
+  accomName,
   roomName,
   price,
   //   adult,
@@ -23,8 +21,9 @@ const ReserveBookingCard = ({
   checkOutDate,
 }: {
   host_id: string;
-  accomName: string;
   room_id: string;
+  accom_id: string;
+  accomName: string;
   roomName: string;
   price: number;
   //   adult: string;
@@ -37,7 +36,7 @@ const ReserveBookingCard = ({
 
   const createPayment = trpc.payment.create.useMutation();
   const createCheckout = trpc.payment.createCheckout.useMutation();
-  const router = useRouter();
+  const hostInfo = trpc.host.profile.find.useQuery({ host_id: host_id || "" });
   // const traveler_id = session?.user?.id || "";
 
   const startDate = new Date(checkInDate);
@@ -45,64 +44,30 @@ const ReserveBookingCard = ({
 
   const durations = differenceInDays(endDate, startDate);
   const totalPrice = price * durations;
+
   async function onContinuePayment() {
-    const response = await createCheckout.mutateAsync({
-      amount: totalPrice * 100,
-    });
-    const payment = await createPayment.mutateAsync({
-      amount: totalPrice,
-      host_bank_account: "11111111",
-    });
     const stripe = await getStripe();
-    if (stripe) {
-      const elements = stripe.elements({
-        clientSecret: response?.client_secret || "",
-        loader: "auto",
-      });
-      const paymentElement = elements?.create("payment", {
-        layout: { type: "tabs" },
-      });
-      // paymentElement.mount("#payment-element");
-    } else {
+    if (!stripe) {
       throw new Error("none stripe check id again");
     }
-    await router.push(`/checkout?
-    checkInDate=${checkInDate.toString()}&
-    checkOutDate=${checkOutDate.toString()}&
-    room_id=${room_id}&
-    host_id=${host_id}&
-    price=${price.toString()}&
-    paymentId=${payment.newPayment.payment_id}
-    `);
+    const payment = await createPayment.mutateAsync({
+      amount: totalPrice,
+      host_bank_account: hostInfo.data?.bank_account || "",
+    });
+    const response = await createCheckout.mutateAsync({
+      room_id: room_id,
+      accom_id: accom_id,
+      amount: totalPrice,
+      accom_name: accomName,
+      room_name: roomName,
+      host_id: host_id,
+      checkInDate: checkInDate,
+      checkOutDate: checkOutDate,
+      payment_id: payment.newPayment.payment_id,
+    });
+    await stripe.redirectToCheckout({ sessionId: response.id });
   }
-  //   const payment = await createPayment.mutateAsync({
-  //     amount: totalPrice,
-  //     host_bank_account: "11111111",
-  //   });
-  //   router.push({
-  //     pathname: '/payment',
-  //     query: { payment_id: payment.newPayment.payment_id },
-  //   })
-  // const travelerReserve = await createTravelerReserve.mutateAsync({
-  //   room_id: room_id,
-  //   traveler_id: traveler_id,
-  //   payment_id: payment.newPayment.payment_id,
-  //   start_date: new Date(checkInDate),
-  //   end_date: new Date(checkOutDate),
-  // });
 
-  // await createTravelerNotification.mutateAsync({
-  //   user_id: traveler_id,
-  //   reservation_id: travelerReserve.reservation_id,
-  //   notification_type: "Reservation",
-  // });
-
-  // await createHostNotification.mutateAsync({
-  //   user_id: host_id,
-  //   reservation_id: travelerReserve.reservation_id,
-  //   notification_type: "Reservation",
-  // });
-  // }
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <div className="flex w-full flex-col p-4">
@@ -143,26 +108,13 @@ const ReserveBookingCard = ({
             </div>
           </span> */}
           <span className="flex items-end justify-end p-4 text-center">
-            {/* <Link
-              href={{
-                pathname: "/checkout",
-                query: {
-                  checkInDate: checkInDate.toString(),
-                  checkOutDate: checkOutDate.toString(),
-                  room_id: room_id,
-                  host_id: host_id,
-                  price: totalPrice.toString(),
-                },
-              }}
-            > */}
             <button
-              // type="submit"
+              type="submit"
               onClick={onContinuePayment}
               className="h-10 rounded-lg bg-blue-500 px-10 text-white hover:bg-blue-600"
             >
               Continue payment
             </button>
-            {/* </Link> */}
           </span>
         </div>
       </div>

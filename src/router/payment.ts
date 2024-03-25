@@ -4,12 +4,9 @@ import { z } from "zod";
 import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
-export const stripe = new Stripe(
-  process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string,
-  {
-    apiVersion: "2023-10-16",
-  },
-);
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string, {
+  apiVersion: "2023-10-16",
+});
 
 export const paymentRouter = router({
   create: publicProcedure
@@ -37,8 +34,14 @@ export const paymentRouter = router({
     .input(
       z.object({
         room_id: z.string(),
+        accom_id: z.string(),
         room_name: z.string(),
+        accom_name: z.string(),
         amount: z.number(),
+        host_id: z.string(),
+        checkInDate: z.string(),
+        checkOutDate: z.string(),
+        payment_id: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -49,19 +52,32 @@ export const paymentRouter = router({
       return stripe.checkout.sessions.create({
         mode: "payment",
         payment_method_types: ["card", "promptpay"],
+        metadata: {
+          room_id: input.room_id,
+          accom_id: input.accom_id,
+          host_id: input.host_id,
+          payment_id: input.payment_id,
+          checkInDate: input.checkInDate,
+          checkOutDate: input.checkOutDate,
+        },
         line_items: [
           {
             price_data: {
               unit_amount: totalAmount,
               currency: "thb",
-              product: input.room_id,
               product_data: {
-                name: input.room_name,
+                name: input.accom_name,
+                description: input.room_name,
               },
             },
             quantity: 1,
           },
         ],
+        success_url:
+          process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL || `http://localhost:3000`,
+        cancel_url:
+          process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ||
+          `http://localhost:3000/searchprop/PropInfo?accom_id=${input.accom_id}`,
       });
     }),
 

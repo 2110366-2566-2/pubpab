@@ -24,7 +24,12 @@ import ReadReviewCard from "@/components/review/readReview";
 
 const PropInfo = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [date2, setDate2] = React.useState<Date | undefined>(new Date());
+  const [date2, setDate2] = React.useState<Date | undefined>(() => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1); // Adding one day
+    return tomorrow;
+  });
   const queryParameters = new URLSearchParams(window.location.search);
   const accom_id = queryParameters.get("accom_id");
 

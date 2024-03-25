@@ -78,6 +78,7 @@ export default function ReserveRoom() {
             checkOutDate={CheckOutDate || ""}
             room_id={room_id || ""}
             host_id={accomData.host_id || ""}
+            accom_id={accom_id || ""}
           />
         </div>
       </div>
