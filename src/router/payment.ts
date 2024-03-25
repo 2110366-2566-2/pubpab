@@ -42,6 +42,7 @@ export const paymentRouter = router({
         checkInDate: z.string(),
         checkOutDate: z.string(),
         payment_id: z.string(),
+        traveler_id: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -59,6 +60,7 @@ export const paymentRouter = router({
           payment_id: input.payment_id,
           checkInDate: input.checkInDate,
           checkOutDate: input.checkOutDate,
+          traveler_id: input.traveler_id,
         },
         line_items: [
           {

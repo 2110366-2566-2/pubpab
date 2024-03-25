@@ -1,5 +1,3 @@
-"use client";
-
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -70,6 +68,7 @@ export async function POST(req: NextRequest) {
           reservation_id: travelerReserve.reservation_id,
           notification_type: "Reservation",
         });
+
         console.log(`💰  Payment received!`);
       } else {
         console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);

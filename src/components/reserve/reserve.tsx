@@ -6,6 +6,7 @@ import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
 import { differenceInDays } from "date-fns";
 import getStripe from "@/lib/get-stripe";
+import { useSession } from "next-auth/react";
 
 const ReserveBookingCard = ({
   host_id,
@@ -32,12 +33,12 @@ const ReserveBookingCard = ({
   checkInDate: string;
   checkOutDate: string;
 }) => {
-  // const { data: session } = useSession();
+  const { data: session } = useSession();
 
   const createPayment = trpc.payment.create.useMutation();
   const createCheckout = trpc.payment.createCheckout.useMutation();
   const hostInfo = trpc.host.profile.find.useQuery({ host_id: host_id || "" });
-  // const traveler_id = session?.user?.id || "";
+  const traveler_id = session?.user?.id || "";
 
   const startDate = new Date(checkInDate);
   const endDate = new Date(checkOutDate);
@@ -63,6 +64,7 @@ const ReserveBookingCard = ({
       host_id: host_id,
       checkInDate: checkInDate,
       checkOutDate: checkOutDate,
+      traveler_id: traveler_id,
       payment_id: payment.newPayment.payment_id,
     });
     await stripe.redirectToCheckout({ sessionId: response.id });
