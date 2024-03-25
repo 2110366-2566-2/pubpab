@@ -1,3 +1,5 @@
+"use client";
+
 import WriteReviewCard from "@/components/review/writeReview";
 import bellagio from "@/../public/Bellagio.webp";
 
