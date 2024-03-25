@@ -10,7 +10,12 @@ export const travelerNotificationRouter = router({
       z.object({
         user_id: z.string(),
         reservation_id: z.string(),
-        notification_type: z.enum(["Reservation", "Reminder", "Cancellation"]),
+        notification_type: z.enum([
+          "Reservation",
+          "Reminder",
+          "Cancellation",
+          "Review",
+        ]),
       }),
     )
     .mutation(async ({ input }) => {
@@ -35,6 +40,7 @@ export const travelerNotificationRouter = router({
         select: {
           notification_type: true,
           timestamp: true,
+
           users: {
             select: {
               first_name: true,
@@ -43,6 +49,8 @@ export const travelerNotificationRouter = router({
           },
           reserve: {
             select: {
+              traveler_id: true,
+              reservation_id: true,
               payment_id: true,
               room_id: true,
               start_date: true,
@@ -58,6 +66,7 @@ export const travelerNotificationRouter = router({
                   accommodation: {
                     select: {
                       name_a: true,
+                      accommodation_id: true,
                     },
                   },
                 },
