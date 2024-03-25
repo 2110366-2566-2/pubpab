@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-import { trpc } from "@/lib/trpc/client";
+import { server } from "@/lib/trpc/serverClient";
 
 const stripeSecretKey = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY;
 if (!stripeSecretKey) {
@@ -19,12 +19,10 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     let event;
     const result = "Webhook called.";
-    const updatePayment = trpc.payment.updateStatus.useMutation();
-    const createTravelerReserve =
-      trpc.traveler.reservation.create.useMutation();
-    const createTravelerNotification =
-      trpc.traveler.notification.create.useMutation();
-    const createHostNotification = trpc.host.notification.create.useMutation();
+    const updatePayment = server.payment;
+    const createTravelerReserve = server.traveler.reservation;
+    const createTravelerNotification = server.traveler.notification;
+    const createHostNotification = server.host.notification;
 
     try {
       // 1. Retrieve the event by verifying the signature using the raw body and secret
@@ -44,12 +42,12 @@ export async function POST(req: NextRequest) {
         const session = event.data.object;
         const meta = session?.metadata;
 
-        updatePayment.mutate({
+        updatePayment.updateStatus({
           payment_id: meta?.payment_id || "",
           payment_status: "Success",
         });
 
-        const travelerReserve = await createTravelerReserve.mutateAsync({
+        const travelerReserve = await createTravelerReserve.create({
           room_id: meta?.room_id || "",
           traveler_id: meta?.traveler_id || "",
           payment_id: meta?.payment_id || "",
@@ -57,13 +55,13 @@ export async function POST(req: NextRequest) {
           end_date: new Date(meta?.checkOutDate || ""),
         });
 
-        createTravelerNotification.mutate({
+        createTravelerNotification.create({
           user_id: meta?.traveler_id || "",
           reservation_id: travelerReserve.reservation_id,
           notification_type: "Reservation",
         });
 
-        createHostNotification.mutate({
+        createHostNotification.create({
           user_id: meta?.host_id || "",
           reservation_id: travelerReserve.reservation_id,
           notification_type: "Reservation",

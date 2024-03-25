@@ -4,7 +4,6 @@ import hero from "@/../public/hero.jpg";
 import ladprao from "@/../public/ladprao.png";
 import pattaya from "@/../public/pattaya.png";
 import phuket from "@/../public/phuket.png";
-import CheckoutButton from "@/components/checkout/checkout";
 
 export default function Home() {
   return (
@@ -18,9 +17,6 @@ export default function Home() {
         <Image src={ladprao} alt="" className="w-80 lg:w-72"></Image>
         <Image src={phuket} alt="" className="w-80 lg:w-72"></Image>
         <Image src={pattaya} alt="" className="w-80 lg:w-72"></Image>
-      </div>
-      <div>
-        <CheckoutButton />
       </div>
     </main>
   );

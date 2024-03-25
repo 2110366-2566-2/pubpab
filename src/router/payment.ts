@@ -75,11 +75,8 @@ export const paymentRouter = router({
             quantity: 1,
           },
         ],
-        success_url:
-          process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL || `http://localhost:3000`,
-        cancel_url:
-          process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ||
-          `http://localhost:3000/searchprop/PropInfo?accom_id=${input.accom_id}`,
+        success_url: `http://localhost:3000/payment/complete`,
+        cancel_url: `http://localhost:3000/searchprop/PropInfo?accom_id=${input.accom_id}`,
       });
     }),
 
