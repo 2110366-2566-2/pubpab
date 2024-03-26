@@ -22,14 +22,15 @@ const UserList = ({ onChatIdChange }: UserListProps) => {
   const handleUserClick = (chatId: string) => {
     onChatIdChange(chatId);
   };
-  return;
-  <div>
-    <div className="chats">
-      <div className="userChat">
-        <p>Hi</p>
+  return (
+    <div>
+      <div className="chats">
+        <div className="userChat">
+          <p>Hi</p>
+        </div>
       </div>
     </div>
-  </div>;
+  );
 };
 
 export default UserList;
