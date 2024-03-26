@@ -18,7 +18,6 @@ export default async function ChatPage() {
         <div style={{ flex: "70%", paddingLeft: "1rem" }}>
           <MessageArea chat_id={chatId} />
         </div>
-        {/* xxxx */}
       </div>
     </div>
   );
