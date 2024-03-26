@@ -24,7 +24,17 @@ const MessageArea = ({ chat_id }: { chat_id: string }) => {
   const user = session?.user?.id;
 
   const onInvalid = (errors: unknown) => console.error(errors);
-  return <div></div>;
+  return (
+    <div className="chats">
+      <div className="userChat">
+        {/* <img src=""/> */}
+        <div className="userChatInfo">
+          <span>Jane</span>
+          <p>Hello</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MessageArea;
