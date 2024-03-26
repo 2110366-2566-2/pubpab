@@ -33,7 +33,7 @@ const PropertyListCard = ({
   return (
     <div className="relative flex flex-row rounded-lg bg-white shadow-md">
       <Image
-        src={url}
+        src={url.toString()}
         alt="hotel"
         width="1050"
         height="800"
