@@ -1,8 +1,9 @@
 "use client";
-
+import { trpc } from "@/lib/trpc/client";
 import WriteReviewCard from "@/components/review/writeReview";
 import bellagio from "@/../public/Bellagio.webp";
 import { useState } from "react";
+import LoadingScreen from "@/components/ui/loading-screen";
 
 export default function WriteReviewCardPage() {
   // need to send query parameter
@@ -14,16 +15,34 @@ export default function WriteReviewCardPage() {
   const handleRatingChange = (newRating: number) => {
     setRating(newRating);
   };
+  const reserveRoom = trpc.traveler.reservation.getRoom.useQuery({
+    reservation_id: reservation_id || "",
+  });
 
+  if (reserveRoom.error) {
+    return <div>Error: {reserveRoom.error.message}</div>;
+  }
+  if (reserveRoom.isLoading) {
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
+  }
+  const roomData = reserveRoom.data;
+
+  if (!roomData) {
+    return <div>Error: </div>;
+  }
   return (
     <div className="flex justify-center">
       <WriteReviewCard
         reservationId={reservation_id || ""}
         accommodationId={accom_id || ""}
         userId={traveler_id || ""}
-        accommodationName="Loli Hotel"
-        roomName="Loli Suite"
-        location="1000 Bangkok Christian, Kiraragz"
+        accommodationName={roomData.room.accommodation?.name_a || ""}
+        roomName={roomData.room.room_name || ""}
+        location={roomData.room.accommodation?.address_a || ""}
         imageURL={bellagio}
         rating={rating}
         onRatingChange={handleRatingChange}

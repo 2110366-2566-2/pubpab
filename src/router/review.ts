@@ -29,6 +29,39 @@ export const feedbackRouter = router({
             score: input.score,
           },
         });
+        const reviewCount = await prisma.feedback.count({
+          where: {
+            accommodation_id: input.accommodation_id,
+          },
+        });
+
+        // Fetch the existing average rating of the accommodation
+        const existingAccommodation = await prisma.accommodation.findUnique({
+          where: {
+            accommodation_id: input.accommodation_id,
+          },
+          select: {
+            rating: true,
+          },
+        });
+
+        // Calculate new average rating
+        if (!existingAccommodation) {
+          return newFeedback;
+        }
+        const newAverageRating =
+          (existingAccommodation.rating * reviewCount + input.score) /
+          reviewCount;
+
+        // Update the accommodation with the new average rating
+        await prisma.accommodation.update({
+          where: {
+            accommodation_id: input.accommodation_id,
+          },
+          data: {
+            rating: newAverageRating,
+          },
+        });
 
         return newFeedback;
       } catch (error) {
@@ -50,7 +83,7 @@ export const feedbackRouter = router({
     )
     .query(async ({ input }) => {
       try {
-        const reviewsWithRooms = await prisma.feedback.findFirst({
+        const reviewsWithRooms = await prisma.feedback.findMany({
           where: {
             accommodation_id: input.accommodation_id,
           },
@@ -59,14 +92,19 @@ export const feedbackRouter = router({
             text: true,
             score: true,
             timestamp: true,
-            accommodation: {
+            reserve: {
               select: {
-                accommodation_id: true,
-                name_a: true,
-                address_a: true,
+                room_id: true,
                 room: {
                   select: {
                     room_name: true,
+                    accommodation: {
+                      select: {
+                        accommodation_id: true,
+                        name_a: true,
+                        address_a: true,
+                      },
+                    },
                   },
                 },
               },

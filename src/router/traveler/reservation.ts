@@ -100,4 +100,32 @@ export const travelerReservationRouter = router({
       });
       return newIssue;
     }),
+  getRoom: publicProcedure
+    .input(
+      z.object({
+        reservation_id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const newIssue = await prisma.reserve.findUnique({
+        where: { reservation_id: input.reservation_id },
+        select: {
+          room_id: true,
+          room: {
+            select: {
+              room_name: true,
+              accommodation_id: true,
+              accommodation: {
+                select: {
+                  name_a: true,
+                  address_a: true,
+                  rating: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return newIssue;
+    }),
 });
