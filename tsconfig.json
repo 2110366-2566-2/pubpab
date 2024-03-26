@@ -28,6 +28,7 @@
     ".next/types/**/*.ts",
     "src/app/api/auth/[...nextauth]/option.ts",
     "types/**/*.ts",
+    "src/app/api/checkout_session.js",
   ],
   "exclude": ["node_modules"],
 }

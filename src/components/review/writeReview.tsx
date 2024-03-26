@@ -5,6 +5,7 @@ import starNotFill from "@/../public/Star.svg";
 import starFill from "@/../public/StarFill.svg";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc/client";
 import {
   Form,
   FormField,
@@ -17,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   review: z
@@ -25,42 +27,50 @@ const formSchema = z.object({
 });
 
 const WriteReviewCard = ({
+  reservationId,
+  accommodationId,
+  userId,
   accommodationName,
   roomName,
   location,
   imageURL,
   rating,
+  onRatingChange,
 }: {
+  reservationId: string;
+  accommodationId: string;
+  userId: string;
   accommodationName: string;
   roomName: string;
   location: string;
   imageURL: any;
   rating: number;
+  onRatingChange: (rating: number) => void;
 }) => {
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+
   const renderStars = () => {
     const starImages = [];
     for (let i = 0; i < 5; i++) {
-      if (i < rating) {
-        starImages.push(
-          <Image
-            key={i}
-            src={starFill}
-            alt="Filled Star"
-            className="h-6 w-6"
-          />,
-        );
-      } else {
-        starImages.push(
-          <Image
-            key={i}
-            src={starNotFill}
-            alt="Filled Star"
-            className="h-6 w-6"
-          />,
-        );
-      }
+      const starNumber = i + 1;
+      starImages.push(
+        <Image
+          key={i}
+          src={
+            starNumber <= (selectedRating ?? rating) ? starFill : starNotFill
+          }
+          alt="Star"
+          className="h-6 w-6 cursor-pointer"
+          onClick={() => handleStarClick(starNumber)}
+        />,
+      );
     }
     return starImages;
+  };
+
+  const handleStarClick = (starNumber: number) => {
+    setSelectedRating(starNumber);
+    onRatingChange(starNumber);
   };
 
   const {
@@ -71,13 +81,33 @@ const WriteReviewCard = ({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const createReview = trpc.review.writeReview.useMutation();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await createReview.mutateAsync({
+        reservation_id: reservationId,
+        traveler_id: userId,
+        accommodation_id: accommodationId,
+        picture: "", // Set the picture if needed
+        text: data.review,
+        score: rating, // Assuming 'rating' is passed from props
+      });
+      console.log("Review submitted successfully");
+      console.log(userId);
+      console.log(accommodationId);
+      // You can add logic here to redirect or show a success message
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      console.log(userId);
+      console.log(accommodationId);
+      // Handle error (e.g., show error message)
+    }
+  };
 
   return (
     <Card className="relative m-4 w-2/3 p-5">

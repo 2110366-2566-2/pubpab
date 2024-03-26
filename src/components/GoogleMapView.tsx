@@ -116,3 +116,55 @@ function Map({ onMapMarker, onMapClick }: GoogleMapViewProps) {
     </div>
   );
 }
+
+export function MapViewOnly({ MapURL }: { MapURL: string }) {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+  });
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    const extractLatLngFromURL = (MapURL: string | undefined) => {
+      if (!MapURL) {
+        return { lat: 44, lng: -80 }; // Default values if MapURL is undefined
+      }
+
+      const urlParams = new URLSearchParams(MapURL);
+      const queryString = urlParams.get("query");
+
+      const latString = queryString?.split(",")[0];
+      const lat = latString ? parseFloat(latString) : 44;
+
+      const lngString = queryString?.split(",")[1];
+      const lng = lngString ? parseFloat(lngString) : -80;
+
+      return { lat, lng };
+    };
+
+    // Usage example:
+    const marker = extractLatLngFromURL(MapURL);
+
+    return (
+      <div className="relative">
+        <GoogleMap
+          zoom={10}
+          mapContainerStyle={{
+            width: "100%",
+            height: "40vh",
+            position: "relative",
+            overflow: "hidden",
+          }}
+          center={marker}
+          options={{
+            disableDefaultUI: true,
+            clickableIcons: true,
+            scrollwheel: true,
+          }}
+        >
+          <Marker position={marker} />
+        </GoogleMap>
+      </div>
+    );
+  }
+}

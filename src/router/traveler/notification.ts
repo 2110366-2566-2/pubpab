@@ -10,15 +10,31 @@ export const travelerNotificationRouter = router({
       z.object({
         user_id: z.string(),
         reservation_id: z.string(),
-        notification_type: z.enum(["Reservation", "Reminder", "Cancellation"]),
+        notification_type: z.enum([
+          "Reservation",
+          "Reminder",
+          "Cancellation",
+          "Review",
+        ]),
+        CheckInDate: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
+      const beforeCheckIn = new Date(input.CheckInDate);
+      beforeCheckIn.setDate(beforeCheckIn.getDate() - 1);
       const newIssue = await prisma.notification.create({
         data: {
           user_id: input.user_id,
           reservation_id: input.reservation_id,
           notification_type: input.notification_type,
+        },
+      });
+      await prisma.notification.create({
+        data: {
+          user_id: input.user_id,
+          reservation_id: input.reservation_id,
+          notification_type: "Reminder",
+          timestamp: beforeCheckIn,
         },
       });
       return newIssue;
@@ -31,10 +47,11 @@ export const travelerNotificationRouter = router({
     )
     .query(async ({ input }) => {
       const notis = await prisma.notification.findMany({
-        where: { user_id: input.traveler_id },
+        where: { user_id: input.traveler_id, timestamp: { lt: new Date() } },
         select: {
           notification_type: true,
           timestamp: true,
+
           users: {
             select: {
               first_name: true,
@@ -43,6 +60,8 @@ export const travelerNotificationRouter = router({
           },
           reserve: {
             select: {
+              traveler_id: true,
+              reservation_id: true,
               payment_id: true,
               room_id: true,
               start_date: true,
@@ -58,6 +77,7 @@ export const travelerNotificationRouter = router({
                   accommodation: {
                     select: {
                       name_a: true,
+                      accommodation_id: true,
                     },
                   },
                 },

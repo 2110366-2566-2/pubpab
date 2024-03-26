@@ -8,8 +8,6 @@ const ReadReviewCard = ({
   roomName,
   location,
   imageURL,
-  checkInDate,
-  checkOutDate,
   rating,
   reviewDescription,
   reviewDate,
@@ -17,12 +15,10 @@ const ReadReviewCard = ({
   accomName: string;
   roomName: string;
   location: string;
-  imageURL: any;
-  checkInDate: string;
-  checkOutDate: string;
+  imageURL?: any;
   rating: number;
   reviewDescription: string;
-  reviewDate: string;
+  reviewDate?: string;
 }) => {
   const renderStars = () => {
     const starImages = [];
@@ -71,11 +67,11 @@ const ReadReviewCard = ({
             <h1 className="mb-2 text-2xl font-semibold">{roomName}</h1>
             <p className="text-l">{location}</p>
             <div className="mb-2 mt-2 flex items-center">{renderStars()}</div>
-            <div className="flex flex-row gap-2">
+            {/* <div className="flex flex-row gap-2">
               <span>
                 Stay Duration: {dateDiffInDays(checkInDate, checkOutDate)} days
               </span>
-            </div>
+            </div> */}
             <div className="rounded-lg bg-gray-100 p-4">
               <div className="mb-6">
                 <p>"{reviewDescription}"</p>

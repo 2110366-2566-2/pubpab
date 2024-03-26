@@ -72,6 +72,16 @@ export const travelerReservationRouter = router({
           end_date: input.end_date,
         },
       });
+
+      await prisma.notification.create({
+        data: {
+          user_id: input.traveler_id,
+          reservation_id: newIssue.reservation_id,
+          notification_type: "Review",
+          timestamp: input.end_date,
+        },
+      });
+
       return newIssue;
     }),
   updateStatus: publicProcedure

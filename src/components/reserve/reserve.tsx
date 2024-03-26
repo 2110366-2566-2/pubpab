@@ -2,20 +2,19 @@
 
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
-
-import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
-import { useSession } from "next-auth/react";
 import { differenceInDays } from "date-fns";
 import { getImageUrlFromS3 } from "@/lib/s3";
 import { useEffect, useState } from "react";
+import getStripe from "@/lib/get-stripe";
+import { useSession } from "next-auth/react";
 
 const ReserveBookingCard = ({
   accom_id,
   host_id,
-  accomName,
   accom_banner,
   room_id,
+  accomName,
   roomName,
   price,
   location,
@@ -24,9 +23,9 @@ const ReserveBookingCard = ({
 }: {
   accom_id: string;
   host_id: string;
-  accomName: string;
   accom_banner: string;
   room_id: string;
+  accomName: string;
   roomName: string;
   price: number;
   //   adult: string;
@@ -49,44 +48,40 @@ const ReserveBookingCard = ({
   });
 
   const createPayment = trpc.payment.create.useMutation();
-  const createTravelerReserve = trpc.traveler.reservation.create.useMutation();
-  const createTravelerNotification =
-    trpc.traveler.notification.create.useMutation();
-  const createHostNotification = trpc.host.notification.create.useMutation();
-
+  const createCheckout = trpc.payment.createCheckout.useMutation();
+  const hostInfo = trpc.host.profile.find.useQuery({ host_id: host_id || "" });
   const traveler_id = session?.user?.id || "";
 
   const startDate = new Date(checkInDate);
   const endDate = new Date(checkOutDate);
 
   const durations = differenceInDays(endDate, startDate);
+  const totalPrice = price * durations;
 
   async function onContinuePayment() {
+    const stripe = await getStripe();
+    if (!stripe) {
+      throw new Error("none stripe check id again");
+    }
     const payment = await createPayment.mutateAsync({
-      amount: price * durations,
-      host_bank_account: "11111111",
+      amount: totalPrice,
+      host_bank_account: hostInfo.data?.bank_account || "",
     });
-
-    const travelerReserve = await createTravelerReserve.mutateAsync({
+    const response = await createCheckout.mutateAsync({
       room_id: room_id,
+      accom_id: accom_id,
+      amount: totalPrice,
+      accom_name: accomName,
+      room_name: roomName,
+      host_id: host_id,
+      checkInDate: checkInDate,
+      checkOutDate: checkOutDate,
       traveler_id: traveler_id,
       payment_id: payment.newPayment.payment_id,
-      start_date: new Date(checkInDate),
-      end_date: new Date(checkOutDate),
     });
-
-    await createTravelerNotification.mutateAsync({
-      user_id: traveler_id,
-      reservation_id: travelerReserve.reservation_id,
-      notification_type: "Reservation",
-    });
-
-    await createHostNotification.mutateAsync({
-      user_id: host_id,
-      reservation_id: travelerReserve.reservation_id,
-      notification_type: "Reservation",
-    });
+    await stripe.redirectToCheckout({ sessionId: response.id });
   }
+
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <div className="flex w-full flex-col p-4">
@@ -110,7 +105,7 @@ const ReserveBookingCard = ({
           <span>
             <h2 className="mb-2  text-xl">Total</h2>
             {/* <h1 className="mb-2 text-2xl font-semibold">฿{price}</h1> */}
-            <p className="pb-4 text-2xl font-bold">฿{price * durations} </p>
+            <p className="pb-4 text-2xl font-bold">฿{totalPrice} </p>
             <div className="flex flex-row justify-between">
               <LogInIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
               <h1 className="pb-1 font-semibold">{checkInDate}</h1>

@@ -21,7 +21,12 @@ import LoadingScreen from "@/components/ui/loading-screen";
 
 const SearchProps = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [date2, setDate2] = React.useState<Date | undefined>(new Date());
+  const [date2, setDate2] = React.useState<Date | undefined>(() => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1); // Adding one day
+    return tomorrow;
+  });
   // const Property = [
   //   {
   //     name: "Your mom",
@@ -117,14 +122,14 @@ const SearchProps = () => {
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              {/* <PopoverContent className="w-auto p-0">
+              <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
                   selected={date}
                   onSelect={setDate}
                   initialFocus
                 />
-              </PopoverContent> */}
+              </PopoverContent>
             </Popover>
             <Popover>
               <PopoverTrigger
@@ -142,7 +147,7 @@ const SearchProps = () => {
                   {date2 ? format(date2, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              {/* <PopoverContent className="w-auto p-0">
+              <PopoverContent className="w-auto p-0">
                 <Calendar
                   fromDate={date}
                   mode="single"
@@ -150,7 +155,7 @@ const SearchProps = () => {
                   onSelect={setDate2}
                   initialFocus
                 />
-              </PopoverContent> */}
+              </PopoverContent>
             </Popover>
           </span>
         </header>
@@ -166,6 +171,8 @@ const SearchProps = () => {
                 pathname: "searchprop/PropInfo",
                 query: {
                   accom_id: desc.accom_id,
+                  checkInDate: date?.toString(),
+                  checkOutDate: date2?.toString(),
                 },
               }}
             >
