@@ -32,7 +32,8 @@ export const searchRouter = router({
         radius: z.number().optional(),
         accom_name: z.string().optional(),
         rating: z.number().optional(),
-        price: z.number().optional(),
+        priceMin: z.number().optional(),
+        priceMax: z.number().optional(),
         latitude: z.number().optional(),
         longitude: z.number().optional(),
         checkInDate: z.date().optional(),
@@ -50,7 +51,8 @@ export const searchRouter = router({
             gte: input.rating,
           },
           price: {
-            lte: input.price,
+            gte: input.priceMin,
+            lte: input.priceMax,
           },
           room: {
             some: {
@@ -59,12 +61,12 @@ export const searchRouter = router({
                   AND: [
                     {
                       start_date: {
-                        gte: input.checkInDate,
+                        lte: input.checkOutDate,
                       },
                     },
                     {
                       end_date: {
-                        lte: input.checkOutDate,
+                        gte: input.checkInDate,
                       },
                     },
                   ],
