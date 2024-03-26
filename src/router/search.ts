@@ -43,6 +43,7 @@ export const searchRouter = router({
     .query(async ({ input }) => {
       const filteredAccommodation = await prisma.accommodation.findMany({
         where: {
+          accommodation_status: "OPEN",
           name_a: {
             contains: input.accom_name,
             mode: "insensitive",
