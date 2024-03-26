@@ -149,9 +149,9 @@ const SearchProps = () => {
                       name="radius"
                       className="block w-full rounded-md border-0 bg-white py-1.5 pl-9 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       placeholder="10"
-                      type="search"
+                      type="number"
                     />
-                    <div className="text-md pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-sm">
                       Km
                     </div>
                   </div>
