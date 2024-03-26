@@ -134,7 +134,17 @@ const Traveler_Notification = ({
           )}
 
           {noti_type === "Review" && (
-            <div className="flex justify-between">
+            <Link
+              href={{
+                pathname: "/review",
+                query: {
+                  traveler_id: traveler_id,
+                  accom_id: accommodation_id,
+                  reservation_id: reservation_id,
+                },
+              }}
+              className="flex justify-between"
+            >
               <div>
                 <div>
                   <span className="text-[#06BCC1]">
@@ -144,7 +154,7 @@ const Traveler_Notification = ({
                     <div className="flex items-start">
                       <div>
                         <Image
-                          src="/StarFill.svg" //not sure if this is the right image
+                          src="/StarFill.svg"
                           width={30}
                           height={30}
                           alt="review"
@@ -160,7 +170,7 @@ const Traveler_Notification = ({
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           )}
         </div>
       </div>
