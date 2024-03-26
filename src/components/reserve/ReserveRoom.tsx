@@ -67,7 +67,9 @@ export default function ReserveRoom() {
         </Button>
         <div className="flex w-full flex-col gap-4">
           <ReserveBookingCard
+            accom_id={accom_id || ""}
             accomName={accomData.name_a}
+            accom_banner={accomData.banner || ""}
             roomName={roomData.room_name}
             price={roomData.price}
             location={location}

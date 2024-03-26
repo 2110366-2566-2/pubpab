@@ -21,12 +21,49 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import LoadingScreen from "@/components/ui/loading-screen";
 import ReadReviewCard from "@/components/review/readReview";
+import { getImageUrlFromS3 } from "@/lib/s3";
 
-const PropInfo = () => {
-  const queryParameters = new URLSearchParams(window.location.search);
-  const accom_id = queryParameters.get("accom_id");
-  const checkInDate = queryParameters.get("checkInDate");
-  const checkOutDate = queryParameters.get("checkOutDate");
+const PropInformation = ({
+  accom_id,
+  accom_name,
+  accom_description,
+  accom_banner,
+  accom_address,
+  accom_distinct,
+  accom_city,
+  accom_province,
+  accom_postal_code,
+  accom_rating,
+  accom_ggmap_link,
+  checkInDate,
+  checkOutDate,
+}: {
+  accom_id: string;
+  accom_name: string;
+  accom_description: string;
+  accom_banner: string;
+  accom_address: string;
+  accom_distinct: string;
+  accom_city: string;
+  accom_province: string;
+  accom_postal_code: string;
+  accom_rating: number;
+  accom_ggmap_link: string;
+  checkInDate: string;
+  checkOutDate: string;
+}) => {
+  const [url, setUrl] = useState<String>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(
+        "accommodation/" + accom_id + "/" + accom_banner,
+      );
+      setUrl(b);
+    };
+    fetchData();
+  });
+
   const [date, setDate] = React.useState<Date | undefined>(() => {
     if (checkInDate) {
       return new Date(checkInDate);
@@ -79,12 +116,13 @@ const PropInfo = () => {
   }
   const reviewsData = fetchReviews.data;
   const roomsData = findRooms.data;
-  const accomData = findAccommodation.data;
+
   const Info = roomsData.flatMap((entry) =>
     entry.room.map((room) => ({
       room_id: room.room_id,
-      accomName: accomData.name_a,
+      accomName: accom_name,
       roomName: room.room_name,
+      banner: room.banner,
       price: room.price,
       room: room.room_no,
       floor: room.floor,
@@ -97,9 +135,11 @@ const PropInfo = () => {
       wifi_available: room.wifi_available,
       washing_machine: room.washing_machine,
       restroom: room.restroom,
-      googlemap_link: accomData.ggmap_link,
+      googlemap_link: accom_ggmap_link,
     })),
   );
+
+  console.log(url);
 
   // let reviewData;
   // if (reviewsData != null) {
@@ -203,30 +243,36 @@ const PropInfo = () => {
           </a>
           <span className="inline-flex items-center gap-x-1.5 rounded-md bg-blue-900 px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-green-600/20">
             <StarIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-            {accomData.rating}
+            {accom_rating}
           </span>
         </div>
         <div className="w-full overflow-hidden rounded-lg border-2 border-gray-100 bg-white shadow">
-          <Image src={EastHotelImage} alt="" className="h-64 object-cover" />
+          <Image
+            src={url}
+            alt=""
+            className="h-64 object-cover"
+            width="1920"
+            height="1080"
+          />
           <div className="flex flex-row gap-8 px-8 pb-4 pt-8">
             <div className="flex-1">
               <h2 className="text-xl font-bold text-gray-900">
-                Name: {accomData.name_a}
+                Name: {accom_name}
               </h2>
               <p className="text-base font-normal text-gray-900">
-                Location: {accomData.address_a} {accomData.distinct_a}{" "}
-                {accomData.city} {accomData.province} {accomData.postal_code}
+                Location: {accom_address} {accom_distinct} {accom_city}{" "}
+                {accom_province} {accom_postal_code}
               </p>
               <div className="mt-4">
                 <span className="flex min-h-60 flex-col rounded-xl border border-blue-300 p-2 px-4 text-blue-300">
                   <h1>Description:</h1>
-                  <p>{accomData.description_a}</p>
+                  <p>{accom_description}</p>
                 </span>
               </div>
             </div>
             <div className="flex flex-1 flex-col">
               {/* <div className="flex flex-1 flex-row items-center justify-center rounded-lg bg-blue-900 text-center"> */}
-              <MapViewOnly MapURL={accomData.ggmap_link || ""} />
+              <MapViewOnly MapURL={accom_ggmap_link || ""} />
               {/* <p className="text-base font-semibold text-white">Google Map</p> */}
               {/* </div> */}
             </div>
@@ -244,6 +290,7 @@ const PropInfo = () => {
                 room_id: string | null;
                 accomName: string | null;
                 roomName: string | null;
+                banner: string | null;
                 price: number | null;
                 floor: number | null;
                 room: string | null;
@@ -254,6 +301,7 @@ const PropInfo = () => {
                 <RoomInfoCard
                   accomName={items.accomName ? items.accomName : ""}
                   roomName={items.roomName ? items.roomName : ""}
+                  banner={items.banner ? items.banner : ""}
                   price={items.price ? items.price : 0}
                   floor={items.floor ? items.floor : 1}
                   room={items.room ? items.room : ""}
@@ -295,6 +343,49 @@ const PropInfo = () => {
         </div>
       </section>
     </>
+  );
+};
+
+const PropInfo = () => {
+  const queryParameters = new URLSearchParams(window.location.search);
+  const accom_id = queryParameters.get("accom_id");
+  const checkInDate = queryParameters.get("checkInDate");
+  const checkOutDate = queryParameters.get("checkOutDate");
+
+  const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
+    accommodation_id: accom_id ? accom_id : "",
+  });
+
+  if (findAccommodation.error) {
+    return <div>Error: {findAccommodation.error.message}</div>;
+  }
+
+  if (findAccommodation.isLoading) {
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
+  }
+
+  const accomData = findAccommodation.data;
+
+  return (
+    <PropInformation
+      accom_id={accom_id || ""}
+      accom_banner={accomData.banner || ""}
+      accom_name={accomData.name_a}
+      accom_description={accomData.description_a}
+      accom_address={accomData.address_a}
+      accom_distinct={accomData.distinct_a}
+      accom_city={accomData.city}
+      accom_province={accomData.province}
+      accom_postal_code={accomData.postal_code}
+      accom_rating={accomData.rating}
+      accom_ggmap_link={accomData.ggmap_link || ""}
+      checkInDate={checkInDate || ""}
+      checkOutDate={checkOutDate || ""}
+    />
   );
 };
 export default PropInfo;

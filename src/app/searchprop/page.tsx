@@ -61,13 +61,13 @@ const SearchProps = () => {
   }
 
   const propertyData = findProperty.data;
-  console.log(propertyData);
 
   const Property = propertyData?.flatMap(
     (entry: {
       name_a: any;
       distinct_a: any;
       description_a: any;
+      banner: any;
       rating: any;
       price: any;
       ggmap_link: any;
@@ -76,6 +76,7 @@ const SearchProps = () => {
       name: entry.name_a,
       location: entry.distinct_a,
       description: entry.description_a,
+      banner: entry.banner,
       stars: entry.rating,
       price: entry.price,
       href: entry.ggmap_link,
@@ -180,6 +181,9 @@ const SearchProps = () => {
                   name={desc.name}
                   location={desc.location}
                   description={desc.description}
+                  imageUrl={
+                    "accommodation/" + desc.accom_id + "/" + desc.banner
+                  }
                   stars={desc.stars}
                   price={desc.price}
                 />

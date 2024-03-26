@@ -1,3 +1,5 @@
+import { chatRoomRouter } from "@/router/chat/chatroom";
+import { messageRouter } from "@/router/chat/message";
 import { accomodationRouter } from "@/router/host/accom";
 import { hostNotificationRouter } from "@/router/host/notification";
 import { hostProfileRouter } from "@/router/host/profile";
@@ -25,6 +27,10 @@ export const appRouter = router({
     profile: travelerProfileRouter,
     reservation: travelerReservationRouter,
     notification: travelerNotificationRouter,
+  }),
+  chat: router({
+    chat: chatRoomRouter,
+    message: messageRouter,
   }),
   payment: paymentRouter,
   user: userRouter,
