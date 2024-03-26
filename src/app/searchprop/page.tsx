@@ -46,42 +46,42 @@ const SearchProps = () => {
   //   },
   // ];
 
-  const findProperty = trpc.host.accomodation.findAll.useQuery();
+  // const findProperty = trpc.host.accomodation.findAll.useQuery();
 
-  if (findProperty.error) {
-    return <div>Error: {findProperty.error.message}</div>;
-  }
+  // if (findProperty.error) {
+  //   return <div>Error: {findProperty.error.message}</div>;
+  // }
 
-  if (findProperty.isLoading) {
-    return (
-      <div>
-        <LoadingScreen />
-      </div>
-    );
-  }
+  // if (findProperty.isLoading) {
+  //   return (
+  //     <div>
+  //       <LoadingScreen />
+  //     </div>
+  //   );
+  // }
 
-  const propertyData = findProperty.data;
-  console.log(propertyData);
+  // const propertyData = findProperty.data;
+  // console.log(propertyData);
 
-  const Property = propertyData?.flatMap(
-    (entry: {
-      name_a: any;
-      distinct_a: any;
-      description_a: any;
-      rating: any;
-      price: any;
-      ggmap_link: any;
-      accommodation_id: any;
-    }) => ({
-      name: entry.name_a,
-      location: entry.distinct_a,
-      description: entry.description_a,
-      stars: entry.rating,
-      price: entry.price,
-      href: entry.ggmap_link,
-      accom_id: entry.accommodation_id,
-    }),
-  );
+  // const Property = propertyData?.flatMap(
+  //   (entry: {
+  //     name_a: any;
+  //     distinct_a: any;
+  //     description_a: any;
+  //     rating: any;
+  //     price: any;
+  //     ggmap_link: any;
+  //     accommodation_id: any;
+  //   }) => ({
+  //     name: entry.name_a,
+  //     location: entry.distinct_a,
+  //     description: entry.description_a,
+  //     stars: entry.rating,
+  //     price: entry.price,
+  //     href: entry.ggmap_link,
+  //     accom_id: entry.accommodation_id,
+  //   }),
+  // );
 
   return (
     <>
@@ -159,7 +159,7 @@ const SearchProps = () => {
           </span>
         </header>
       </section>
-      <section className="flex justify-center ">
+      {/* <section className="flex justify-center ">
         <ul
           role="list"
           className="mt-3 grid w-full max-w-5xl grid-cols-1 gap-5"
@@ -187,7 +187,7 @@ const SearchProps = () => {
             </Link>
           ))}
         </ul>
-      </section>
+      </section> */}
     </>
   );
 };
