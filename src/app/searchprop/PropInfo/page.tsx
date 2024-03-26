@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LogInIcon, LogOutIcon, StarIcon, CheckIcon } from "lucide-react";
 import RoomInfoCard from "@/components/card/RoomInfoCard";
-
+import { MapViewOnly } from "@/components/GoogleMapView";
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
 import { CalendarIcon } from "lucide-react";
@@ -97,7 +97,7 @@ const PropInfo = () => {
       wifi_available: room.wifi_available,
       washing_machine: room.washing_machine,
       restroom: room.restroom,
-      googlemap_linke: accomData.ggmap_link,
+      googlemap_link: accomData.ggmap_link,
     })),
   );
 
@@ -225,9 +225,10 @@ const PropInfo = () => {
               </div>
             </div>
             <div className="flex flex-1 flex-col">
-              <div className="flex flex-1 flex-row items-center justify-center rounded-lg bg-blue-900 text-center">
-                <p className="text-base font-semibold text-white">Google Map</p>
-              </div>
+              {/* <div className="flex flex-1 flex-row items-center justify-center rounded-lg bg-blue-900 text-center"> */}
+              <MapViewOnly MapURL={accomData.ggmap_link || ""} />
+              {/* <p className="text-base font-semibold text-white">Google Map</p> */}
+              {/* </div> */}
             </div>
           </div>
           <div className="flex flex-col gap-4 px-8 py-4">
