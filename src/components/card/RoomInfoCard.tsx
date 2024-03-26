@@ -65,7 +65,7 @@ const RoomInfoCard = ({
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <Image
-        src={url}
+        src={url.toString()}
         alt="hotel"
         width="1920"
         height="1080"

@@ -248,7 +248,7 @@ const PropInformation = ({
         </div>
         <div className="w-full overflow-hidden rounded-lg border-2 border-gray-100 bg-white shadow">
           <Image
-            src={url}
+            src={url.toString()}
             alt=""
             className="h-64 object-cover"
             width="1920"

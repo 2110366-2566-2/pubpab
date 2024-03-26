@@ -91,7 +91,7 @@ const ReserveBookingCard = ({
             <h1 className="mb-2 text-2xl font-semibold">{roomName}</h1>
             <h4 className="mb-2  text-xl">{location}</h4>
             <Image
-              src={url}
+              src={url.toString()}
               alt="hotel"
               className="max-w-md rounded-lg object-scale-down"
               width="1920"

@@ -24,7 +24,7 @@ const PropertyAccomCard = ({
   return (
     <div className="relative rounded-lg bg-white shadow-md">
       <Image
-        src={url}
+        src={url.toString()}
         alt={title}
         width={1000}
         height={100}
