@@ -35,6 +35,8 @@ export const searchRouter = router({
         price: z.number().optional(),
         latitude: z.number().optional(),
         longitude: z.number().optional(),
+        checkInDate: z.date().optional(),
+        checkOutDate: z.date().optional(),
       }),
     )
     .query(async ({ input }) => {
@@ -49,6 +51,33 @@ export const searchRouter = router({
           },
           price: {
             lte: input.price,
+          },
+          room: {
+            some: {
+              reserve: {
+                none: {
+                  AND: [
+                    {
+                      start_date: {
+                        gte: input.checkInDate,
+                      },
+                    },
+                    {
+                      end_date: {
+                        lte: input.checkOutDate,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+        include: {
+          room: {
+            include: {
+              reserve: true,
+            },
           },
         },
       });
