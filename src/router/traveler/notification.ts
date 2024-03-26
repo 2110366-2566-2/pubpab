@@ -16,14 +16,25 @@ export const travelerNotificationRouter = router({
           "Cancellation",
           "Review",
         ]),
+        CheckInDate: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
+      const beforeCheckIn = new Date(input.CheckInDate);
+      beforeCheckIn.setDate(beforeCheckIn.getDate() - 1);
       const newIssue = await prisma.notification.create({
         data: {
           user_id: input.user_id,
           reservation_id: input.reservation_id,
           notification_type: input.notification_type,
+        },
+      });
+      await prisma.notification.create({
+        data: {
+          user_id: input.user_id,
+          reservation_id: input.reservation_id,
+          notification_type: "Reminder",
+          timestamp: beforeCheckIn,
         },
       });
       return newIssue;
