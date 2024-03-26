@@ -23,21 +23,28 @@ export default function InputBox() {
     mode: "onBlur",
   });
   return (
-    <div className="inputBox" style={{ backgroundColor: "#ddddf7" }}>
-      <div>Input</div>
-      <FormField
-        control={form.control}
-        name="input_box"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Enter a message</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <div
+      className="mt-8 flex flex-col items-center gap-12"
+      style={{ backgroundColor: "#ddddf7" }}
+    >
+      <div style={{ paddingRight: "1rem" }}>
+        <Form {...form}>
+          <FormField
+            control={form.control}
+            name="input_box"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Enter a message</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Form>
+      </div>
+      <div style={{ paddingLeft: "1rem" }}>Input</div>
     </div>
   );
 }
