@@ -79,7 +79,7 @@ const Traveler_Notification = ({
                       src="/Cancel.svg"
                       width={30}
                       height={30}
-                      alt="reserve"
+                      alt="cancellation"
                     />
                   </div>
                   <div className="ml-2">
@@ -114,11 +114,11 @@ const Traveler_Notification = ({
                           src="/Reminder.svg"
                           width={30}
                           height={30}
-                          alt="reserve"
+                          alt="reminder"
                         />
                       </div>
                       <div className="ml-2">
-                        <p>Reminder for reservation.</p>
+                        <p>Reminder for reservation</p>
                         <p>
                           {roomName} at {accommodationName}
                         </p>
@@ -131,6 +131,46 @@ const Traveler_Notification = ({
                 </div>
               </div>
             </div>
+          )}
+
+          {noti_type === "Review" && (
+            <Link
+              href={{
+                pathname: "/review",
+                query: {
+                  traveler_id: traveler_id,
+                  accom_id: accommodation_id,
+                  reservation_id: reservation_id,
+                },
+              }}
+              className="flex justify-between"
+            >
+              <div>
+                <div>
+                  <span className="text-[#06BCC1]">
+                    <p className="text-xs">
+                      {sentDate} {sentTime}
+                    </p>
+                    <div className="flex items-start">
+                      <div>
+                        <Image
+                          src="/StarFill.svg"
+                          width={30}
+                          height={30}
+                          alt="review"
+                        />
+                      </div>
+                      <div className="ml-2">
+                        <p>Please review your experience</p>
+                        <p>
+                          {roomName} at {accommodationName}
+                        </p>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </Link>
           )}
         </div>
       </div>

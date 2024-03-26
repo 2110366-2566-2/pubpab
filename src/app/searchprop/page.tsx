@@ -264,6 +264,9 @@ const SearchProps = () => {
                   name={desc.name}
                   location={desc.location}
                   description={desc.description}
+                  imageUrl={
+                    "accommodation/" + desc.accom_id + "/" + desc.banner
+                  }
                   stars={desc.stars}
                   price={desc.price}
                 />

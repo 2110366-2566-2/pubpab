@@ -2,28 +2,29 @@
 
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
-import EastHotelImage from "@/../../public/easthotel.jpeg";
 import { trpc } from "@/lib/trpc/client";
 import { differenceInDays } from "date-fns";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useEffect, useState } from "react";
 import getStripe from "@/lib/get-stripe";
 import { useSession } from "next-auth/react";
 
 const ReserveBookingCard = ({
-  host_id,
-  room_id,
   accom_id,
+  host_id,
+  accom_banner,
+  room_id,
   accomName,
   roomName,
   price,
-  //   adult,
-  //   child,
   location,
   checkInDate,
   checkOutDate,
 }: {
-  host_id: string;
-  room_id: string;
   accom_id: string;
+  host_id: string;
+  accom_banner: string;
+  room_id: string;
   accomName: string;
   roomName: string;
   price: number;
@@ -34,6 +35,17 @@ const ReserveBookingCard = ({
   checkOutDate: string;
 }) => {
   const { data: session } = useSession();
+  const [url, setUrl] = useState<String>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(
+        "accommodation/" + accom_id + "/" + accom_banner,
+      );
+      setUrl(b);
+    };
+    fetchData();
+  });
 
   const createPayment = trpc.payment.create.useMutation();
   const createCheckout = trpc.payment.createCheckout.useMutation();
@@ -79,9 +91,11 @@ const ReserveBookingCard = ({
             <h1 className="mb-2 text-2xl font-semibold">{roomName}</h1>
             <h4 className="mb-2  text-xl">{location}</h4>
             <Image
-              src={EastHotelImage}
+              src={url.toString()}
               alt="hotel"
               className="max-w-md rounded-lg object-scale-down"
+              width="1920"
+              height="1080"
             />
           </span>
         </div>

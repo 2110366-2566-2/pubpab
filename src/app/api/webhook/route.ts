@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
           user_id: meta?.traveler_id || "",
           reservation_id: travelerReserve.reservation_id,
           notification_type: "Reservation",
+          CheckInDate: meta?.checkInDate || "",
         });
 
         createHostNotification.create({
