@@ -13,15 +13,11 @@ const ChatPage = () => {
   };
   return (
     <>
-      <div
-        style={{ flex: "30%", paddingRight: "1rem", alignItems: "flex-start" }}
-      >
+      <div style={{ flex: "30%", paddingRight: "1rem" }}>
         <p>FriendChatList</p>
         <FriendChatList onChatIdChange={handleChatIdChange} />
       </div>
-      <div
-        style={{ flex: "70%", paddingLeft: "1rem", alignItems: "flex-start" }}
-      >
+      <div style={{ flex: "70%", paddingLeft: "1rem" }}>
         <p>ChatArea</p>
         <ChatArea chat_id={chatId} />
       </div>

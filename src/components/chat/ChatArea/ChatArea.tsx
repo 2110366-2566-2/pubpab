@@ -30,7 +30,10 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
   const user = session?.user?.id;
 
   const chatStyle = {
-    flex: 2,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "visible",
+    weight: "100%",
   };
   const chatInfoStyle = {
     display: "flex",
@@ -48,11 +51,11 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
   const chatAreaStyle = {
     display: "flex",
     // height: 'calc(100% - 160px)',
+
     backgroundColor: "whitesmoke",
   };
   const inputAreaStyle = {
     display: "flex",
-    height: "calc(100% - 160px)",
     // height: "50px",
     paddingTop: "10px",
   };
