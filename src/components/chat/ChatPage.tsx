@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import MessageArea from "./MessageArea";
-import UserList from "./UserList";
+import ChatArea from "./ChatArea/ChatArea";
+import FriendChatList from "./FriendChatList/FriendChatList";
 
-const ChatPageInside = () => {
+const ChatPage = () => {
   const [chatId, setChatId] = useState<string>("");
 
   // Function to update chat_id
@@ -16,17 +16,17 @@ const ChatPageInside = () => {
       <div
         style={{ flex: "30%", paddingRight: "1rem", alignItems: "flex-start" }}
       >
-        <p>Userlist</p>
-        <UserList onChatIdChange={handleChatIdChange} />
+        <p>FriendChatList</p>
+        <FriendChatList onChatIdChange={handleChatIdChange} />
       </div>
       <div
         style={{ flex: "70%", paddingLeft: "1rem", alignItems: "flex-start" }}
       >
-        <p>MessageArea</p>
-        <MessageArea chat_id={chatId} />
+        <p>ChatArea</p>
+        <ChatArea chat_id={chatId} />
       </div>
     </>
   );
 };
 
-export default ChatPageInside;
+export default ChatPage;

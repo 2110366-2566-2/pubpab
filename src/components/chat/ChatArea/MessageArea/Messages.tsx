@@ -1,6 +1,6 @@
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
-import Message from "@/components/chat/Message";
+import Message from "@/components/chat/ChatArea/MessageArea/Message";
 
 const Messages = () => {
   return (

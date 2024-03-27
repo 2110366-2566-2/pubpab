@@ -1,10 +1,10 @@
-import ChatPageInside from "@/components/chat/ChatPage";
+import ChatPage from "@/components/chat/ChatPage";
 
-export default async function ChatPage() {
+export default async function ChatPage2() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex" style={{ width: "100%" }}>
-        <ChatPageInside />
+        <ChatPage />
       </div>
     </div>
   );

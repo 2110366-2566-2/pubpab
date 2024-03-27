@@ -1,9 +1,11 @@
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
-import Messages from "@/components/chat/Messages";
-import InputBox from "@/components/chat/InputBox";
+import Messages from "@/components/chat/ChatArea/MessageArea/Messages";
+import InputBox from "@/components/chat/ChatArea/InputArea/InputBox";
+import user1 from "@/../public/user1.jpg";
+import Image from "next/image";
 
-const MessageArea = ({ chat_id }: { chat_id: string }) => {
+const ChatArea = ({ chat_id }: { chat_id: string }) => {
   let page_number = 0;
   const { data: session } = useSession();
 
@@ -27,15 +29,23 @@ const MessageArea = ({ chat_id }: { chat_id: string }) => {
 
   const onInvalid = (errors: unknown) => console.error(errors);
   return (
-    <div className="chats">
-      <div className="userChat">
-        <div className="userChatInfo">
-          <Messages />
-          <InputBox />
+    <div className="chat">
+      <div className="chatInfo">
+        <span>Jane</span>
+        <div className="chatIcons">
+          <Image
+            className="h-12 w-12 flex-none rounded-full bg-gray-50"
+            src={user1}
+            alt=""
+          />
         </div>
+      </div>
+      <div className="chatArea">
+        <Messages />
+        <InputBox />
       </div>
     </div>
   );
 };
 
-export default MessageArea;
+export default ChatArea;
