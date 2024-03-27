@@ -64,6 +64,10 @@ const PropInformation = ({
     fetchData();
   });
 
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const [date, setDate] = React.useState<Date | undefined>(() => {
     if (checkInDate) {
       return new Date(checkInDate);
@@ -74,17 +78,17 @@ const PropInformation = ({
     if (checkOutDate) {
       return new Date(checkOutDate);
     }
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1); // Adding one day
+    // Adding one day
     return tomorrow;
   });
   const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
     accommodation_id: accom_id ? accom_id : "",
   });
 
-  const findRooms = trpc.host.room.findMany.useQuery({
-    accommodation_id: accom_id || "",
+  const findRooms = trpc.search.filterRoom.useQuery({
+    accommodation_id: accom_id,
+    checkInDate: date ?? today,
+    checkOutDate: date2 ?? tomorrow,
   });
 
   if (findRooms.error) {
@@ -117,29 +121,25 @@ const PropInformation = ({
   const reviewsData = fetchReviews.data;
   const roomsData = findRooms.data;
 
-  const Info = roomsData.flatMap((entry) =>
-    entry.room.map((room) => ({
-      room_id: room.room_id,
-      accomName: accom_name,
-      roomName: room.room_name,
-      banner: room.banner,
-      price: room.price,
-      room: room.room_no,
-      floor: room.floor,
-      bed: room.bed_type,
-      adult: room.max_adult,
-      children: room.max_children,
-      smoking: room.smoking,
-      noise: room.noise,
-      pet: room.pet,
-      wifi_available: room.wifi_available,
-      washing_machine: room.washing_machine,
-      restroom: room.restroom,
-      googlemap_link: accom_ggmap_link,
-    })),
-  );
-
-  console.log(url);
+  const Info = roomsData.flatMap((entry) => ({
+    room_id: entry.room_id,
+    accomName: accom_name,
+    roomName: entry.room_name,
+    banner: entry.banner,
+    price: entry.price,
+    room: entry.room_no,
+    floor: entry.floor,
+    bed: entry.bed_type,
+    adult: entry.max_adult,
+    children: entry.max_children,
+    smoking: entry.smoking,
+    noise: entry.noise,
+    pet: entry.pet,
+    wifi_available: entry.wifi_available,
+    washing_machine: entry.washing_machine,
+    restroom: entry.restroom,
+    googlemap_link: accom_ggmap_link,
+  }));
 
   // let reviewData;
   // if (reviewsData != null) {
