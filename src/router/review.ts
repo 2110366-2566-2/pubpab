@@ -50,7 +50,7 @@ export const feedbackRouter = router({
           return newFeedback;
         }
         const newAverageRating =
-          (existingAccommodation.rating * reviewCount + input.score) /
+          (existingAccommodation.rating * (reviewCount - 1) + input.score) /
           reviewCount;
 
         // Update the accommodation with the new average rating

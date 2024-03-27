@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   review: z
     .string()
-    .length(1000, "Review must be less than 1000 characters long."),
+    .max(1000, "Review must be less than 1000 characters long."),
 });
 
 const WriteReviewCard = ({
@@ -89,7 +89,7 @@ const WriteReviewCard = ({
 
   const createReview = trpc.review.writeReview.useMutation();
   const router = useRouter();
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       await createReview.mutateAsync({
         reservation_id: reservationId,
@@ -107,7 +107,7 @@ const WriteReviewCard = ({
       console.error("Error submitting review:", error);
       // Handle error (e.g., show error message)
     }
-  };
+  }
 
   return (
     <Card className="relative m-4 w-2/3 p-5">
@@ -137,31 +137,26 @@ const WriteReviewCard = ({
                         {renderStars()}
                       </div>
                     </div>
-                    <div className="flex flex-grow flex-col">
-                      <FormLabel className="mb-2 text-lg font-semibold">
-                        Review
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Write your review..."
-                          {...field}
-                        />
-                      </FormControl>
-                      {errors.review && (
-                        <FormMessage>{errors.review.message}</FormMessage>
-                      )}
-                    </div>
+
+                    <FormLabel className=" mb-2 flex flex-grow flex-col text-lg font-semibold">
+                      Review
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Write your review..." {...field} />
+                    </FormControl>
+                    {errors.review && (
+                      <FormMessage>{errors.review.message}</FormMessage>
+                    )}
                   </FormItem>
                 )}
               />
-              <div className="absolute bottom-0 right-0 mb-5 mr-5">
-                <Button
-                  className="text-grey-800 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-                  type="submit"
-                >
-                  Confirm
-                </Button>
-              </div>
+
+              <Button
+                className="text-grey-800 absolute bottom-0 right-0 mb-5 mr-5 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                type="submit"
+              >
+                Confirm
+              </Button>
             </form>
           </Form>
         </div>
