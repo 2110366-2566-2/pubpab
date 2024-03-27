@@ -226,7 +226,7 @@ const SearchProps = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
-                        fromDate={date2}
+                        fromDate={date}
                         mode="single"
                         selected={date2}
                         onSelect={setDate2}
