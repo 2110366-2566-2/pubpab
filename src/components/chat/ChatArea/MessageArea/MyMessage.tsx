@@ -23,7 +23,7 @@ const messageContentStyle = {
   paddingRight: "10px",
 };
 
-const MyMessage = () => {
+const MyMessage = ({ text }: { text: string }) => {
   return (
     <div className="message" style={messageStyle}>
       <div className="messageInfoContent" style={messageInfoStyle}>
@@ -32,7 +32,7 @@ const MyMessage = () => {
           src={user3}
           alt=""
         />
-        <span style={{ fontSize: "10px" }}>just now</span>
+        {/* <span style={{ fontSize: "10px" }}>just now</span> */}
       </div>
       <div className="messageContent" style={messageContentStyle}>
         <p>How was the game?</p>

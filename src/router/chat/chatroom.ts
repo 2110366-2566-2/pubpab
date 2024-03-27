@@ -24,7 +24,7 @@ export const chatRoomRouter = router({
 
       try {
         if (traveler_id && host_id) {
-          const chatRoom = await prisma.chatroom.findFirst({
+          const chatRoom = await prisma.chatroom.findMany({
             where: {
               host_id,
               traveler_id,

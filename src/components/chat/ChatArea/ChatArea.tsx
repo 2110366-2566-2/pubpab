@@ -8,27 +8,6 @@ import Add from "@/../public/img/add.png";
 import More from "@/../public/img/more.png";
 
 const ChatArea = ({ chat_id }: { chat_id: string }) => {
-  let page_number = 0;
-  const { data: session } = useSession();
-
-  // if (chat_id === "") return null;
-
-  const getMessages = trpc.chat.message.get.useQuery({
-    chatroom_id: chat_id,
-    page: page_number,
-  });
-
-  if (getMessages.error) {
-    return <div>Error: {getMessages.error.message}</div>;
-  }
-
-  // if (getMessages.isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  const messages = getMessages.data;
-  const user = session?.user?.id;
-
   const chatStyle = {
     display: "flex",
     flexDirection: "column",
@@ -73,7 +52,7 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
         </div>
       </div>
       <div className="chatArea" style={chatAreaStyle}>
-        <Messages />
+        <Messages chat_id={chat_id} />
       </div>
       <div className="inputArea" style={inputAreaStyle}>
         <InputBox />
