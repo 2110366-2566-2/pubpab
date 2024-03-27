@@ -47,7 +47,11 @@ export const travelerNotificationRouter = router({
     )
     .query(async ({ input }) => {
       const notis = await prisma.notification.findMany({
-        where: { user_id: input.traveler_id, timestamp: { lt: new Date() } },
+        where: {
+          user_id: input.traveler_id,
+          timestamp: { lt: new Date() },
+          is_display: true,
+        },
         select: {
           notification_type: true,
           timestamp: true,

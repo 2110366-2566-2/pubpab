@@ -63,6 +63,17 @@ export const feedbackRouter = router({
           },
         });
 
+        await prisma.notification.updateMany({
+          where: {
+            reservation_id: input.reservation_id,
+            user_id: input.traveler_id,
+            notification_type: "Review",
+          },
+          data: {
+            is_display: false,
+          },
+        });
+
         return newFeedback;
       } catch (error) {
         if (error instanceof TRPCError) {
