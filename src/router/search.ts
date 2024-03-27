@@ -60,11 +60,11 @@ export const searchRouter = router({
               reserve: {
                 none: {
                   AND: [
-                    {
-                      start_date: {
-                        lte: input.checkOutDate,
-                      },
-                    },
+                    // {
+                    //   start_date: {
+                    //     lte: input.checkOutDate,
+                    //   },
+                    // },
                     {
                       end_date: {
                         gte: input.checkInDate,
