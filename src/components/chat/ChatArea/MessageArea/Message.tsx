@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 
 const messageStyle = {
-  color: "blue",
+  color: "black",
   backgroundColor: "lightgray",
 };
 

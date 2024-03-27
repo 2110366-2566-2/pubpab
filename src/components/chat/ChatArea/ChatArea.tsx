@@ -2,8 +2,10 @@ import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
 import Messages from "@/components/chat/ChatArea/MessageArea/Messages";
 import InputBox from "@/components/chat/ChatArea/InputArea/InputBox";
-import user1 from "@/../public/user1.jpg";
 import Image from "next/image";
+import Cam from "@/../public/img/cam.png";
+import Add from "@/../public/img/add.png";
+import More from "@/../public/img/more.png";
 
 const ChatArea = ({ chat_id }: { chat_id: string }) => {
   let page_number = 0;
@@ -27,17 +29,30 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
   const messages = getMessages.data;
   const user = session?.user?.id;
 
+  const chatStyle = {
+    flex: 2,
+  };
+  const chatInfoStyle = {
+    display: "flex",
+    height: "50px",
+    color: "white",
+    "background-color": "#5d5b5d",
+    "align-items": "center",
+    "justify-content": "space-between",
+  };
+  const chatIconsStyle = {
+    display: "flex",
+    flexDirection: "row",
+  };
   const onInvalid = (errors: unknown) => console.error(errors);
   return (
-    <div className="chat">
-      <div className="chatInfo">
-        <span>Jane</span>
-        <div className="chatIcons">
-          <Image
-            className="h-12 w-12 flex-none rounded-full bg-gray-50"
-            src={user1}
-            alt=""
-          />
+    <div className="chat" style={chatStyle}>
+      <div className="chatInfo" style={chatInfoStyle}>
+        <span>Jay Chanathip</span>
+        <div className="chatIcons" style={chatIconsStyle}>
+          <Image src={Cam} alt="" />
+          <Image src={Add} alt="" />
+          <Image src={More} alt="" />
         </div>
       </div>
       <div className="chatArea">

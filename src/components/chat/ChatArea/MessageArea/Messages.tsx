@@ -4,7 +4,10 @@ import Message from "@/components/chat/ChatArea/MessageArea/Message";
 
 const Messages = () => {
   return (
-    <div className="messages">
+    <div
+      className="messages"
+      style={{ backgroundColor: "whitesmoke", padding: "10px" }}
+    >
       <Message />
       <Message />
       <Message />
