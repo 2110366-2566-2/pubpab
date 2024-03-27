@@ -15,7 +15,7 @@ const UserChatClicked = () => {
             Jay Chanathip
           </p>
           <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-            Yesterday match was very fun.
+            I want to be transfered to Burirum.
           </p>
         </div>
       </div>

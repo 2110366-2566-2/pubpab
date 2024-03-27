@@ -8,6 +8,8 @@ import { Listbox, Transition } from "@headlessui/react";
 // import { useRouter } from "next/navigation";
 // import { z } from "zod";
 // import { useForm } from "react-hook-form";
+import user3 from "@/../public/user3.jpg";
+import Image from "next/image";
 import {
   FaceFrownIcon,
   FaceSmileIcon as FaceSmileIconMini,
@@ -70,11 +72,11 @@ export default function InputBox() {
   const [selected, setSelected] = useState(moods[5]);
 
   return (
-    <div className="flex items-start space-x-4">
+    <div className="flex items-start space-x-4" style={{ width: "100%" }}>
       <div className="flex-shrink-0">
-        <img
+        <Image
           className="inline-block h-10 w-10 rounded-full"
-          src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+          src={user3}
           alt=""
         />
       </div>
@@ -82,14 +84,14 @@ export default function InputBox() {
         <form action="#">
           <div className="border-b border-gray-200 focus-within:border-indigo-600">
             <label htmlFor="comment" className="sr-only">
-              Add your comment
+              Enter a message
             </label>
             <textarea
               rows={3}
               name="comment"
               id="comment"
               className="block w-full resize-none border-0 border-b border-transparent p-0 pb-2 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring-0 sm:text-sm sm:leading-6"
-              placeholder="Add your comment..."
+              placeholder="Enter a message"
               defaultValue={""}
             />
           </div>

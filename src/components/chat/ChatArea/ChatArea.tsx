@@ -36,6 +36,7 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
     display: "flex",
     height: "50px",
     color: "white",
+    paddingLeft: "4px",
     "background-color": "#5d5b5d",
     "align-items": "center",
     "justify-content": "space-between",
@@ -43,6 +44,17 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
   const chatIconsStyle = {
     display: "flex",
     flexDirection: "row",
+  };
+  const chatAreaStyle = {
+    display: "flex",
+    // height: 'calc(100% - 160px)',
+    backgroundColor: "whitesmoke",
+  };
+  const inputAreaStyle = {
+    display: "flex",
+    height: "calc(100% - 160px)",
+    // height: "50px",
+    paddingTop: "10px",
   };
   const onInvalid = (errors: unknown) => console.error(errors);
   return (
@@ -55,8 +67,10 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
           <Image src={More} alt="" />
         </div>
       </div>
-      <div className="chatArea">
+      <div className="chatArea" style={chatAreaStyle}>
         <Messages />
+      </div>
+      <div className="inputArea" style={inputAreaStyle}>
         <InputBox />
       </div>
     </div>
