@@ -12,12 +12,14 @@ export const travelerReservationRouter = router({
       }),
     )
     .query(async ({ input }) => {
+      const today = new Date();
       const reserves = await prisma.reserve.findMany({
         where: {
           traveler_id: input.traveler_id,
           check_in_status: {
             not: "Cancel",
           },
+          end_date: { gte: today },
         },
         select: {
           start_date: true,
