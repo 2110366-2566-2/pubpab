@@ -44,7 +44,6 @@ const PropertyList = ({
   range: number;
   nameFilter: string;
 }) => {
-  console.log(star, price, date, date2, range, nameFilter);
   const filteredAccom = trpc.search.filter.useQuery({
     accom_name: nameFilter,
     rating: star,
@@ -54,8 +53,6 @@ const PropertyList = ({
     priceMax: price[1],
     radius: undefined,
   });
-  const allAccom = trpc.host.accomodation.findAll.useQuery();
-  console.log(allAccom.data);
   const accomData = filteredAccom.data?.map((e) => ({
     name: e.name_a,
     location: e.distinct_a,
@@ -71,7 +68,7 @@ const PropertyList = ({
   return (
     <section className="flex justify-center ">
       <ul role="list" className="mt-12 grid w-full max-w-5xl grid-cols-1 gap-5">
-        {accomData?.flatMap((desc) => (
+        {accomData?.map((desc) => (
           <Link
             href={{
               pathname: "searchprop/PropInfo",
@@ -105,7 +102,7 @@ const SearchProps = () => {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   const [star, setStar] = React.useState<number | number[]>(0);
-  const [price, setPrice] = React.useState<number[] | any>([1000, 5000]);
+  const [price, setPrice] = React.useState<number[] | any>([0, 5000]);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [date2, setDate2] = React.useState<Date | undefined>(tomorrow);
   const [range, setRange] = React.useState<number>(10);
@@ -249,7 +246,7 @@ const SearchProps = () => {
               <Slider
                 range
                 min={0}
-                max={20000}
+                max={50000}
                 step={100}
                 defaultValue={price}
                 onChange={setPrice}

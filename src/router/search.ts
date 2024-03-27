@@ -118,4 +118,58 @@ export const searchRouter = router({
       }
       return filteredAccommodation;
     }),
+  filterRoom: publicProcedure
+    .input(
+      z.object({
+        accommodation_id: z.string(),
+        checkInDate: z.date(),
+        checkOutDate: z.date(),
+      }),
+    )
+    .query(async ({ input }) => {
+      /*
+      room: {
+            some: {
+              reserve: {
+                none: {
+                  AND: [
+                    {
+                      start_date: {
+                        lte: input.checkOutDate,
+                      },
+                    },
+                    {
+                      end_date: {
+                        gte: input.checkInDate,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+      */
+      const filteredRoom = await prisma.room.findMany({
+        where: {
+          accommodation_id: input.accommodation_id,
+          reserve: {
+            none: {
+              AND: [
+                {
+                  start_date: {
+                    lte: input.checkOutDate,
+                  },
+                },
+                {
+                  end_date: {
+                    gte: input.checkInDate,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      });
+      return filteredRoom;
+    }),
 });
