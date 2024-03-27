@@ -34,6 +34,9 @@ const UserList = ({ onChatIdChange }: UserListProps) => {
             <User />
             <User />
             <User />
+            <User />
+            <User />
+            <User />
           </ul>
         </div>
       </div>

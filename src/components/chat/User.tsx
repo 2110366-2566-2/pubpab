@@ -20,7 +20,7 @@ const User = () => {
         </div>
       </div>
       <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-        <p className="text-sm leading-6 text-gray-900">Co-Founder / CEO</p>
+        <p className="text-sm leading-6 text-gray-900">1</p>
       </div>
     </li>
   );
