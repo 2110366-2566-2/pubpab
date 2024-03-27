@@ -41,6 +41,10 @@ export default function TravelerBookings() {
               reservation_id={booking.reservation_id}
               host_id={booking.room.accommodation?.host_id ?? ""}
               traveler_id={booking.traveler_id ?? ""}
+              accommodation_id={
+                booking.room.accommodation?.accommodation_id ?? ""
+              }
+              banner={booking.room.accommodation?.banner ?? ""}
             />
           </div>
         ))}

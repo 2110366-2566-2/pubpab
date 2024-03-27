@@ -34,6 +34,8 @@ export const hostReservationRouter = router({
               accommodation: {
                 select: {
                   name_a: true,
+                  accommodation_id: true,
+                  banner: true,
                 },
               },
             },

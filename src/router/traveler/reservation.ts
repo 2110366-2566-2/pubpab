@@ -31,8 +31,10 @@ export const travelerReservationRouter = router({
               max_children: true,
               accommodation: {
                 select: {
+                  accommodation_id: true,
                   name_a: true,
                   host_id: true,
+                  banner: true,
                 },
               },
             },

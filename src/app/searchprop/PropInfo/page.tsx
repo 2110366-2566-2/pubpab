@@ -125,7 +125,14 @@ const PropInformation = ({
           accomName={review.reserve.room.accommodation?.name_a ?? ""}
           roomName={review.reserve.room.room_name}
           location={review.reserve.room.accommodation?.address_a ?? ""}
-          imageURL={review.picture}
+          imageURL={
+            "accommodation/" +
+            review.reserve.room.accommodation?.accommodation_id +
+            "/" +
+            review.reserve.room_id +
+            "/" +
+            review.picture
+          }
           rating={review.score || 0}
           reviewDescription={review.text || "No review"}
           reviewDate={review.timestamp?.toString() || ""}
