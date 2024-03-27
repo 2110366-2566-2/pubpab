@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc/client";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -19,11 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   review: z
     .string()
-    .length(1000, "Review must be less than 1000 characters long."),
+    .max(1000, "Review must be less than 1000 characters long."),
 });
 
 const WriteReviewCard = ({
@@ -86,8 +88,8 @@ const WriteReviewCard = ({
   });
 
   const createReview = trpc.review.writeReview.useMutation();
-
-  const onSubmit = async (data: any) => {
+  const router = useRouter();
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       await createReview.mutateAsync({
         reservation_id: reservationId,
@@ -97,17 +99,15 @@ const WriteReviewCard = ({
         text: data.review,
         score: rating, // Assuming 'rating' is passed from props
       });
+      console.log(data.review);
       console.log("Review submitted successfully");
-      console.log(userId);
-      console.log(accommodationId);
+      router.push("/");
       // You can add logic here to redirect or show a success message
     } catch (error) {
       console.error("Error submitting review:", error);
-      console.log(userId);
-      console.log(accommodationId);
       // Handle error (e.g., show error message)
     }
-  };
+  }
 
   return (
     <Card className="relative m-4 w-2/3 p-5">
@@ -125,39 +125,41 @@ const WriteReviewCard = ({
         <div className="flex w-1/2 flex-col justify-between pl-5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormItem>
-                <div className="mb-20"></div>
-                <div>
-                  <p className="text-lg font-semibold">Rating</p>
-                  <div className="mb-2 mt-2 flex items-center">
-                    {renderStars()}
-                  </div>
-                </div>
-                <div className="flex flex-grow flex-col">
-                  <FormLabel className="mb-2 text-lg font-semibold">
-                    Review
-                  </FormLabel>
-                  <Textarea
-                    placeholder="Write your review..."
-                    {...control}
-                    name="review"
-                  />
-                  {errors.review && (
-                    <FormMessage>{errors.review.message}</FormMessage>
-                  )}
-                </div>
-              </FormItem>
+              <FormField
+                control={form.control}
+                name="review"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="mb-20"></div>
+                    <div>
+                      <p className="text-lg font-semibold">Rating</p>
+                      <div className="mb-2 mt-2 flex items-center">
+                        {renderStars()}
+                      </div>
+                    </div>
+
+                    <FormLabel className=" mb-2 flex flex-grow flex-col text-lg font-semibold">
+                      Review
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Write your review..." {...field} />
+                    </FormControl>
+                    {errors.review && (
+                      <FormMessage>{errors.review.message}</FormMessage>
+                    )}
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                className="text-grey-800 absolute bottom-0 right-0 mb-5 mr-5 w-40 border border-black bg-[#F4EDEA] hover:text-white"
+                type="submit"
+              >
+                Confirm
+              </Button>
             </form>
           </Form>
         </div>
-      </div>
-      <div className="absolute bottom-0 right-0 mb-5 mr-5">
-        <Button
-          className="text-grey-800 w-40 border border-black bg-[#F4EDEA] hover:text-white"
-          type="submit"
-        >
-          Confirm
-        </Button>
       </div>
     </Card>
   );

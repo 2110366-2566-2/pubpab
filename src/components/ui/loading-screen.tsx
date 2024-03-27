@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function loadingscreen() {
   return (
-    <div className="loading-screen flex w-full items-center">
+    <div className="loading-screen my-auto flex w-full items-center justify-center object-center">
       <div className="flex items-center space-x-4">
         <Image
           src="/Logo.svg"

@@ -159,16 +159,16 @@ const PropInformation = ({
   // }
   const reviewData = reviewsData ? (
     <>
-      {reviewsData.accommodation.room.map((room) => (
+      {reviewsData.map((review, index) => (
         <ReadReviewCard
-          // key={room.room_id}
-          accomName={reviewsData.accommodation.name_a}
-          roomName={room.room_name}
-          location={reviewsData.accommodation.address_a}
-          imageURL={reviewsData.picture}
-          rating={reviewsData.score || 0}
-          reviewDescription={reviewsData.text || "no Review"}
-          reviewDate={reviewsData.timestamp?.toDateString() || ""}
+          key={index}
+          accomName={review.reserve.room.accommodation?.name_a ?? ""}
+          roomName={review.reserve.room.room_name}
+          location={review.reserve.room.accommodation?.address_a ?? ""}
+          imageURL={review.picture}
+          rating={review.score || 0}
+          reviewDescription={review.text || "No review"}
+          reviewDate={review.timestamp?.toString() || ""}
         />
       ))}
     </>
