@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
           room_id: meta?.room_id || "",
           traveler_id: meta?.traveler_id || "",
           payment_id: meta?.payment_id || "",
-          start_date: new Date(meta?.checkInDate || ""),
-          end_date: new Date(meta?.checkOutDate || ""),
+          start_date: new Date(`${meta?.checkInDate} UTC` || ""),
+          end_date: new Date(`${meta?.checkOutDate} UTC` || ""),
         });
 
         createTravelerNotification.create({
