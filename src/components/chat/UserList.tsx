@@ -1,8 +1,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
-import user1 from "@/../public/user1.jpg";
-import Image from "next/image";
-import User from "@/components/chat/User";
+import UserChat from "@/components/chat/UserChat";
+import UserChatClicked from "@/components/chat/UserChatClicked";
 
 type OnChatIdChange = (chatId: string) => void;
 
@@ -30,13 +29,13 @@ const UserList = ({ onChatIdChange }: UserListProps) => {
       <div className="chats">
         <div className="userChat">
           <ul role="list" className="divide-y divide-gray-100">
-            <User />
-            <User />
-            <User />
-            <User />
-            <User />
-            <User />
-            <User />
+            <UserChat />
+            <UserChatClicked />
+            <UserChat />
+            <UserChat />
+            <UserChat />
+            <UserChat />
+            <UserChat />
           </ul>
         </div>
       </div>
