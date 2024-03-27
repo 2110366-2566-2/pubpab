@@ -29,17 +29,87 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import LoadingScreen from "@/components/ui/loading-screen";
 
+const PropertyList = ({
+  star,
+  price,
+  date,
+  date2,
+  range,
+  nameFilter,
+}: {
+  star: number;
+  price: number[];
+  date: Date;
+  date2: Date;
+  range: number;
+  nameFilter: string;
+}) => {
+  console.log(star, price, date, date2, range, nameFilter);
+  const filteredAccom = trpc.search.filter.useQuery({
+    accom_name: nameFilter,
+    rating: star,
+    checkInDate: date,
+    checkOutDate: date2,
+    priceMin: price[0],
+    priceMax: price[1],
+    radius: undefined,
+  });
+  const allAccom = trpc.host.accomodation.findAll.useQuery();
+  console.log(allAccom.data);
+  const accomData = filteredAccom.data?.map((e) => ({
+    name: e.name_a,
+    location: e.distinct_a,
+    description: e.description_a,
+    stars: e.rating,
+    price: e.price,
+    href: e.ggmap_link,
+    accom_id: e.accommodation_id,
+    banner: e.banner,
+  }));
+
+  console.log(accomData);
+  return (
+    <section className="flex justify-center ">
+      <ul role="list" className="mt-12 grid w-full max-w-5xl grid-cols-1 gap-5">
+        {accomData?.flatMap((desc) => (
+          <Link
+            href={{
+              pathname: "searchprop/PropInfo",
+              query: {
+                accom_id: desc.accom_id,
+                checkInDate: date?.toString(),
+                checkOutDate: date2?.toString(),
+              },
+            }}
+          >
+            <li className="col-span-1 rounded-md shadow-sm">
+              <PropertyListCard
+                name={desc.name}
+                location={desc.location}
+                description={desc.description}
+                imageUrl={"accommodation/" + desc.accom_id + "/" + desc.banner}
+                stars={desc.stars}
+                price={desc.price}
+              />
+            </li>
+          </Link>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
 const SearchProps = () => {
   const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const [star, setStar] = React.useState<number | number[]>(0);
   const [price, setPrice] = React.useState<number[] | any>([1000, 5000]);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [date2, setDate2] = React.useState<Date | undefined>(() => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1); // Adding one day
-    return tomorrow;
-  });
+  const [date2, setDate2] = React.useState<Date | undefined>(tomorrow);
+  const [range, setRange] = React.useState<number>(10);
+  const [nameFilter, setNameFilter] = React.useState<string>("");
 
   return (
     <>
@@ -58,7 +128,8 @@ const SearchProps = () => {
                   id="search"
                   name="search"
                   className="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder="Text"
+                  value={nameFilter}
+                  onChange={(e) => setNameFilter(e.target.value)}
                   type="search"
                 />
               </div>
@@ -93,10 +164,11 @@ const SearchProps = () => {
                       id="radius"
                       name="radius"
                       className="block w-full rounded-md border-0 bg-white py-1.5 pl-9 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      placeholder="10"
-                      type="search"
+                      value={range}
+                      type="number"
+                      onChange={(e) => setRange(Number(e.target.value))}
                     />
-                    <div className="text-md pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-sm">
                       Km
                     </div>
                   </div>
@@ -154,7 +226,7 @@ const SearchProps = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
-                        fromDate={date2}
+                        fromDate={date}
                         mode="single"
                         selected={date2}
                         onSelect={setDate2}
@@ -188,38 +260,14 @@ const SearchProps = () => {
           </section>
         </header>
       </section>
-      {/* <section className="flex justify-center ">
-        <ul
-          role="list"
-          className="mt-3 grid w-full max-w-5xl grid-cols-1 gap-5"
-        >
-          {Property?.flatMap((desc) => (
-            <Link
-              href={{
-                pathname: "searchprop/PropInfo",
-                query: {
-                  accom_id: desc.accom_id,
-                  checkInDate: date?.toString(),
-                  checkOutDate: date2?.toString(),
-                },
-              }}
-            >
-              <li className="col-span-1 rounded-md shadow-sm">
-                <PropertyListCard
-                  name={desc.name}
-                  location={desc.location}
-                  description={desc.description}
-                  imageUrl={
-                    "accommodation/" + desc.accom_id + "/" + desc.banner
-                  }
-                  stars={desc.stars}
-                  price={desc.price}
-                />
-              </li>
-            </Link>
-          ))}
-        </ul>
-      </section> */}
+      <PropertyList
+        nameFilter={nameFilter}
+        price={price}
+        date={date ?? today}
+        date2={date2 ?? tomorrow}
+        range={range}
+        star={star as number}
+      />
     </>
   );
 };
