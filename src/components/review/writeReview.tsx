@@ -21,6 +21,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getImageUrlFromS3 } from "@/lib/s3";
 
 const formSchema = z.object({
   review: z
@@ -37,6 +38,7 @@ const WriteReviewCard = ({
   location,
   imageURL,
   rating,
+  banner,
   onRatingChange,
 }: {
   reservationId: string;
@@ -47,9 +49,19 @@ const WriteReviewCard = ({
   location: string;
   imageURL: any;
   rating: number;
+  banner: string;
   onRatingChange: (rating: number) => void;
 }) => {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageURL);
+      setUrl(b);
+    };
+    fetchData();
+  });
 
   const renderStars = () => {
     const starImages = [];
@@ -95,7 +107,7 @@ const WriteReviewCard = ({
         reservation_id: reservationId,
         traveler_id: userId,
         accommodation_id: accommodationId,
-        picture: "", // Set the picture if needed
+        picture: banner, // Set the picture if needed
         text: data.review,
         score: rating, // Assuming 'rating' is passed from props
       });
@@ -119,7 +131,7 @@ const WriteReviewCard = ({
             <p className="text-l">{location}</p>
           </div>
           <div className="overflow-hidden rounded-lg">
-            <Image src={imageURL} width={600} height={600} alt="Hotel" />
+            <Image src={url} width={600} height={600} alt="Hotel" />
           </div>
         </div>
         <div className="flex w-1/2 flex-col justify-between pl-5">

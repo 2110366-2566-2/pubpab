@@ -62,12 +62,12 @@ export const searchRouter = router({
                   AND: [
                     {
                       start_date: {
-                        lte: input.checkOutDate,
+                        lt: input.checkOutDate,
                       },
                     },
                     {
                       end_date: {
-                        gte: input.checkInDate,
+                        gt: input.checkInDate,
                       },
                     },
                   ],

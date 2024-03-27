@@ -3,6 +3,8 @@ import Image from "next/image";
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import UserImage from "@/../../public/User.png";
 import { LogInIcon, LogOutIcon } from "lucide-react";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useState, useEffect } from "react";
 
 const HostBookingCard = ({
   accomName,
@@ -14,6 +16,8 @@ const HostBookingCard = ({
   lastname,
   checkInDate,
   checkOutDate,
+  accommodation_id,
+  banner,
 }: {
   accomName: string;
   roomName: string;
@@ -24,13 +28,29 @@ const HostBookingCard = ({
   lastname: string;
   checkInDate: string;
   checkOutDate: string;
+  accommodation_id: string;
+  banner: string;
 }) => {
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(
+        "accommodation/" + accommodation_id + "/" + banner,
+      );
+      setUrl(b);
+    };
+    fetchData();
+    console.log(url);
+  });
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <Image
-        src={EastHotelImage}
+        src={url}
         alt="hotel"
         className="max-w-md rounded-lg object-scale-down"
+        width={500}
+        height={500}
       />
       <div className="flex w-full flex-col p-4">
         <div className="flex flex-row justify-between">

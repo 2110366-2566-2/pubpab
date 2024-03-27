@@ -2,6 +2,8 @@ import Image from "next/image";
 import EastHotelImage from "@/../../public/easthotel.jpeg";
 import starNotFill from "@/../../public/Star.svg";
 import starFill from "@/../../public/StarFill.svg";
+import { getImageUrlFromS3 } from "@/lib/s3";
+import { useEffect, useState } from "react";
 
 const ReadReviewCard = ({
   accomName,
@@ -20,6 +22,15 @@ const ReadReviewCard = ({
   reviewDescription: string;
   reviewDate?: string;
 }) => {
+  const [url, setUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const b = await getImageUrlFromS3(imageURL);
+      setUrl(b);
+    };
+    fetchData();
+  });
   const renderStars = () => {
     const starImages = [];
     for (let i = 0; i < 5; i++) {
@@ -56,9 +67,11 @@ const ReadReviewCard = ({
   return (
     <div className="relative flex flex-row gap-2 rounded-lg bg-white shadow-md">
       <Image
-        src={EastHotelImage}
+        src={url}
         alt="hotel"
         className="max-w-md rounded-lg object-scale-down"
+        width={500}
+        height={500}
       />
       <div className="flex w-full flex-col p-4">
         <div className="flex flex-row justify-between">

@@ -40,6 +40,10 @@ export default function HostBookings() {
               child={booking.room.max_children.toString() ?? ""}
               price={booking.payment.amount.toString() ?? ""}
               accomName={booking.room.accommodation?.name_a ?? ""}
+              accommodation_id={
+                booking.room.accommodation?.accommodation_id ?? ""
+              }
+              banner={booking.room.accommodation?.banner ?? ""}
             />
           </div>
         ))}
