@@ -35,11 +35,9 @@ const ChatPage = () => {
   return (
     <div className="Chatpage" style={chatpageStyle}>
       <div style={friendChatListStyle}>
-        <p>FriendChatList</p>
         <FriendChatList onChatIdChange={handleChatIdChange} />
       </div>
       <div style={chatAreaStyle}>
-        <p>ChatArea</p>
         <ChatArea chat_id={chatId} />
       </div>
     </div>
