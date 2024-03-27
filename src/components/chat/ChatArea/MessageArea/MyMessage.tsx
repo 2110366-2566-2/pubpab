@@ -15,7 +15,7 @@ const messageContentStyle = {
   display: "flex",
   alignItems: "center",
   height: "35px",
-  backgroundColor: "green",
+  backgroundColor: "#86D97B",
   borderRadius: "10px 0px 10px 10px",
   paddingTop: "5px",
   paddingBottom: "5px",

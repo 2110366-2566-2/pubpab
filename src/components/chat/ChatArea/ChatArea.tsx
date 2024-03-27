@@ -33,7 +33,7 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
     display: "flex",
     flexDirection: "column",
     overflow: "visible",
-    weight: "100%",
+    width: "100%",
   };
   const chatInfoStyle = {
     display: "flex",
@@ -50,14 +50,16 @@ const ChatArea = ({ chat_id }: { chat_id: string }) => {
   };
   const chatAreaStyle = {
     display: "flex",
+    flexDirection: "column",
     // height: 'calc(100% - 160px)',
-
+    width: "100%",
     backgroundColor: "whitesmoke",
   };
   const inputAreaStyle = {
     display: "flex",
     // height: "50px",
-    paddingTop: "10px",
+    padding: "10px",
+    // paddingTop: "10px",
   };
   const onInvalid = (errors: unknown) => console.error(errors);
   return (
