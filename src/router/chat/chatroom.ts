@@ -5,6 +5,46 @@ import { prisma } from "@/lib/client";
 import { router, publicProcedure } from "@/server/trpc";
 
 export const chatRoomRouter = router({
+  create: publicProcedure
+    .input(
+      z.object({
+        host_id: z.string(),
+        traveler_id: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { host_id, traveler_id } = input;
+
+      try {
+        // Check if the chat room already exists for the given host_id and traveler_id
+        const existingChatRoom = await prisma.chatroom.findFirst({
+          where: {
+            host_id,
+            traveler_id,
+          },
+        });
+
+        // If a chat room already exists, return the existing chat room
+        if (existingChatRoom) {
+          return existingChatRoom;
+        }
+
+        // If no chat room exists, create a new one
+        const newChatRoom = await prisma.chatroom.create({
+          data: {
+            host_id,
+            traveler_id,
+          },
+        });
+
+        return newChatRoom;
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error creating chat room",
+        });
+      }
+    }),
   get: publicProcedure
     .input(
       z.object({
@@ -94,10 +134,7 @@ export const chatRoomRouter = router({
         });
 
         if (!chatRoom) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Chat room not found",
-          });
+          return null;
         }
 
         return { chatroom_id: chatRoom.chatroom_id };

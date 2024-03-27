@@ -1,3 +1,5 @@
+"use client";
+
 import { trpc } from "@/lib/trpc/client";
 import { useSession } from "next-auth/react";
 import Messages from "@/components/chat/ChatArea/MessageArea/Messages";

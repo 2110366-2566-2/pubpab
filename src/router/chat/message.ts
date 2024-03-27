@@ -6,6 +6,35 @@ import { router, publicProcedure } from "@/server/trpc";
 
 // Procedure to handle GET requests
 export const messageRouter = router({
+  create: publicProcedure
+    .input(
+      z.object({
+        chatroom_id: z.string(),
+        sender_id: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { chatroom_id, sender_id, text } = input;
+
+      try {
+        // Create a new chat message
+        const newMessage = await prisma.messages.create({
+          data: {
+            chatroom_id,
+            sender_id,
+            text,
+          },
+        });
+
+        return newMessage;
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error creating chat message",
+        });
+      }
+    }),
   get: publicProcedure
     .input(
       z.object({

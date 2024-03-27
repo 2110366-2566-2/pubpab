@@ -22,8 +22,11 @@ import { format } from "date-fns";
 import LoadingScreen from "@/components/ui/loading-screen";
 import ReadReviewCard from "@/components/review/readReview";
 import { getImageUrlFromS3 } from "@/lib/s3";
+import { router } from "@/server/trpc";
+import { useRouter } from "next/navigation";
 
 const PropInformation = ({
+  host_id,
   accom_id,
   accom_name,
   accom_description,
@@ -38,6 +41,7 @@ const PropInformation = ({
   checkInDate,
   checkOutDate,
 }: {
+  host_id: string;
   accom_id: string;
   accom_name: string;
   accom_description: string;
@@ -53,6 +57,7 @@ const PropInformation = ({
   checkOutDate: string;
 }) => {
   const [url, setUrl] = useState<String>("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,6 +179,10 @@ const PropInformation = ({
     </>
   ) : null;
 
+  function ToChatPage() {
+    router.push(`../chat?host_id=${host_id}`);
+  }
+
   return (
     <>
       <header className="flex h-20 w-full flex-row items-center justify-center bg-blue-900">
@@ -241,6 +250,14 @@ const PropInformation = ({
               Back
             </button>
           </a>
+          <button
+            onClick={() => {
+              ToChatPage();
+            }}
+            className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            Chat with host
+          </button>
           <span className="inline-flex items-center gap-x-1.5 rounded-md bg-blue-900 px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-green-600/20">
             <StarIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
             {accom_rating}
@@ -372,6 +389,7 @@ const PropInfo = () => {
 
   return (
     <PropInformation
+      host_id={accomData.host_id || ""}
       accom_id={accom_id || ""}
       accom_banner={accomData.banner || ""}
       accom_name={accomData.name_a}
