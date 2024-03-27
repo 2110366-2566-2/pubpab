@@ -11,23 +11,23 @@ import {
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
+import React, { useState, useEffect } from "react";
+
 import PropertyListCard from "@/components/card/PropertyList";
+
 import Link from "next/link";
-import { trpc } from "@/lib/trpc/client";
 
-import { CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-
-import React from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
+
 import { format } from "date-fns";
-import LoadingScreen from "@/components/ui/loading-screen";
 
 const PropertyList = ({
   star,
@@ -44,6 +44,30 @@ const PropertyList = ({
   range: number;
   nameFilter: string;
 }) => {
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  }>({ lat: 44, lng: -80 });
+
+  const getUserLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        console.log("Update location");
+        const pos_lat_lng = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        setUserLocation(pos_lat_lng);
+      },
+      function (error) {
+        console.error("Error getting user location:", error);
+      },
+    );
+  };
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+
   const filteredAccom = trpc.search.filter.useQuery({
     accom_name: nameFilter,
     rating: star,
@@ -51,7 +75,9 @@ const PropertyList = ({
     checkOutDate: date2,
     priceMin: price[0],
     priceMax: price[1],
-    radius: undefined,
+    latitude: userLocation.lat,
+    longitude: userLocation.lng,
+    radius: range,
   });
   const accomData = filteredAccom.data?.map((e) => ({
     name: e.name_a,
@@ -70,6 +96,7 @@ const PropertyList = ({
       <ul role="list" className="mt-12 grid w-full max-w-5xl grid-cols-1 gap-5">
         {accomData?.map((desc) => (
           <Link
+            key={desc.accom_id}
             href={{
               pathname: "searchprop/PropInfo",
               query: {
@@ -102,7 +129,7 @@ const SearchProps = () => {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   const [star, setStar] = React.useState<number | number[]>(0);
-  const [price, setPrice] = React.useState<number[] | any>([0, 5000]);
+  const [price, setPrice] = React.useState<number[] | number>([0, 5000]);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [date2, setDate2] = React.useState<Date | undefined>(tomorrow);
   const [range, setRange] = React.useState<number>(10);
@@ -239,9 +266,9 @@ const SearchProps = () => {
             <div className=" flex h-full w-full max-w-xl flex-col items-center justify-center rounded-md border-0 bg-white px-5 py-2 text-gray-900 ring-1 ring-inset ring-gray-300">
               <span className="flex flex-row gap-1 pb-3">
                 <Wallet2Icon />
-                <p className="ml-1 w-10">{price[0]}</p>
+                <p className="ml-1 w-10">{(price as number[])[0]}</p>
                 <p>-</p>
-                <p className="w-10">{price[1]}</p>
+                <p className="w-10">{(price as number[])[1]}</p>
               </span>
               <Slider
                 range
@@ -259,7 +286,7 @@ const SearchProps = () => {
       </section>
       <PropertyList
         nameFilter={nameFilter}
-        price={price}
+        price={price as number[]}
         date={date ?? today}
         date2={date2 ?? tomorrow}
         range={range}

@@ -1,27 +1,24 @@
 "use client";
 
+import { format } from "date-fns";
+import { LogInIcon, LogOutIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { LogInIcon, LogOutIcon, StarIcon, CheckIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
 import RoomInfoCard from "@/components/card/RoomInfoCard";
 import { MapViewOnly } from "@/components/GoogleMapView";
-import EastHotelImage from "@/../../public/easthotel.jpeg";
-import { trpc } from "@/lib/trpc/client";
-import { CalendarIcon } from "lucide-react";
+import ReadReviewCard from "@/components/review/readReview";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-
-import React, { useEffect, useState } from "react";
+import LoadingScreen from "@/components/ui/loading-screen";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import LoadingScreen from "@/components/ui/loading-screen";
-import ReadReviewCard from "@/components/review/readReview";
 import { getImageUrlFromS3 } from "@/lib/s3";
+import { trpc } from "@/lib/trpc/client";
+import { cn } from "@/lib/utils";
 
 const PropInformation = ({
   accom_id,
@@ -52,7 +49,7 @@ const PropInformation = ({
   checkInDate: string;
   checkOutDate: string;
 }) => {
-  const [url, setUrl] = useState<String>("");
+  const [url, setUrl] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,10 +60,6 @@ const PropInformation = ({
     };
     fetchData();
   });
-
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
 
   const [date, setDate] = React.useState<Date | undefined>(() => {
     if (checkInDate) {
@@ -79,21 +72,13 @@ const PropInformation = ({
       return new Date(checkOutDate);
     }
     // Adding one day
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
   });
   const findAccommodation = trpc.host.accomodation.findUnique.useQuery({
     accommodation_id: accom_id ? accom_id : "",
   });
-
-  const findRooms = trpc.search.filterRoom.useQuery({
-    accommodation_id: accom_id,
-    checkInDate: date ?? today,
-    checkOutDate: date2 ?? tomorrow,
-  });
-
-  if (findRooms.error) {
-    return <div>Error: {findRooms.error.message}</div>;
-  }
 
   const fetchReviews = trpc.review.accommodationReviews.useQuery({
     accommodation_id: accom_id || "",
@@ -107,11 +92,7 @@ const PropInformation = ({
     return <div>Error: {findAccommodation.error.message}</div>;
   }
 
-  if (
-    findRooms.isLoading ||
-    findAccommodation.isLoading ||
-    fetchReviews.isLoading
-  ) {
+  if (findAccommodation.isLoading || fetchReviews.isLoading) {
     return (
       <div>
         <LoadingScreen />
@@ -119,27 +100,6 @@ const PropInformation = ({
     );
   }
   const reviewsData = fetchReviews.data;
-  const roomsData = findRooms.data;
-
-  const Info = roomsData.flatMap((entry) => ({
-    room_id: entry.room_id,
-    accomName: accom_name,
-    roomName: entry.room_name,
-    banner: entry.banner,
-    price: entry.price,
-    room: entry.room_no,
-    floor: entry.floor,
-    bed: entry.bed_type,
-    adult: entry.max_adult,
-    children: entry.max_children,
-    smoking: entry.smoking,
-    noise: entry.noise,
-    pet: entry.pet,
-    wifi_available: entry.wifi_available,
-    washing_machine: entry.washing_machine,
-    restroom: entry.restroom,
-    googlemap_link: accom_ggmap_link,
-  }));
 
   // let reviewData;
   // if (reviewsData != null) {
@@ -277,52 +237,12 @@ const PropInformation = ({
               {/* </div> */}
             </div>
           </div>
-          <div className="flex flex-col gap-4 px-8 py-4">
-            <h2 className="text-xl font-bold text-gray-900">Rooms</h2>
-            {Info.flatMap(
-              (items: {
-                noise: boolean;
-                pet: boolean;
-                washing_machine: boolean;
-                restroom: boolean;
-                wifi_available: boolean;
-                smoking: boolean;
-                room_id: string | null;
-                accomName: string | null;
-                roomName: string | null;
-                banner: string | null;
-                price: number | null;
-                floor: number | null;
-                room: string | null;
-                bed: string | null;
-                adult: number | null;
-                children: number | null;
-              }) => (
-                <RoomInfoCard
-                  accomName={items.accomName ? items.accomName : ""}
-                  roomName={items.roomName ? items.roomName : ""}
-                  banner={items.banner ? items.banner : ""}
-                  price={items.price ? items.price : 0}
-                  floor={items.floor ? items.floor : 1}
-                  room={items.room ? items.room : ""}
-                  bed={items.bed ? items.bed : ""}
-                  adult={items.adult ? items.adult : 0}
-                  children={items.children ? items.children : 0}
-                  room_id={items.room_id ? items.room_id : ""}
-                  accom_id={accom_id ? accom_id : ""}
-                  smoking={items.smoking || false}
-                  noise={items.noise || false}
-                  pet={items.pet || false}
-                  washing_machine={items.washing_machine || false}
-                  restroom={items.restroom || false}
-                  wifi_available={items.wifi_available || false}
-                  checkInDate={date?.toDateString() || ""}
-                  checkOutDate={date2?.toDateString() || ""}
-                />
-              ),
-            )}
-            {/* <PropertyInfoCard accomName="mom" roomName="mom" price={100} floor={1} room={1} bed="mom" adult={1} children={1} /> */}
-          </div>
+          <RoomList
+            accom_id={accom_id}
+            date={date ?? new Date()}
+            date2={date2 ?? new Date()}
+            accom_name={accom_name}
+          />
           <div className="flex flex-col gap-4 px-8 py-4">
             <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
             {/* {reviewData.flatMap((review) => (
@@ -389,3 +309,97 @@ const PropInfo = () => {
   );
 };
 export default PropInfo;
+
+const RoomList = ({
+  accom_id,
+  date,
+  date2,
+  accom_name,
+}: {
+  accom_id: string;
+  date: Date;
+  date2: Date;
+  accom_name: string;
+}) => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const findRooms = trpc.search.filterRoom.useQuery({
+    accommodation_id: accom_id,
+    checkInDate: date ?? today,
+    checkOutDate: date2 ?? tomorrow,
+  });
+
+  const roomsData = findRooms.data;
+
+  const Info = roomsData?.flatMap((entry) => ({
+    room_id: entry.room_id,
+    accomName: accom_name,
+    roomName: entry.room_name,
+    banner: entry.banner,
+    price: entry.price,
+    room: entry.room_no,
+    floor: entry.floor,
+    bed: entry.bed_type,
+    adult: entry.max_adult,
+    children: entry.max_children,
+    smoking: entry.smoking,
+    noise: entry.noise,
+    pet: entry.pet,
+    wifi_available: entry.wifi_available,
+    washing_machine: entry.washing_machine,
+    restroom: entry.restroom,
+  }));
+
+  if (findRooms.error) {
+    return <div>Error: {findRooms.error.message}</div>;
+  }
+  return (
+    <div className="flex flex-col gap-4 px-8 py-4">
+      <h2 className="text-xl font-bold text-gray-900">Rooms</h2>
+      {Info?.flatMap(
+        (items: {
+          noise: boolean;
+          pet: boolean;
+          washing_machine: boolean;
+          restroom: boolean;
+          wifi_available: boolean;
+          smoking: boolean;
+          room_id: string | null;
+          accomName: string | null;
+          roomName: string | null;
+          banner: string | null;
+          price: number | null;
+          floor: number | null;
+          room: string | null;
+          bed: string | null;
+          adult: number | null;
+          children: number | null;
+        }) => (
+          <RoomInfoCard
+            accomName={items.accomName ? items.accomName : ""}
+            roomName={items.roomName ? items.roomName : ""}
+            banner={items.banner ? items.banner : ""}
+            price={items.price ? items.price : 0}
+            floor={items.floor ? items.floor : 1}
+            room={items.room ? items.room : ""}
+            bed={items.bed ? items.bed : ""}
+            adult={items.adult ? items.adult : 0}
+            child={items.children ? items.children : 0}
+            room_id={items.room_id ? items.room_id : ""}
+            accom_id={accom_id ? accom_id : ""}
+            smoking={items.smoking || false}
+            noise={items.noise || false}
+            pet={items.pet || false}
+            washing_machine={items.washing_machine || false}
+            restroom={items.restroom || false}
+            wifi_available={items.wifi_available || false}
+            checkInDate={date?.toDateString() || ""}
+            checkOutDate={date2?.toDateString() || ""}
+          />
+        ),
+      )}
+    </div>
+  );
+};

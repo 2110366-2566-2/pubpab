@@ -62,12 +62,12 @@ export const searchRouter = router({
                   AND: [
                     {
                       start_date: {
-                        lte: input.checkOutDate,
+                        lt: input.checkOutDate,
                       },
                     },
                     {
                       end_date: {
-                        gte: input.checkInDate,
+                        gt: input.checkInDate,
                       },
                     },
                   ],
@@ -85,18 +85,26 @@ export const searchRouter = router({
         },
       });
 
-      if (input.latitude && input.longitude && input.radius) {
+      if (
+        input.latitude &&
+        input.longitude &&
+        input.radius &&
+        input.radius > 0
+      ) {
         const filteredAccommodations = filteredAccommodation.filter(
           (accommodation) => {
             // Extract latitude and longitude from ggmap_link
-            const [latString, lngString] =
-              accommodation.ggmap_link?.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ||
-              [];
-            if (!latString || !lngString) return false; // Skip accommodations without valid coordinates
+            const urlParams = new URLSearchParams(
+              new URL(accommodation.ggmap_link || "").search,
+            );
+            const queryString = urlParams.get("query");
+            const latString = queryString?.split(",")[0];
+            const lat = latString ? parseFloat(latString) : 0;
 
-            const lat = parseFloat(latString);
-            const lng = parseFloat(lngString);
-
+            const lngString = queryString?.split(",")[1];
+            const lng = lngString ? parseFloat(lngString) : 0;
+            console.log(lat, lng);
+            console.log(input.latitude, input.longitude);
             // Calculate distance between provided location and accommodation
             const distance = calculateDistance(
               input.latitude || 0,
@@ -104,6 +112,7 @@ export const searchRouter = router({
               lat,
               lng,
             );
+            console.log(distance);
             return distance <= (input.radius || 100);
           },
         );
@@ -157,12 +166,12 @@ export const searchRouter = router({
               AND: [
                 {
                   start_date: {
-                    lte: input.checkOutDate,
+                    lt: input.checkOutDate,
                   },
                 },
                 {
                   end_date: {
-                    gte: input.checkInDate,
+                    gt: input.checkInDate,
                   },
                 },
               ],

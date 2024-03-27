@@ -1,10 +1,9 @@
+import { CheckIcon, XIcon } from "lucide-react";
 import Image from "next/image";
-import { StarIcon, CheckIcon, XIcon } from "lucide-react";
-
-import EastHotelImage from "@/../../public/easthotel.jpeg";
 import Link from "next/link";
-import { getImageUrlFromS3 } from "@/lib/s3";
 import { useState, useEffect } from "react";
+
+import { getImageUrlFromS3 } from "@/lib/s3";
 
 const RoomInfoCard = ({
   accomName,
@@ -15,7 +14,7 @@ const RoomInfoCard = ({
   bed,
   price,
   adult,
-  children,
+  child,
   room_id,
   accom_id,
   smoking,
@@ -35,7 +34,7 @@ const RoomInfoCard = ({
   bed: string;
   price: number;
   adult: number;
-  children: number;
+  child: number;
   room_id: string;
   accom_id: string;
   smoking: boolean;
@@ -87,7 +86,7 @@ const RoomInfoCard = ({
           <span className="flex flex-col text-right">
             <p className="pb-4 text-2xl font-bold">฿ {price}/Night</p>
             <p>{adult} Adults</p>
-            <p>{children} Children</p>
+            <p>{child} Children</p>
           </span>
         </div>
         <div className="flex h-full flex-row justify-between pt-4">
